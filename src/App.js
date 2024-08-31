@@ -1,9 +1,11 @@
-import logo from './logo.svg';
 import './App.css';
 import React from 'react';
 import {Routes, Route} from 'react-router-dom';
-import Hello from './Hello';
 import Home from './Home';
+import Activity from './Activity';
+import Friends from './Friends';
+import Groups from './Groups';
+import Expense from './Expenses';
 
 
 function App() {
@@ -12,9 +14,11 @@ function App() {
   return (
     <>
     <Routes>
-    <Route path='/' element={<Hello/>}/>
-    <Route path="/Home" element={<Home/>}/>
-
+    <Route path='/' element={<Home/>}/>
+    <Route path="/activities" element={<Activity/>}/>
+    <Route path="/friends" element={<Friends/>}/>
+    <Route path="/groups" element={<Groups/>} />
+    <Route path="/expenses" element={<Expense/>} />
   </Routes>
     </>
   );

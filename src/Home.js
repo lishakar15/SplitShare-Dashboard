@@ -1,11 +1,11 @@
 import React from 'react';
 import {useState,useEffect} from 'react';
+import SideNavBar from './SideNavBar';
 
 const Home = () =>{
 
     const [name,setName] = useState("");
     useEffect(()=>{
-        alert("Greet");
         setName("Lisha");
     },[])
     
