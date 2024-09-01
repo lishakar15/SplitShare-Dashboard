@@ -1,17 +1,23 @@
 import React from 'react';
-import {useState,useEffect} from 'react';
 import SideNavBar from './SideNavBar';
+import { styled } from '@mui/material/styles';
+import Box from '@mui/material/Box';
+import Paper from '@mui/material/Paper';
+import Grid from '@mui/material/Grid2';
+
+
 
 const Home = () =>{
-
-    const [name,setName] = useState("");
-    useEffect(()=>{
-        setName("Lisha");
-    },[])
-    
+      
     return(
         <>
-            <h1>Home {name}</h1>
+            <Box sx={{ flexGrow: 1 }}>
+            <Grid container sx={{height:"100vh"}}>
+                <Grid size={2}>
+                    <SideNavBar/>
+                </Grid>
+            </Grid>
+          </Box>
         </>
     )
 }
