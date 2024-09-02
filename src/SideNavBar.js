@@ -16,7 +16,7 @@ import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
 const SideNavBar = () => {
       return (
         <>
-            <Box sx={{ width: '100%', maxWidth: 360, bgcolor: 'background.paper' }}>
+            <Box sx={{ mx:"10px", width: '100%', maxWidth: 360}}>
               <nav aria-label="main mailbox folders">
                 <List>
                   <ListItem disablePadding>
@@ -24,7 +24,7 @@ const SideNavBar = () => {
                       <ListItemIcon>
                         <HomeOutlinedIcon />
                       </ListItemIcon>
-                      <ListItemText primary="Home" />
+                      <ListItemText primary="Home" sx ={{ml:"-10px"}}/>
                     </ListItemButton>
                   </ListItem>
                   <ListItem disablePadding>
@@ -32,7 +32,7 @@ const SideNavBar = () => {
                       <ListItemIcon>
                         <TimelineIcon />
                       </ListItemIcon>
-                      <ListItemText primary="Activity" />
+                      <ListItemText primary="Activity" sx ={{ml:"-10px"}}/>
                     </ListItemButton>
                   </ListItem>
                   <ListItem disablePadding>
@@ -40,7 +40,7 @@ const SideNavBar = () => {
                       <ListItemIcon>
                         <PersonOutlinedIcon />
                       </ListItemIcon>
-                      <ListItemText primary="Friends" />
+                      <ListItemText primary="Friends" sx ={{ml:"-10px"}}/>
                     </ListItemButton>
                   </ListItem>
                   <ListItem disablePadding>
@@ -48,7 +48,7 @@ const SideNavBar = () => {
                       <ListItemIcon>
                         <GroupsOutlinedIcon />
                       </ListItemIcon>
-                      <ListItemText primary="Groups" />
+                      <ListItemText primary="Groups" sx ={{ml:"-10px"}}/>
                     </ListItemButton>
                   </ListItem>
                   <ListItem disablePadding>
@@ -56,7 +56,7 @@ const SideNavBar = () => {
                       <ListItemIcon>
                         <PaymentOutlinedIcon />
                       </ListItemIcon>
-                      <ListItemText primary="Expenses" />
+                      <ListItemText primary="Expenses" sx ={{ml:"-10px"}}/>
                     </ListItemButton>
                   </ListItem>
                 </List>
