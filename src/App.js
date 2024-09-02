@@ -6,6 +6,7 @@ import Activity from './Activity';
 import Friends from './Friends';
 import Groups from './Groups';
 import Expense from './Expenses';
+import PageNotFound from './PageNotFound';
 
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
     <Route path="/friends" element={<Friends/>}/>
     <Route path="/groups" element={<Groups/>} />
     <Route path="/expenses" element={<Expense/>} />
+    <Route path="*" element={<PageNotFound/>}/>
   </Routes>
     </>
   );
