@@ -11,7 +11,7 @@ const BalanceBoard = () => {
         justifyContent:'center',
         mt:2,
         }}>
-        <Card sx={{flex:1,border:"1px solid lightgray"}}>
+        <Card sx={{flex:1,border:"1px solid #e5e7eb"}}>
             <CardContent sx={{ml:"15px"}}>
                 <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 16 }}>
                 Your Balance
