@@ -10,6 +10,7 @@ const MainSection = () => {
     <Box  container sx ={{ml:"15px"}}>
         <SearchBar/>
         <BalanceBoard/>
+        <BalanceAppBar/>
     </Box>
 
   )
