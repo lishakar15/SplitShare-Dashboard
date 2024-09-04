@@ -37,7 +37,7 @@ const BalanceBoard = () => {
                 Your owe
                 </Typography>
                 <Typography variant="h4" component="div" color="red">
-                $284.00 
+                $265.00 
                 </Typography>
             </CardContent>
         </Card>
