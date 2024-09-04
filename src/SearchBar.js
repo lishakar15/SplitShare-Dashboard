@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { Box, Paper, IconButton, InputBase, Divider, Avatar, Typography, useMediaQuery } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
+import AvatarGenerator from './AvatarGenerator';
 
 const SearchBar = () => {
 
@@ -33,11 +34,7 @@ const SearchBar = () => {
     </Paper>
     <Divider  orientation="vertical" flexItem  sx={{mx:"15px"}}/>
     <Box sx={{display:"flex",alignItems:"center"}}>
-    <Avatar
-        sx={{ bgcolor: '#ebf4ff',color:"#2582f4" }}
-        alt="Lishakar"
-        src="/broken-image.jpg">
-    </Avatar>
+    <AvatarGenerator userName={"Lishakar"}/>
     {isSmallScreen ? null :(
         <>
             <Typography  sx={{

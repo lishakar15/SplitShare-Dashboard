@@ -1,4 +1,4 @@
-import { Box, Avatar, Chip, Button } from '@mui/material';
+import { Box, Avatar, Chip, Button, Divider } from '@mui/material';
 import React from 'react';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import { USER_BALANCES } from './data/BalanceData';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import EastIcon from '@mui/icons-material/East';
+import AvatarGenerator from './AvatarGenerator';
 
 const BalanceCard = () => {
   return (
@@ -18,11 +19,7 @@ const BalanceCard = () => {
               <CardContent sx={{ flexGrow: 1 }}>
                 {/** First Line in card */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <Avatar
-                    sx={{ bgcolor: '#ebf4ff', color: '#2582f4' }}
-                    alt={`${balance.userName}`}
-                    src="/broken-image.jpg"
-                  />
+                  <AvatarGenerator userName={balance.userName}/>
                   <Box sx={{ ml: 1, flexShrink: 0 }}>
                     <Typography
                       sx={{
