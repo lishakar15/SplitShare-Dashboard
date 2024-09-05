@@ -39,10 +39,16 @@ function stringAvatar(name) {
   };
 }
 
-export default function AvatarGenerator({ userName }) {
+export default function AvatarGenerator({ userName,size }) {
   return (
     <>
-      <Avatar {...stringAvatar(userName)} />
+      <Avatar
+        {...stringAvatar(userName)}
+        sx={{
+          ...stringAvatar(userName).sx, // Spread the original sx from stringAvatar
+          ...(size === "md" && { width: 56, height: 56 }) // Conditionally add size
+        }}
+      />
     </>
   );
 }
