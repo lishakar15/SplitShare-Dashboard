@@ -1,5 +1,6 @@
 import { Box, Button, Typography } from '@mui/material';
 import React from 'react';
+import SettleUpButton from '../SettleUpButton';
 
 
 const BalanceAppBar = () => {
@@ -8,7 +9,7 @@ const BalanceAppBar = () => {
       <Typography variant='div'sx={{fontSize: 20}} >Balances</Typography >
       <Box sx={{display:"flex",justifyContent:"space-around"}}> 
       <Button variant="contained" sx={{ textTransform: 'none', bgcolor:"#4338ca" }}>New Expense</Button>
-      <Button variant="contained"sx={{ textTransform: 'none',bgcolor:"#e0e7ff", color :"#4338ca",ml:2 }}>Settle Up</Button>
+      <SettleUpButton/>
       </Box>
       
     </Box>
