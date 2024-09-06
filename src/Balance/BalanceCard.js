@@ -4,10 +4,10 @@ import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { USER_BALANCES } from './data/BalanceData';
+import { USER_BALANCES } from '../data/BalanceData';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
-import EastIcon from '@mui/icons-material/East';
-import AvatarGenerator from './AvatarGenerator';
+import AvatarGenerator from '../AvatarGenerator';
+import CustomSettleUpButton from '../Payment/CustomSettleUpButton';
 
 const BalanceCard = () => {
   return (
@@ -54,19 +54,7 @@ const BalanceCard = () => {
                 </Box>
 
                 {/** Settle Up Button */}
-                <Button
-                  variant="outlined"
-                  sx={{
-                    width: '100%',
-                    justifyContent: 'flex-start',
-                    border: 'none',
-                    textTransform: 'none',
-                    color: 'black',
-                    mt: 'auto',
-                  }}
-                >
-                  Settle up<EastIcon sx={{ fontSize: '15px', ml: '5px' }} />
-                </Button>
+                <CustomSettleUpButton/>
               </CardContent>
             </Card>
           </Grid>
