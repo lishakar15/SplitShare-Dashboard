@@ -2,7 +2,6 @@ import * as React from "react";
 import { useState } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 
-
 import {
   Dialog,
   DialogActions,
@@ -19,9 +18,10 @@ import {
   Radio,
   Typography,
 } from "@mui/material";
-import UserTransactionAvatar from "./UserTransactionAvatar";
+import PaidUsersSection from "./PaidUsersSection";
+import SplitAmountSection from "./SplitAmountSection";
 
-function PaymentDialog({
+function ExpenseDialog({
   open,
   onClose,
   payerName,
@@ -47,15 +47,22 @@ function PaymentDialog({
     setPayer(receiver);
     setReceiver(payer);
   };
- 
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>New Payment</DialogTitle>
+      <DialogTitle>New Expense</DialogTitle>
       <DialogContent>
-      <UserTransactionAvatar payer={payer} receiver={receiver} handlePayerChange={handlePayerChange}/>
         <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={8}>
+            <Typography>Description</Typography>
+            <TextField
+              fullWidth
+              type="text"
+              value={date}
+              onChange={(e) => setDate(e.target.value)}
+            />
+          </Grid>
+          <Grid item xs={12} md={4}>
             <Typography>Amount</Typography>
             <TextField
               fullWidth
@@ -71,7 +78,7 @@ function PaymentDialog({
               onChange={(e) => setAmount(e.target.value)}
             />
           </Grid>
-          <Grid item xs={12} md={6}>
+          <Grid item xs={12} md={4}>
             <Typography>Date</Typography>
             <TextField
               fullWidth
@@ -80,13 +87,28 @@ function PaymentDialog({
               onChange={(e) => setDate(e.target.value)}
             />
           </Grid>
+          <Grid item xs={12} md={8}>
+            <Typography>Category</Typography>
+            <FormControl fullWidth>
+              <Select
+                value={group}
+                onChange={(e) => setGroup(e.target.value)}
+                >
+                <MenuItem value="">--select---</MenuItem>
+                <MenuItem value="Food">Food</MenuItem>
+                <MenuItem value="Entertainment">Entertainment</MenuItem>
+                <MenuItem value="Restaurant">Restaurant</MenuItem>
+              </Select>
+            </FormControl>
+          </Grid>
+          <PaidUsersSection payer={"Sovon"} />
+          <SplitAmountSection/>
           <Grid item xs={12}>
             <Typography>Group</Typography>
             <FormControl fullWidth>
               <Select
                 value={group}
                 onChange={(e) => setGroup(e.target.value)}
-                label="Within Group"
               >
                 <MenuItem value="Cognizant Team">Cognizant Team</MenuItem>
                 {/* Add other groups */}
@@ -114,10 +136,10 @@ function PaymentDialog({
       <DialogActions>
         <Button onClick={handleClose}>Cancel</Button>
         <Button onClick={handleSave} variant="contained" color="primary">
-          Save
+          Create
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
-export default PaymentDialog;
+export default ExpenseDialog;

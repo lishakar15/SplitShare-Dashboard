@@ -18,10 +18,9 @@ const UserTransactionAvatar = ({payer,receiver,handlePayerChange}) => {
       >
         <Box sx={{ display: "flex", gap: 2 }}>
           <AvatarGenerator userName={payer} size="md" />
-          <Button>
+          <Button onClick={() => handlePayerChange()}>
             <SwapHorizIcon
               fontSize="large"
-              onClick={() => handlePayerChange()}
             ></SwapHorizIcon>
           </Button>
           <AvatarGenerator userName={receiver} size="md" />

@@ -22,6 +22,10 @@ function stringToColor(string) {
 }
 
 function stringAvatar(name) {
+  if(name===undefined || name === null)
+  {
+    return false;
+  }
   const nameParts = name.split(' ');
   let initials;
 
@@ -45,8 +49,9 @@ export default function AvatarGenerator({ userName,size }) {
       <Avatar
         {...stringAvatar(userName)}
         sx={{
-          ...stringAvatar(userName).sx, // Spread the original sx from stringAvatar
-          ...(size === "md" && { width: 56, height: 56 }) // Conditionally add size
+          ...stringAvatar(userName).sx,
+          ...(size === "md" && { width: 56, height: 56 }),
+          ...(size === "xs" && { width: 28, height: 28 })
         }}
       />
     </>
