@@ -13,27 +13,27 @@ import {
   MenuItem,
   FormControl,
   Grid,
-  RadioGroup,
-  FormControlLabel,
-  Radio,
   Typography,
+  Divider,
 } from "@mui/material";
 import PaidUsersSection from "./PaidUsersSection";
 import SplitAmountSection from "./SplitAmountSection";
+
+
 
 function ExpenseDialog({
   open,
   onClose,
   payerName,
   receiverName,
-  payableAmount,
 }) {
   const [payer, setPayer] = useState(payerName);
   const [receiver, setReceiver] = useState(receiverName);
-  const [amount, setAmount] = useState(payableAmount);
+  const [totalAmount, setTotalAmount] = useState(100);
   const [date, setDate] = useState("");
-  const [group, setGroup] = useState("");
+  const [group, setGroup] = useState("Cognizant Group");
   const [paymentMethod, setPaymentMethod] = useState("Cash");
+
 
   const handleSave = () => {
     // Handle save logic here
@@ -47,6 +47,10 @@ function ExpenseDialog({
     setPayer(receiver);
     setReceiver(payer);
   };
+
+  const handleTotalChange = (newAmount)=>{
+    setTotalAmount(newAmount)
+  }
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -67,7 +71,7 @@ function ExpenseDialog({
             <TextField
               fullWidth
               variant="outlined"
-              value={amount}
+              value={totalAmount}
               slotProps={{
                 input: {
                   startAdornment: (
@@ -75,7 +79,7 @@ function ExpenseDialog({
                   ),
                 },
               }}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={(e) => handleTotalChange(e.target.value)}
             />
           </Grid>
           <Grid item xs={12} md={4}>
@@ -90,10 +94,7 @@ function ExpenseDialog({
           <Grid item xs={12} md={8}>
             <Typography>Category</Typography>
             <FormControl fullWidth>
-              <Select
-                value={group}
-                onChange={(e) => setGroup(e.target.value)}
-                >
+              <Select value={group} onChange={(e) => setGroup(e.target.value)}>
                 <MenuItem value="">--select---</MenuItem>
                 <MenuItem value="Food">Food</MenuItem>
                 <MenuItem value="Entertainment">Entertainment</MenuItem>
@@ -101,36 +102,14 @@ function ExpenseDialog({
               </Select>
             </FormControl>
           </Grid>
+          <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
           <PaidUsersSection payer={"Sovon"} />
-          <SplitAmountSection/>
-          <Grid item xs={12}>
-            <Typography>Group</Typography>
-            <FormControl fullWidth>
-              <Select
-                value={group}
-                onChange={(e) => setGroup(e.target.value)}
-              >
-                <MenuItem value="Cognizant Team">Cognizant Team</MenuItem>
-                {/* Add other groups */}
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <FormControl component="fieldset">
-              <RadioGroup
-                row
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
-              >
-                <FormControlLabel
-                  value="Cash"
-                  control={<Radio />}
-                  label="Cash"
-                />
-                <FormControlLabel value="UPI" control={<Radio />} label="UPI" />
-              </RadioGroup>
-            </FormControl>
-          </Grid>
+          <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
+          <SplitAmountSection
+            group={group}
+            totalAmount={totalAmount}
+          />
+          <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
         </Grid>
       </DialogContent>
       <DialogActions>
