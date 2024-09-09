@@ -18,7 +18,7 @@ const SinglePaidUser = ({
 }) => {
   return (
     <>
-      <Grid item md={5} xs={12} alignItems="center">
+      <Grid  md={5} xs={12} sx={{pl:2}}>
         <Box
           sx={{
             display: "flex",
@@ -38,7 +38,7 @@ const SinglePaidUser = ({
         </Box>
       </Grid>
 
-      <Grid item md={7} xs={12}>
+      <Grid  md={7} xs={12} sx={{pl:2}}>
         <Box
           sx={{
             display: "flex",

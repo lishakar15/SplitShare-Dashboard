@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Box,
   Card,
@@ -12,6 +12,7 @@ import UserAvatarLabel from "./UserAvatarLabel";
 import { GoTrash } from "react-icons/go";
 
 const UserDataCard = ({
+  userId,
   userName,
   amount,
   handleUserCardDelete,
@@ -19,6 +20,10 @@ const UserDataCard = ({
   allowCustomInput,
 }) => {
   const [amountVal, setAmountVal] = useState(amount);
+
+  useEffect(() => {
+    setAmountVal(amount);
+  },[amount]);
   return (
     <Card variant="outlined" sx={{ borderRadius: 3 }}>
       <CardContent
@@ -40,14 +45,13 @@ const UserDataCard = ({
                     <InputAdornment position="start">₹</InputAdornment>
                   ),
                 },
-              }
-            }
+              }}
               onChange={(e) => setAmountVal(e.target.value)}
-              onBlur={()=>handleUserAmountChange(amountVal)}
-              sx={{width:"130px"}}
+              onBlur={() => handleUserAmountChange(amountVal)}
+              sx={{ width: "130px" }}
             />
           ) : (
-            <Typography>₹{amountVal}</Typography>
+            <Typography>₹{amountVal.toFixed(2)}</Typography>
           )}
 
           <Divider
@@ -59,7 +63,7 @@ const UserDataCard = ({
           />
           <GoTrash
             style={{ fontSize: "20px" }}
-            onClick={() => handleUserCardDelete(userName)}
+            onClick={() => handleUserCardDelete(userId)}
             value={userName}
           />
         </Box>
