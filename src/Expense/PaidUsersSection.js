@@ -1,16 +1,9 @@
 import React, { useState } from "react";
-import {
-  Grid,
-  Typography,
-  Box,
-  FormControl,
-  Select,
-  MenuItem,
-} from "@mui/material";
 import SinglePaidUser from "./SinglePaidUser";
 import MultiPaidUser from "./MultiPaidUser";
 
-const PaidUsersSection = ({ totalAmount, payer  }) => {
+const PaidUsersSection = ({ totalAmount, defaultPayer  }) => {
+
 
   const handleChangePayer = (changedUser) => {
     setPaidUsers(changedUser ? [changedUser] : []);
@@ -22,15 +15,15 @@ const handleAddPayersButtonClick =()=>{
 }
 
 
-  const [paidUsers, setPaidUsers] = useState([payer]);
+  const [paidUsers, setPaidUsers] = useState([defaultPayer]);
   const [isMultiPayer, setIsMultiPayer] = useState(false);
 
   return (
     <>
     {!isMultiPayer ? 
-     <SinglePaidUser paidUsers={paidUsers} handleChangePayer={handleChangePayer} handleAddPayersButtonClick={handleAddPayersButtonClick}  defaultPayer={payer}/>
+     <SinglePaidUser paidUsers={paidUsers} handleChangePayer={handleChangePayer} handleAddPayersButtonClick={handleAddPayersButtonClick}  defaultPayer={defaultPayer}/>
         :
-        <MultiPaidUser paidUsers={paidUsers} handleChangePayer={handleChangePayer} setPaidUsers={setPaidUsers} defaultPayer={payer}/>
+      <MultiPaidUser paidUsers={paidUsers} handleChangePayer={handleChangePayer} setPaidUsers={setPaidUsers} totalAmount={totalAmount} defaultPayer={defaultPayer}/>
     }
 
        

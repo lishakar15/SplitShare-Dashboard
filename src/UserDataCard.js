@@ -51,7 +51,7 @@ const UserDataCard = ({
               sx={{ width: "130px" }}
             />
           ) : (
-            <Typography>₹{amountVal.toFixed(2)}</Typography>
+            <Typography>₹{amountVal ? Number(amountVal).toFixed(2) : '0.00'}</Typography>
           )}
 
           <Divider
@@ -62,7 +62,7 @@ const UserDataCard = ({
             }}
           />
           <GoTrash
-            style={{ fontSize: "20px" }}
+            style={{ fontSize: "20px",cursor:"pointer"}}
             onClick={() => handleUserCardDelete(userId)}
             value={userName}
           />

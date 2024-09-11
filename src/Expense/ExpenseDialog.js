@@ -18,6 +18,7 @@ import {
 } from "@mui/material";
 import PaidUsersSection from "./PaidUsersSection";
 import SplitAmountSection from "./SplitAmountSection";
+import { GROUP_MEMBERS_DATA } from "../data/GroupMembersData";
 
 
 
@@ -34,7 +35,11 @@ function ExpenseDialog({
   const [group, setGroup] = useState("Cognizant Group");
   const [paymentMethod, setPaymentMethod] = useState("Cash");
 
-
+  const defaultPayer ={
+    userId: 101,
+    userName: "Lisha",
+    paidAmount:0.00
+  }
   const handleSave = () => {
     // Handle save logic here
     handleClose();
@@ -103,7 +108,7 @@ function ExpenseDialog({
             </FormControl>
           </Grid>
           <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
-          <PaidUsersSection payer={"Sovon"} />
+          <PaidUsersSection totalAmount={totalAmount} defaultPayer={defaultPayer} />
           <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
           <SplitAmountSection
             group={group}
