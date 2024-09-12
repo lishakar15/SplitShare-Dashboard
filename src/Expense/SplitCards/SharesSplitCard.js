@@ -47,7 +47,7 @@ const SharesSplitCard = ({
 
   const calculateSplitShares = () => {
     let totalShares = userShares.reduce(
-      (acc, userShare) => acc + Number(userShare.shares),
+      (total, userShare) => total + Number(userShare.shares),
       0
     );
 
