@@ -1,5 +1,6 @@
 import React, { useEffect } from "react";
 import { GiReceiveMoney } from "react-icons/gi";
+import UserAvatarLabel from "../UserAvatarLabel";
 import { useState } from "react";
 import {
   Grid,
@@ -10,6 +11,7 @@ import {
   MenuItem,
 } from "@mui/material";
 import UserDataCard from "../UserDataCard";
+import { PAID_USER_DATA } from "../data/PaidUsersData";
 
 const MultiPaidUser = ({
   paidUsers,
@@ -24,8 +26,8 @@ const MultiPaidUser = ({
     setIsCustomPaidType(paidType === "Custom");
   };
   const handleUserAmountChange = (amountVal) => {};
-  const handleUserCardDelete = (deleteUserName) => {
-    setPaidUsers(paidUsers.filter((paidUser)=>paidUser!==deleteUserName));
+  const handleUserCardDelete = (deleteUserID) => {
+    setPaidUsers(paidUsers.filter((paidUser)=>paidUser.userId !== deleteUserID));
   };
   const handleAddPayers = (newUser) => {
     setPaidUsers([...paidUsers, newUser]);
@@ -70,9 +72,9 @@ const MultiPaidUser = ({
               value={""}
               onChange={(e) => handleAddPayers(e.target.value)}
             >
-              <MenuItem value="Lishakar">Lishakar</MenuItem>
-              <MenuItem value="Jack">Jack</MenuItem>
-              <MenuItem value="Andy">Andy</MenuItem>
+              {PAID_USER_DATA.map((user)=>(
+                 <MenuItem key={user.userId} value={user}><UserAvatarLabel userName={user.userName} size="xs"/></MenuItem>
+              ))}
             </Select>
           </FormControl>
           <Typography
@@ -89,9 +91,9 @@ const MultiPaidUser = ({
         {paidUsers.map((paidUser) => (
           <Box sx={{mb:1}}>
             <UserDataCard
-              amount={100.0}
-              userName={paidUser}
-              userId={"101"}
+              amount={paidUser.paidAmount}
+              userName={paidUser.userName}
+              userId={paidUser.userId}
               allowCustomInput={isCustomPaidType}
               handleUserAmountChange={handleUserAmountChange}
               handleUserCardDelete={handleUserCardDelete}

@@ -51,6 +51,7 @@ const SplitAmountSection = ({group, totalAmount}) => {
             >
               <MenuItem value="Equal">Equal</MenuItem>
               <MenuItem value="Percentage">Percentage</MenuItem>
+              <MenuItem value="Shares">Shares</MenuItem>
               <MenuItem value="Adjustment">Adjustment</MenuItem>
               <MenuItem value="Manual">Manual</MenuItem>
             </Select>
@@ -66,6 +67,7 @@ const SplitAmountSection = ({group, totalAmount}) => {
             >
               <ToggleButton value="Equal">Equal</ToggleButton>
               <ToggleButton value="Percentage">Percentage</ToggleButton>
+              <ToggleButton value="Shares">Shares</ToggleButton>
               <ToggleButton value="Adjustment">Adjustment</ToggleButton>
               <ToggleButton value="Manual">Manual</ToggleButton>
             </ToggleButtonGroup>

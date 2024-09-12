@@ -2,7 +2,7 @@ import { Grid } from "@mui/material";
 import React, { useEffect } from "react";
 import UserDataCard from "../../UserDataCard";
 
-const EqualSplitCard = ({ splitList, setSplitList, totalAmount, handleUserCardDelete }) => {
+const EqualSplitCard = ({ splitList, setSplitList, totalAmount }) => {
   const calculateEqualSplits = () => {
     const averageAmount = totalAmount > 0 && splitList && splitList.length > 0
       ? totalAmount / splitList.length
@@ -16,6 +16,10 @@ const EqualSplitCard = ({ splitList, setSplitList, totalAmount, handleUserCardDe
     calculateEqualSplits();
   }, [totalAmount, splitList.length]);
 
+  
+  const handleUserCardDelete = (deleteUserID)=>{
+    setSplitList(splitList.filter((user)=>user.userId !== deleteUserID))
+}
   return (
     <>
       {splitList && splitList.map((user) => (

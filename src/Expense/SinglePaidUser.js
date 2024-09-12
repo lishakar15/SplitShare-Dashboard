@@ -1,6 +1,7 @@
 import React from "react";
 import { GiReceiveMoney } from "react-icons/gi";
 import UserAvatarLabel from "../UserAvatarLabel";
+import { PAID_USER_DATA } from "../data/PaidUsersData";
 import {
   Grid,
   Typography,
@@ -29,7 +30,7 @@ const SinglePaidUser = ({
           <GiReceiveMoney color="green" size={25} />
           <Typography sx={{ mx: 1, whiteSpace: "nowrap" }}>Paid by</Typography>
           {paidUsers.length > 0 ? (
-            <UserAvatarLabel userName={paidUsers[0]} size={"xs"} />
+            <UserAvatarLabel userName={paidUsers[0].userName} size={"xs"} />
           ) : (
               <Typography sx={{ whiteSpace: "nowrap", color: "red" }}>
                 Non one
@@ -73,7 +74,9 @@ const SinglePaidUser = ({
                   value={""}
                   onChange={(e) => handleChangePayer(e.target.value)}
                 >
-                  <MenuItem value="Lishakar">Lishakar</MenuItem>
+                  {PAID_USER_DATA.map((user)=>(
+                 <MenuItem key={user.userId} value={user}><UserAvatarLabel userName={user.userName} size="xs"/></MenuItem>
+              ))}
                 </Select>
               </FormControl>
               <Typography
