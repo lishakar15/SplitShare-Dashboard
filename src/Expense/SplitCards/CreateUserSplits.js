@@ -15,14 +15,11 @@ const splitTyprComponenets ={
 
 const CreateUserSplits = ({splitList,setSplitList,totalAmount,splitType}) => {
 
-    const handleUserCardDelete = (deleteUserID)=>{
-        setSplitList(splitList.filter((user)=>user.userId !== deleteUserID))
-    }
 
     const SplitComponent = splitTyprComponenets[splitType];
   return (
    <>
-    <SplitComponent splitList={splitList} setSplitList={setSplitList} handleUserCardDelete={handleUserCardDelete} totalAmount={totalAmount} />
+    <SplitComponent splitList={splitList} setSplitList={setSplitList}  totalAmount={totalAmount} />
 
    </>
   )
