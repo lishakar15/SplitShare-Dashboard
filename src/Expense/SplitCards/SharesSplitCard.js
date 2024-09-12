@@ -37,12 +37,14 @@ const SharesSplitCard = ({
   }, [userShares,totalAmount]);
 
   const handleInputChange = (event, userId) => {
+    const shareVal = Number(event.target.value);
     const newShares = userShares.map((userShare) =>
       userShare.userId === userId
-        ? { ...userShare, shares: Number(event.target.value) }
+        ? { ...userShare, shares: shareVal }
         : userShare
     );
     setUserShares(newShares);
+    event.target.value=shareVal;
   };
 
   const calculateSplitShares = () => {
