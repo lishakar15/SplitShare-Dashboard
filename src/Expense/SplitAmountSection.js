@@ -31,8 +31,12 @@ const SplitAmountSection = ({group, totalAmount}) => {
   };
 
   const handleAddSplit = (newUser) => {
-    setSplitList([...splitList,newUser]);
+    const isExistingUser = splitList.some((user) => user.userId === newUser.userId);
+    if (!isExistingUser) {
+      setSplitList([...splitList, newUser]);
+    }
   };
+  
 
   return (
     <>

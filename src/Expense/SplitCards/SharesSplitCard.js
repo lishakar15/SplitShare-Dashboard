@@ -1,14 +1,11 @@
-import { Grid } from "@mui/material";
+import { Grid, Box, Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import UserDataCard from "../../UserDataCard";
 import CustomSplitInput from "./CustomSplitInput";
 
-const SharesSplitCard = ({
-  splitList,
-  setSplitList,
-  totalAmount,
-}) => {
+const SharesSplitCard = ({ splitList, setSplitList, totalAmount }) => {
   const [userShares, setUserShares] = useState([]);
+  const [totalUserShares, setTotalUserShares] = useState(0);
 
   useEffect(() => {
     let tempUserShareList = [...userShares];
@@ -34,7 +31,14 @@ const SharesSplitCard = ({
     if (userShares.length > 0) {
       calculateSplitShares();
     }
-  }, [userShares,totalAmount]);
+  }, [userShares, totalAmount]);
+
+  useEffect(() => {
+    const totalShares = userShares.reduce((sum, user) => {
+      return sum + user.shares;
+    }, 0);
+    setTotalUserShares(totalShares);
+  }, [splitList]);
 
   const handleInputChange = (event, userId) => {
     const shareVal = Number(event.target.value);
@@ -44,11 +48,11 @@ const SharesSplitCard = ({
         : userShare
     );
     setUserShares(newShares);
-    event.target.value=shareVal;
+    event.target.value = shareVal;
   };
 
   const calculateSplitShares = () => {
-    let totalShares = userShares.reduce(
+    const totalShares = userShares.reduce(
       (total, userShare) => total + Number(userShare.shares),
       0
     );
@@ -59,19 +63,42 @@ const SharesSplitCard = ({
       const userShare = userShares.find(
         (share) => share.userId === user.userId
       );
-      return { ...user, splitAmount: userShare ? userShare.shares * costOfSingleShare : 0 };
+      return {
+        ...user,
+        splitAmount: userShare ? userShare.shares * costOfSingleShare : 0,
+      };
     });
 
     setSplitList(updatedSplitList);
   };
 
-  const handleUserCardDelete = (deleteUserID)=>{
-    setSplitList(splitList.filter((user)=>user.userId !== deleteUserID));
-    setUserShares(userShares.filter((userShare)=>userShare.userId !== deleteUserID));
-}
+  const handleUserCardDelete = (deleteUserID) => {
+    setSplitList(splitList.filter((user) => user.userId !== deleteUserID));
+    setUserShares(
+      userShares.filter((userShare) => userShare.userId !== deleteUserID)
+    );
+  };
 
   return (
     <>
+      <Grid item xs={12}>
+        <Box
+          sx={{
+            textAlign: "center",
+            backgroundColor: "f9fafb",
+            border: "1px solid lightgray",
+            borderRadius: "11px",
+            py: 1,
+          }}
+        >
+          <Typography>
+            Specify time-based splitting or family-size splitting.
+          </Typography>
+          <Typography sx={{ fontWeight: "bold" }}>
+            Total Shares: {totalUserShares}
+          </Typography>
+        </Box>
+      </Grid>
       {splitList &&
         splitList.map((user) => (
           <Grid item xs={12} md={6} key={user.userId}>
