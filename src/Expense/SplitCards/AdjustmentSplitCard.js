@@ -1,10 +1,11 @@
-import { Grid } from "@mui/material";
+import { Grid,Box,Typography } from "@mui/material";
 import React, { useEffect, useState } from "react";
 import UserDataCard from "../../UserDataCard";
 import CustomSplitInput from "./CustomSplitInput";
 
 const AdjustmentSplitCard = ({ splitList, setSplitList, totalAmount }) => {
   const [userAdjustments, setUserAdjustments] = useState([]);
+  const [totalAdjustment,setTotalAdjustment] = useState(0);
 
   useEffect(() => {
     let tempUserAdjustmentList = [...userAdjustments];
@@ -42,6 +43,13 @@ const AdjustmentSplitCard = ({ splitList, setSplitList, totalAmount }) => {
     setUserAdjustments(newAdjustments);
     event.target.value = adjustmentVal;
   };
+  useEffect(()=>{
+    const totalAdj = userAdjustments.reduce((sum,userAdjustment)=>{
+      return sum + userAdjustment.adjustmentAmount;
+    },0);
+    console.log("sum = "+totalAdj);
+    setTotalAdjustment(totalAdj)
+  },[splitList]);
 
   const calculateAdjustments = () => {
     let totalAdjustments = userAdjustments.reduce(
@@ -65,6 +73,7 @@ const AdjustmentSplitCard = ({ splitList, setSplitList, totalAmount }) => {
     setSplitList(updatedSplitList);
   };
 
+
   const handleUserCardDelete = (deleteUserID) => {
     setSplitList(splitList.filter((user) => user.userId !== deleteUserID));
     setUserAdjustments(
@@ -76,6 +85,30 @@ const AdjustmentSplitCard = ({ splitList, setSplitList, totalAmount }) => {
 
   return (
     <>
+    <Grid item xs={12}>
+        <Box
+          sx={{
+            textAlign: "center",
+            backgroundColor: "f9fafb",
+            border: "1px solid lightgray",
+            borderRadius: "11px",
+            py: 1,
+          }}
+        >
+          <Typography>
+            Specify the percentages that's fair for your situation.
+          </Typography>
+          <Typography sx={{ fontWeight: "bold" }}>
+          Total Adjustments: ₹{totalAdjustment !== null && totalAdjustment !== undefined ? totalAdjustment.toFixed(2) : 0}
+          </Typography>
+            {totalAdjustment > totalAmount ?
+            (<Typography sx={{ color: "red", fontWeight: "bold" }}>
+              Over by : ₹{(totalAdjustment - totalAmount).toFixed(2)}
+            </Typography>)
+            :null
+          }
+        </Box>
+      </Grid>
       {splitList &&
         splitList.map((user) => (
           <Grid item xs={12} md={6} key={user.userId}>
