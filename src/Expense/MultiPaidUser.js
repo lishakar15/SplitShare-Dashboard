@@ -12,20 +12,25 @@ import {
 } from "@mui/material";
 import UserDataCard from "../UserDataCard";
 import { PAID_USER_DATA } from "../data/PaidUsersData";
+import { useAtom, useAtomValue } from 'jotai';
+import { defaultPaidUserAtom } from '../atoms/ExpenseAtom'
+import { paidUsersAtom} from '../atoms/ExpenseAtom';
 
-const MultiPaidUser = ({
-  paidUsers,
-  setPaidUsers,
-  handleChangePayer,
-  defaultPayer,
-}) => {
+const MultiPaidUser = ({setIsMultiPayer}) => {
+
   const [isCustomPaidType, setIsCustomPaidType] = useState(false);
+  const defaultPayer = useAtomValue(defaultPaidUserAtom);
+  const [paidUsers,setPaidUsers] = useAtom(paidUsersAtom);
 
+  const changeToDefaultPayer = (defaultPayer) => {
+    setPaidUsers(defaultPayer ? [defaultPayer] : []);
+    setIsMultiPayer(false);
+  };
   
   const handlePaidTypeChanged = (paidType) => {
     setIsCustomPaidType(paidType === "Custom");
   };
-  const handleUserAmountChange = (amountVal) => {};
+  const handleUserAmountChange = (amountVal) => {}; //Need to do this custom amount update
   const handleUserCardDelete = (deleteUserID) => {
     setPaidUsers(paidUsers.filter((paidUser)=>paidUser.userId !== deleteUserID));
   };
@@ -80,7 +85,7 @@ const MultiPaidUser = ({
           <Typography
             component="a"
             href="#"
-            onClick={() => handleChangePayer(defaultPayer)}
+            onClick={changeToDefaultPayer}
             sx={{ whiteSpace: "nowrap", cursor: "pointer" }}
           >
             Only I Paid

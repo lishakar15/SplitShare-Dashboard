@@ -2,6 +2,10 @@ import React from "react";
 import { GiReceiveMoney } from "react-icons/gi";
 import UserAvatarLabel from "../UserAvatarLabel";
 import { PAID_USER_DATA } from "../data/PaidUsersData";
+import { useAtom, useAtomValue } from 'jotai';
+import { defaultPaidUserAtom } from '../atoms/ExpenseAtom'
+import { paidUsersAtom} from '../atoms/ExpenseAtom';
+import { useEffect } from "react";
 import {
   Grid,
   Typography,
@@ -11,12 +15,23 @@ import {
   MenuItem,
 } from "@mui/material";
 
-const SinglePaidUser = ({
-  paidUsers,
-  handleChangePayer,
-  handleAddPayersButtonClick,
-  defaultPayer,
-}) => {
+const SinglePaidUser = ({setIsMultiPayer}) => {
+
+  const defaultPayer = useAtomValue(defaultPaidUserAtom);
+  const [paidUsers,setPaidUsers] = useAtom(paidUsersAtom);
+
+
+  const handleChangePayer = (changedUser) => {
+    setPaidUsers(changedUser ? [changedUser] : []);
+    setIsMultiPayer(false);
+  };
+
+  const handleAddPayersButtonClick =()=>{
+    setIsMultiPayer(true);
+  }
+  useEffect(()=>{
+    setPaidUsers(defaultPayer? [defaultPayer] : []);
+  },[]);
   return (
     <>
       <Grid  md={5} xs={12} sx={{pl:2}}>

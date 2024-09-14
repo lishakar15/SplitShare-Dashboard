@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 
 import {
@@ -18,7 +18,9 @@ import {
 } from "@mui/material";
 import PaidUsersSection from "./PaidUsersSection";
 import SplitAmountSection from "./SplitAmountSection";
-import { GROUP_MEMBERS_DATA } from "../data/GroupMembersData";
+import { backendService } from "../services/backendServices";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { defaultPaidUserAtom,totalExpenseAmountAtom} from "../atoms/ExpenseAtom";
 
 
 
@@ -30,18 +32,21 @@ function ExpenseDialog({
 }) {
   const [payer, setPayer] = useState(payerName);
   const [receiver, setReceiver] = useState(receiverName);
-  const [totalAmount, setTotalAmount] = useState(100);
+  const [totalAmount, setTotalAmount] = useAtom(totalExpenseAmountAtom)
   const [date, setDate] = useState("");
   const [group, setGroup] = useState("Cognizant Group");
   const [paymentMethod, setPaymentMethod] = useState("Cash");
 
-  const defaultPayer ={
+  const defaultPayer ={ //Need to get it from current logged in user atom
     userId: 101,
     userName: "Lisha",
-    paidAmount:0.00
+    paidAmount:totalAmount
   }
+  const setDefaultPayer = useSetAtom(defaultPaidUserAtom);
+  setDefaultPayer(defaultPayer);
   const handleSave = () => {
     // Handle save logic here
+    //Make API call here
     handleClose();
   };
 
@@ -56,6 +61,15 @@ function ExpenseDialog({
   const handleTotalChange = (newAmount)=>{
     setTotalAmount(newAmount)
   }
+
+  useEffect(()=>{
+    const getDogs = async ()=>{
+      const response = await backendService.getDogsData();
+    console.log("Response  = "+JSON.stringify(response));
+    }
+    getDogs();
+    
+  },[])
 
   return (
     <Dialog open={open} onClose={handleClose}>
@@ -108,7 +122,7 @@ function ExpenseDialog({
             </FormControl>
           </Grid>
           <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
-          <PaidUsersSection totalAmount={totalAmount} defaultPayer={defaultPayer} />
+          <PaidUsersSection totalAmount={totalAmount}/>
           <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
           <SplitAmountSection
             group={group}

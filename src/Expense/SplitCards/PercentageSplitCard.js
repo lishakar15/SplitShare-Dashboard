@@ -4,8 +4,10 @@ import UserDataCard from "../../UserDataCard";
 import CustomSplitInput from "./CustomSplitInput";
 
 const PercentageSplitCard = ({ splitList, setSplitList, totalAmount }) => {
+
   const [userPercentages, setUserPercentages] = useState([]);
   const [totalPercentage, setTotalPercentage] = useState(0);
+  
   useEffect(() => {
     let tempUserPercentageList = [...userPercentages];
 
@@ -32,12 +34,12 @@ const PercentageSplitCard = ({ splitList, setSplitList, totalAmount }) => {
     }
   }, [userPercentages, totalAmount]);
 
-  useEffect(()=>{
-    const totalPercentage = userPercentages.reduce((sum,percentageObj)=>{
+  useEffect(() => {
+    const totalPercentage = userPercentages.reduce((sum, percentageObj) => {
       return sum + percentageObj.percentage;
-    },0);
+    }, 0);
     setTotalPercentage(totalPercentage);
-  },[splitList]);
+  }, [splitList]);
 
   const handleInputChange = (event, userId) => {
     const percentageValue = Math.max(
@@ -98,13 +100,11 @@ const PercentageSplitCard = ({ splitList, setSplitList, totalAmount }) => {
             <Typography sx={{ color: "red", fontWeight: "bold" }}>
               Under by : {100 - totalPercentage}%
             </Typography>
-          ) : (
-            totalPercentage > 100 ?
-            (<Typography sx={{ color: "red", fontWeight: "bold" }}>
+          ) : totalPercentage > 100 ? (
+            <Typography sx={{ color: "red", fontWeight: "bold" }}>
               Over by : {totalPercentage - 100}%
-            </Typography>)
-            :null
-          )}
+            </Typography>
+          ) : null}
         </Box>
       </Grid>
 
