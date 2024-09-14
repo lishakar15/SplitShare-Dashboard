@@ -19,8 +19,8 @@ import {
 import PaidUsersSection from "./PaidUsersSection";
 import SplitAmountSection from "./SplitAmountSection";
 import { backendService } from "../services/backendServices";
-import { useAtom, useAtomValue, useSetAtom } from "jotai";
-import { defaultPaidUserAtom,totalExpenseAmountAtom} from "../atoms/ExpenseAtom";
+import { useAtom, useSetAtom } from "jotai";
+import { defaultPaidUserAtom,totalExpenseAmountAtom,participantShareListAtom} from "../atoms/ExpenseAtom";
 
 
 
@@ -30,9 +30,10 @@ function ExpenseDialog({
   payerName,
   receiverName,
 }) {
+  
+  const [totalAmount, setTotalAmount] = useAtom(totalExpenseAmountAtom)
   const [payer, setPayer] = useState(payerName);
   const [receiver, setReceiver] = useState(receiverName);
-  const [totalAmount, setTotalAmount] = useAtom(totalExpenseAmountAtom)
   const [date, setDate] = useState("");
   const [group, setGroup] = useState("Cognizant Group");
   const [paymentMethod, setPaymentMethod] = useState("Cash");
@@ -42,8 +43,17 @@ function ExpenseDialog({
     userName: "Lisha",
     paidAmount:totalAmount
   }
+  const defaultParticipant= {
+    userId: 101,
+    userName: "Lisha",
+    splitAmount: totalAmount,
+  };
   const setDefaultPayer = useSetAtom(defaultPaidUserAtom);
   setDefaultPayer(defaultPayer);
+
+  const setParticipantShareList = useSetAtom(participantShareListAtom);
+  setParticipantShareList([defaultParticipant]);
+
   const handleSave = () => {
     // Handle save logic here
     //Make API call here
@@ -122,11 +132,10 @@ function ExpenseDialog({
             </FormControl>
           </Grid>
           <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
-          <PaidUsersSection totalAmount={totalAmount}/>
+          <PaidUsersSection/>
           <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
           <SplitAmountSection
             group={group}
-            totalAmount={totalAmount}
           />
           <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
         </Grid>

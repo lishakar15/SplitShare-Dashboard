@@ -4,6 +4,8 @@ import PercentageSplitCard from './PercentageSplitCard';
 import SharesSplitCard from './SharesSplitCard';
 import AdjustmentSplitCard from './AdjustmentSplitCard';
 import ManualSplitCard from './ManualSplitCard';
+import { useAtom,useAtomValue } from "jotai";
+import {totalExpenseAmountAtom,participantShareListAtom} from "../../atoms/ExpenseAtom";
 
 const splitTyprComponenets ={
     Equal:EqualSplitCard,
@@ -13,8 +15,9 @@ const splitTyprComponenets ={
     Manual:ManualSplitCard
 }
 
-const CreateUserSplits = ({splitList,setSplitList,totalAmount,splitType}) => {
-
+const CreateUserSplits = ({splitType}) => {
+  const [splitList,setSplitList] = useAtom(participantShareListAtom);
+  const totalAmount = useAtomValue(totalExpenseAmountAtom);
 
     const SplitComponent = splitTyprComponenets[splitType];
   return (

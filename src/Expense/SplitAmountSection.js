@@ -15,15 +15,14 @@ import { useState } from "react";
 import { GROUP_MEMBERS_DATA } from "../data/GroupMembersData";
 import UserAvatarLabel from "../UserAvatarLabel";
 import CreateUserSplits from "./SplitCards/CreateUserSplits";
+import { useAtom } from "jotai";
+import { participantShareListAtom } from "../atoms/ExpenseAtom";
 
-const SplitAmountSection = ({group, totalAmount}) => {
-  const currentLoggedInUser = {
-    userId: 101,
-    userName: "Lisha",
-    splitAmount: totalAmount,
-  };
+const SplitAmountSection = ({group}) => {
+
   const [splitType, setSplitType] = useState("Equal");
-  const [splitList, setSplitList] = useState([currentLoggedInUser]);
+  const [splitList, setSplitList] = useAtom(participantShareListAtom)
+
   const isSmallScreen = useMediaQuery("(max-width:1200px)");
 
   const handleSplitTypeChange = (newSplitType) => {
@@ -33,7 +32,7 @@ const SplitAmountSection = ({group, totalAmount}) => {
   const handleAddSplit = (newUser) => {
     const isExistingUser = splitList.some((user) => user.userId === newUser.userId);
     if (!isExistingUser) {
-      setSplitList([...splitList, newUser]);
+      setSplitList([...splitList, {...newUser,splitAmount:0}]);
     }
   };
   
@@ -78,12 +77,8 @@ const SplitAmountSection = ({group, totalAmount}) => {
           </Box>
         )}
       </Grid>
-      {/**Need to add validations between total amount and Split amount */}
       <CreateUserSplits
-        splitList={splitList}
-        setSplitList={setSplitList}
         splitType={splitType}
-        totalAmount={Number(totalAmount)}
       />
       <Grid container >
         
@@ -106,7 +101,6 @@ const SplitAmountSection = ({group, totalAmount}) => {
                 <UserAvatarLabel userName={user.userName} size={"xs"} />
               </MenuItem>
             ))}
-            {/* Add other groups */}
           </Select>
         </FormControl>
       </Grid>

@@ -1,10 +1,10 @@
-import { Grid,Box,Typography } from "@mui/material";
-import React, { useEffect,useState } from "react";
+import { Grid, Box, Typography } from "@mui/material";
+import React, { useEffect, useState } from "react";
 import UserDataCard from "../../UserDataCard";
 import CustomSplitInput from "./CustomSplitInput";
 
 const ManualSplitCard = ({ splitList, setSplitList, totalAmount }) => {
-  const [totalSplitAmount,setTotalSplitAmount] = useState(0);
+  const [totalSplitAmount, setTotalSplitAmount] = useState(0);
   useEffect(() => {
     setSplitList(
       splitList.map((user) => {
@@ -18,26 +18,24 @@ const ManualSplitCard = ({ splitList, setSplitList, totalAmount }) => {
     const updatedSplitList = splitList.map((user) => {
       if (user.userId === userId) {
         return { ...user, splitAmount: amountVal ? amountVal : 0 };
-      }
-      else return user;
+      } else return user;
     });
     setSplitList(updatedSplitList);
-    event.target.value=amountVal;
+    event.target.value = amountVal;
   };
-  useEffect(()=>
-  {
-    const splitAmountSum = splitList.reduce((sum,user)=>{
-      return sum+user.splitAmount;
-    },0);
+  useEffect(() => {
+    const splitAmountSum = splitList.reduce((sum, user) => {
+      return sum + user.splitAmount;
+    }, 0);
     setTotalSplitAmount(splitAmountSum);
-  },[splitList]);
+  }, [splitList]);
 
   const handleUserCardDelete = (deleteUserID) => {
     setSplitList(splitList.filter((user) => user.userId !== deleteUserID));
   };
   return (
     <>
-    <Grid item xs={12}>
+      <Grid item xs={12}>
         <Box
           sx={{
             textAlign: "center",
@@ -47,23 +45,22 @@ const ManualSplitCard = ({ splitList, setSplitList, totalAmount }) => {
             py: 1,
           }}
         >
-          <Typography>
-            Specify the percentages that's fair for your situation.
-          </Typography>
+          <Typography>Specify exactly how much each person owes.</Typography>
           <Typography sx={{ fontWeight: "bold" }}>
-          Total Adjustments: ₹{totalSplitAmount !== null && totalSplitAmount !== undefined ? totalSplitAmount.toFixed(2) : 0}
+            Total Adjustments: ₹
+            {totalSplitAmount !== null && totalSplitAmount !== undefined
+              ? totalSplitAmount.toFixed(2)
+              : 0}
           </Typography>
           {totalSplitAmount < totalAmount ? (
             <Typography sx={{ color: "red", fontWeight: "bold" }}>
-              Under by : ₹{(totalAmount-totalSplitAmount).toFixed(2)}
+              Under by : ₹{(totalAmount - totalSplitAmount).toFixed(2)}
             </Typography>
-          ) : (
-            totalSplitAmount > totalAmount ?
-            (<Typography sx={{ color: "red", fontWeight: "bold" }}>
-              Over by : ₹{ (totalSplitAmount- totalAmount).toFixed(2)}
-            </Typography>)
-            :null
-          )}
+          ) : totalSplitAmount > totalAmount ? (
+            <Typography sx={{ color: "red", fontWeight: "bold" }}>
+              Over by : ₹{(totalSplitAmount - totalAmount).toFixed(2)}
+            </Typography>
+          ) : null}
         </Box>
       </Grid>
       {splitList &&
