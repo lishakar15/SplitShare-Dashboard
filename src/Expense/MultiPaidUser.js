@@ -11,32 +11,58 @@ import {
   MenuItem,
 } from "@mui/material";
 import UserDataCard from "../UserDataCard";
-import { PAID_USER_DATA } from "../data/PaidUsersData";
-import { useAtom, useAtomValue } from 'jotai';
-import { defaultPaidUserAtom } from '../atoms/ExpenseAtom'
-import { paidUsersAtom} from '../atoms/ExpenseAtom';
+import { useAtom, useAtomValue } from "jotai";
+import { defaultPaidUserAtom } from "../atoms/ExpenseAtom";
+import { paidUsersAtom } from "../atoms/ExpenseAtom";
+import { totalExpenseAmountAtom } from "../atoms/ExpenseAtom";
+import { GROUP_MEMBERS_DATA } from "../data/GroupMembersData";
 
-const MultiPaidUser = ({setIsMultiPayer}) => {
-
+const MultiPaidUser = ({ setIsMultiPayer }) => {
   const [isCustomPaidType, setIsCustomPaidType] = useState(false);
   const defaultPayer = useAtomValue(defaultPaidUserAtom);
-  const [paidUsers,setPaidUsers] = useAtom(paidUsersAtom);
+  const [paidUsers, setPaidUsers] = useAtom(paidUsersAtom);
+  const totalAmount = useAtomValue(totalExpenseAmountAtom);
 
-  const changeToDefaultPayer = (defaultPayer) => {
+  const changeToDefaultPayer = () => {
     setPaidUsers(defaultPayer ? [defaultPayer] : []);
     setIsMultiPayer(false);
   };
-  
+
   const handlePaidTypeChanged = (paidType) => {
     setIsCustomPaidType(paidType === "Custom");
   };
-  const handleUserAmountChange = (amountVal) => {}; //Need to do this custom amount update
+  const handleUserAmountChange = (amountVal,userId) => {
+    setPaidUsers(paidUsers.map((user)=>(user.userId===userId)? {...user,paidAmount:amountVal}:{...user}))
+  }; 
   const handleUserCardDelete = (deleteUserID) => {
-    setPaidUsers(paidUsers.filter((paidUser)=>paidUser.userId !== deleteUserID));
+    setPaidUsers(
+      paidUsers.filter((paidUser) => paidUser.userId !== deleteUserID)
+    );
   };
   const handleAddPayers = (newUser) => {
-    setPaidUsers([...paidUsers, newUser]);
+    const isExistingUser = paidUsers.some(
+      (user) => user.userId === newUser.userId
+    );
+    if (!isExistingUser) {
+      const newPayer = { ...newUser, paidAmount: 0 };
+      setPaidUsers([...paidUsers, newPayer]);
+    }
   };
+  const calculateEqualPayment = () => {
+    console.log("doClacukate")
+    const averageAmount =
+      totalAmount > 0 && paidUsers && paidUsers.length > 0
+        ? totalAmount / paidUsers.length
+        : 0;
+    setPaidUsers(
+      paidUsers.map((user) => ({ ...user, paidAmount: averageAmount }))
+    );
+  };
+
+  useEffect(() => {
+    calculateEqualPayment();
+  }, [paidUsers.length,totalAmount,isCustomPaidType]);
+  
   return (
     <>
       <Grid item md={5} xs={12}>
@@ -77,8 +103,10 @@ const MultiPaidUser = ({setIsMultiPayer}) => {
               value={""}
               onChange={(e) => handleAddPayers(e.target.value)}
             >
-              {PAID_USER_DATA.map((user)=>(
-                 <MenuItem key={user.userId} value={user}><UserAvatarLabel userName={user.userName} size="xs"/></MenuItem>
+              {GROUP_MEMBERS_DATA.map((user) => (
+                <MenuItem key={user.userId} value={user}>
+                  <UserAvatarLabel userName={user.userName} size="xs" />
+                </MenuItem>
               ))}
             </Select>
           </FormControl>
@@ -94,7 +122,7 @@ const MultiPaidUser = ({setIsMultiPayer}) => {
       </Grid>
       <Grid item xs={12} gap={1}>
         {paidUsers.map((paidUser) => (
-          <Box sx={{mb:1}}>
+          <Box sx={{ mb: 1 }}>
             <UserDataCard
               amount={paidUser.paidAmount}
               userName={paidUser.userName}

@@ -1,10 +1,9 @@
 import React from "react";
 import { GiReceiveMoney } from "react-icons/gi";
 import UserAvatarLabel from "../UserAvatarLabel";
-import { PAID_USER_DATA } from "../data/PaidUsersData";
-import { useAtom, useAtomValue } from 'jotai';
-import { defaultPaidUserAtom } from '../atoms/ExpenseAtom'
-import { paidUsersAtom} from '../atoms/ExpenseAtom';
+import { useAtom, useAtomValue } from "jotai";
+import { defaultPaidUserAtom } from "../atoms/ExpenseAtom";
+import { paidUsersAtom } from "../atoms/ExpenseAtom";
 import { useEffect } from "react";
 import {
   Grid,
@@ -14,27 +13,33 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import { GROUP_MEMBERS_DATA } from "../data/GroupMembersData";
 
-const SinglePaidUser = ({setIsMultiPayer}) => {
-
+const SinglePaidUser = ({ setIsMultiPayer }) => {
   const defaultPayer = useAtomValue(defaultPaidUserAtom);
-  const [paidUsers,setPaidUsers] = useAtom(paidUsersAtom);
-
+  const [paidUsers, setPaidUsers] = useAtom(paidUsersAtom);
 
   const handleChangePayer = (changedUser) => {
-    setPaidUsers(changedUser ? [changedUser] : []);
+    
+    if(changedUser !== null)
+      {
+        setPaidUsers([{ ...changedUser, paidAmount: 0 }]);
+      }
+      else{
+        setPaidUsers([])
+      }
     setIsMultiPayer(false);
   };
 
-  const handleAddPayersButtonClick =()=>{
+  const handleAddPayersButtonClick = () => {
     setIsMultiPayer(true);
-  }
-  useEffect(()=>{
-    setPaidUsers(defaultPayer? [defaultPayer] : []);
-  },[]);
+  };
+  useEffect(() => {
+    setPaidUsers(defaultPayer ? [defaultPayer] : []);
+  }, []);
   return (
     <>
-      <Grid  md={5} xs={12} sx={{pl:2}}>
+      <Grid md={5} xs={12} sx={{ pl: 2 }}>
         <Box
           sx={{
             display: "flex",
@@ -47,14 +52,14 @@ const SinglePaidUser = ({setIsMultiPayer}) => {
           {paidUsers.length > 0 ? (
             <UserAvatarLabel userName={paidUsers[0].userName} size={"xs"} />
           ) : (
-              <Typography sx={{ whiteSpace: "nowrap", color: "red" }}>
-                Non one
-              </Typography>
+            <Typography sx={{ whiteSpace: "nowrap", color: "red" }}>
+              Non one
+            </Typography>
           )}
         </Box>
       </Grid>
 
-      <Grid  md={7} xs={12} sx={{pl:2}}>
+      <Grid md={7} xs={12} sx={{ pl: 2 }}>
         <Box
           sx={{
             display: "flex",
@@ -89,9 +94,11 @@ const SinglePaidUser = ({setIsMultiPayer}) => {
                   value={""}
                   onChange={(e) => handleChangePayer(e.target.value)}
                 >
-                  {PAID_USER_DATA.map((user)=>(
-                 <MenuItem key={user.userId} value={user}><UserAvatarLabel userName={user.userName} size="xs"/></MenuItem>
-              ))}
+                  {GROUP_MEMBERS_DATA.map((user) => (
+                    <MenuItem key={user.userId} value={user}>
+                      <UserAvatarLabel userName={user.userName} size="xs" />
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
               <Typography
@@ -106,7 +113,7 @@ const SinglePaidUser = ({setIsMultiPayer}) => {
           )}
         </Box>
       </Grid>
-      </>
+    </>
   );
 };
 

@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import SinglePaidUser from "./SinglePaidUser";
 import MultiPaidUser from "./MultiPaidUser";
 
-const PaidUsersSection = ({ totalAmount }) => {
+const PaidUsersSection = () => {
   const [isMultiPayer, setIsMultiPayer] = useState(false);
 
   return (

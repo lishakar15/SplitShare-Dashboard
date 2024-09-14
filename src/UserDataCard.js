@@ -47,7 +47,7 @@ const UserDataCard = ({
                 },
               }}
               onChange={(e) => setAmountVal(e.target.value)}
-              onBlur={() => handleUserAmountChange(amountVal)}
+              onBlur={() => handleUserAmountChange(amountVal,userId)}
               sx={{ width: "130px" }}
             />
           ) : (
