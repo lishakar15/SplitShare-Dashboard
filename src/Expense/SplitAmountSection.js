@@ -67,11 +67,11 @@ const SplitAmountSection = ({group}) => {
               onChange={(e) => handleSplitTypeChange(e.target.value)}
               aria-label="Platform"
             >
-              <ToggleButton value="Equal">Equal</ToggleButton>
-              <ToggleButton value="Percentage">Percentage</ToggleButton>
-              <ToggleButton value="Shares">Shares</ToggleButton>
-              <ToggleButton value="Adjustment">Adjustment</ToggleButton>
-              <ToggleButton value="Manual">Manual</ToggleButton>
+              <ToggleButton value="EQUAL">Equal</ToggleButton>
+              <ToggleButton value="PERCENTAGE">Percentage</ToggleButton>
+              <ToggleButton value="SHARES">Shares</ToggleButton>
+              <ToggleButton value="ADJUSTMENT">Adjustment</ToggleButton>
+              <ToggleButton value="MANUAL">Manual</ToggleButton>
             </ToggleButtonGroup>
           </Box>
         )}

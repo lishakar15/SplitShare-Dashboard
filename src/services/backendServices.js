@@ -8,7 +8,7 @@ export const backendService = {
         "http://localhost:8081/expense/add-expense",
         expenseRequest
       );
-      if (response.status === 201) {
+      if (response.status === 200) {
         isExpenseCreated = true;
       }
     } catch (err) {
