@@ -1,16 +1,20 @@
-import axios from 'axios';
+import axios from "axios";
 export const backendService = {
-    
-     async getDogsData () {
-        try {
-          const response = await axios.get("https://dog.ceo/api/breeds/list/all");
-          console.log("my response "+response)
-          if (response.status === 200) {
-            return response.data;
-          }
-        } catch (error) {
-          console.error("Error fetching dog breeds:", error);
-          throw error;
-        }
-      },
-    };
+
+  async saveExpenseDetails(expenseRequest) {
+    let isExpenseCreated = false;
+    try {
+      const response = await axios.post(
+        "http://localhost:8081/expense/add-expense",
+        expenseRequest
+      );
+      if (response.status === 201) {
+        isExpenseCreated = true;
+      }
+    } catch (err) {
+      isExpenseCreated = false;
+      console.log("Error occured while saving Expense details " + err);
+    }
+    return isExpenseCreated;
+  },
+};

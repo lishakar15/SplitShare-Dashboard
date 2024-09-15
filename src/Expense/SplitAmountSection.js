@@ -11,17 +11,16 @@ import {
   FormControl,
   MenuItem,
 } from "@mui/material";
-import { useState } from "react";
 import { GROUP_MEMBERS_DATA } from "../data/GroupMembersData";
 import UserAvatarLabel from "../UserAvatarLabel";
 import CreateUserSplits from "./SplitCards/CreateUserSplits";
 import { useAtom } from "jotai";
-import { participantShareListAtom } from "../atoms/ExpenseAtom";
+import { participantShareListAtom, splitTypeAtom } from "../atoms/ExpenseAtom";
 
 const SplitAmountSection = ({group}) => {
 
-  const [splitType, setSplitType] = useState("Equal");
-  const [splitList, setSplitList] = useAtom(participantShareListAtom)
+  const [splitType, setSplitType] = useAtom(splitTypeAtom);
+  const [splitList, setSplitList] = useAtom(participantShareListAtom);
 
   const isSmallScreen = useMediaQuery("(max-width:1200px)");
 
@@ -32,7 +31,7 @@ const SplitAmountSection = ({group}) => {
   const handleAddSplit = (newUser) => {
     const isExistingUser = splitList.some((user) => user.userId === newUser.userId);
     if (!isExistingUser) {
-      setSplitList([...splitList, {...newUser,splitAmount:0}]);
+      setSplitList([...splitList, {...newUser,shareAmount:0}]);
     }
   };
   
@@ -52,11 +51,11 @@ const SplitAmountSection = ({group}) => {
               value={splitType}
               onChange={(e) => handleSplitTypeChange(e.target.value)}
             >
-              <MenuItem value="Equal">Equal</MenuItem>
-              <MenuItem value="Percentage">Percentage</MenuItem>
-              <MenuItem value="Shares">Shares</MenuItem>
-              <MenuItem value="Adjustment">Adjustment</MenuItem>
-              <MenuItem value="Manual">Manual</MenuItem>
+              <MenuItem value="EQUAL">Equal</MenuItem>
+              <MenuItem value="PERCENTAGE">Percentage</MenuItem>
+              <MenuItem value="SHARES">Shares</MenuItem>
+              <MenuItem value="ADJUSTMENT">Adjustment</MenuItem>
+              <MenuItem value="MANUAL">Manual</MenuItem>
             </Select>
           </FormControl>
         ) : (

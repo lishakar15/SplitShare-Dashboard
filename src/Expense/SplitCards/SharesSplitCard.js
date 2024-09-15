@@ -65,7 +65,7 @@ const SharesSplitCard = ({ splitList, setSplitList, totalAmount }) => {
       );
       return {
         ...user,
-        splitAmount: userShare ? userShare.shares * costOfSingleShare : 0,
+        shareAmount: userShare ? userShare.shares * costOfSingleShare : 0,
       };
     });
 
@@ -105,7 +105,7 @@ const SharesSplitCard = ({ splitList, setSplitList, totalAmount }) => {
             <UserDataCard
               userId={user.userId}
               userName={user.userName}
-              amount={user.splitAmount}
+              amount={user.shareAmount}
               handleUserCardDelete={handleUserCardDelete}
             />
             <CustomSplitInput

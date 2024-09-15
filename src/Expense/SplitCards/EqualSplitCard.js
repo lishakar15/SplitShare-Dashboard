@@ -9,7 +9,7 @@ const EqualSplitCard = ({ splitList, setSplitList, totalAmount }) => {
         ? totalAmount / splitList.length
         : 0;
     setSplitList(
-      splitList.map((user) => ({ ...user, splitAmount: averageAmount }))
+      splitList.map((user) => ({ ...user, shareAmount: averageAmount }))
     );
   };
 
@@ -41,7 +41,7 @@ const EqualSplitCard = ({ splitList, setSplitList, totalAmount }) => {
             <UserDataCard
               userId={user.userId}
               userName={user.userName}
-              amount={user.splitAmount}
+              amount={user.shareAmount}
               handleUserCardDelete={handleUserCardDelete}
             />
           </Grid>

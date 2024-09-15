@@ -8,7 +8,7 @@ const ManualSplitCard = ({ splitList, setSplitList, totalAmount }) => {
   useEffect(() => {
     setSplitList(
       splitList.map((user) => {
-        return { ...user, splitAmount: 0 };
+        return { ...user, shareAmount: 0 };
       })
     );
   }, []);
@@ -17,7 +17,7 @@ const ManualSplitCard = ({ splitList, setSplitList, totalAmount }) => {
     const amountVal = Number(event.target.value);
     const updatedSplitList = splitList.map((user) => {
       if (user.userId === userId) {
-        return { ...user, splitAmount: amountVal ? amountVal : 0 };
+        return { ...user, shareAmount: amountVal ? amountVal : 0 };
       } else return user;
     });
     setSplitList(updatedSplitList);
@@ -25,7 +25,7 @@ const ManualSplitCard = ({ splitList, setSplitList, totalAmount }) => {
   };
   useEffect(() => {
     const splitAmountSum = splitList.reduce((sum, user) => {
-      return sum + user.splitAmount;
+      return sum + user.shareAmount;
     }, 0);
     setTotalSplitAmount(splitAmountSum);
   }, [splitList]);
@@ -47,7 +47,7 @@ const ManualSplitCard = ({ splitList, setSplitList, totalAmount }) => {
         >
           <Typography>Specify exactly how much each person owes.</Typography>
           <Typography sx={{ fontWeight: "bold" }}>
-            Total Adjustments: ₹
+            Total: ₹
             {totalSplitAmount !== null && totalSplitAmount !== undefined
               ? totalSplitAmount.toFixed(2)
               : 0}
@@ -69,7 +69,7 @@ const ManualSplitCard = ({ splitList, setSplitList, totalAmount }) => {
             <UserDataCard
               userId={user.userId}
               userName={user.userName}
-              amount={user.splitAmount}
+              amount={user.shareAmount}
               handleUserCardDelete={handleUserCardDelete}
             />
             <CustomSplitInput

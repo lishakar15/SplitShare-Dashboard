@@ -66,7 +66,7 @@ const AdjustmentSplitCard = ({ splitList, setSplitList, totalAmount }) => {
       );
       return {
         ...user,
-        splitAmount: equalSharePerUser + userAdjustmentObj.adjustmentAmount,
+        shareAmount: equalSharePerUser + userAdjustmentObj.adjustmentAmount,
       };
     });
 
@@ -117,7 +117,7 @@ const AdjustmentSplitCard = ({ splitList, setSplitList, totalAmount }) => {
             <UserDataCard
               userId={user.userId}
               userName={user.userName}
-              amount={user.splitAmount}
+              amount={user.shareAmount}
               handleUserCardDelete={handleUserCardDelete}
             />
             <CustomSplitInput

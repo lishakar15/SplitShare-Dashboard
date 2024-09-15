@@ -62,7 +62,7 @@ const PercentageSplitCard = ({ splitList, setSplitList, totalAmount }) => {
       );
       return {
         ...user,
-        splitAmount: (totalAmount * userPercentage.percentage) / 100,
+        shareAmount: (totalAmount * userPercentage.percentage) / 100,
       };
     });
 
@@ -114,7 +114,7 @@ const PercentageSplitCard = ({ splitList, setSplitList, totalAmount }) => {
             <UserDataCard
               userId={user.userId}
               userName={user.userName}
-              amount={user.splitAmount}
+              amount={user.shareAmount}
               handleUserCardDelete={handleUserCardDelete}
             />
             <CustomSplitInput
