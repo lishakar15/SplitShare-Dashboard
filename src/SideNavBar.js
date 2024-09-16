@@ -11,9 +11,16 @@ import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
 import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
+import { useNavigate } from 'react-router-dom';
 
 
 const SideNavBar = () => {
+  const navigate = useNavigate();
+  const handleNavigation = () =>
+  {
+    console.log("Navigate clicked")
+    navigate("/groups")
+  }
       return (
         <>
             <Box sx={{ mx:"10px", width: '100%', maxWidth: 360}}>
