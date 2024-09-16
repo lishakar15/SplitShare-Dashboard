@@ -51,7 +51,8 @@ export default function AvatarGenerator({ userName,size }) {
         sx={{
           ...stringAvatar(userName).sx,
           ...(size === "md" && { width: 56, height: 56 }),
-          ...(size === "xs" && { width: 28, height: 28 })
+          ...(size === "xs" && { width: 28, height: 28 }),
+          ...(size === "lg" && { width: 84, height: 84 })
         }}
       />
     </>
