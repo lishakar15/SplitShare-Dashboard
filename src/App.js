@@ -5,7 +5,7 @@ import Home from "./Home";
 import Activity from "./Activity";
 import Friends from "./Friends";
 import Groups from "./Group/Groups";
-import Expense from "./Expenses";
+import Expense from "./Expense/Expenses";
 import PageNotFound from "./PageNotFound";
 import SideNavBar from "./SideNavBar";
 import Box from "@mui/material/Box";

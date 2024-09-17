@@ -1,18 +1,15 @@
-import React from "react";
+import React from 'react';
 import { AvatarGroup, Box, Card, CardContent, Typography } from "@mui/material";
-import AvatarGenerator from "./AvatarGenerator";
-import { GROUP_DATA } from "./data/groupsData";
-import { GROUP_OWE_SUMMARY } from "./data/GroupOwedData";
-import GroupOweSummaryChip from "./Group/GroupOweSummaryChip";
-import SettleUpButton from "./SettleUpButton";
-import AddExpenseButton from "./Expense/AddExpenseButton";
+import AvatarGenerator from "../AvatarGenerator";
+import { GROUP_OWE_SUMMARY } from "../data/GroupOwedData";
+import GroupOweSummaryChip from "../Group/GroupOweSummaryChip";
+import SettleUpButton from "../SettleUpButton";
+import AddExpenseButton from "./Create Expense/AddExpenseButton";
 
-const Expense = ({ group }) => {
-  group = GROUP_DATA[2];
-
+const ExpenseGroupInfoCard = ({group}) => {
   return (
     <>
-      <Card sx={{ my: 2, border: "1px solid #e5e7eb" }}>
+    <Card sx={{ my: 2, border: "1px solid #e5e7eb" }}>
         <>
           <CardContent
             sx={{
@@ -63,7 +60,7 @@ const Expense = ({ group }) => {
         </>
       </Card>
     </>
-  );
-};
+  )
+}
 
-export default Expense;
+export default ExpenseGroupInfoCard
