@@ -18,7 +18,7 @@ import {
 } from "@mui/material";
 import PaidUsersSection from "./PaidUsersSection";
 import SplitAmountSection from "./SplitAmountSection";
-import { backendService } from "../services/backendServices";
+import { backendService } from "../../services/backendServices";
 import { useAtom } from "jotai";
 import {
   defaultPaidUserAtom,
@@ -26,7 +26,7 @@ import {
   participantShareListAtom,
   paidUsersAtom,
   splitTypeAtom,
-} from "../atoms/ExpenseAtom";
+} from "../../atoms/ExpenseAtom";
 
 function ExpenseDialog({ open, onClose, payerName, receiverName }) {
   const [totalAmount, setTotalAmount] = useAtom(totalExpenseAmountAtom);

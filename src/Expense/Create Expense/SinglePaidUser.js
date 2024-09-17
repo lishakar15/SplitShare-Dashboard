@@ -1,9 +1,9 @@
 import React from "react";
 import { GiReceiveMoney } from "react-icons/gi";
-import UserAvatarLabel from "../UserAvatarLabel";
+import UserAvatarLabel from "../../UserAvatarLabel";
 import { useAtom, useAtomValue } from "jotai";
-import { defaultPaidUserAtom } from "../atoms/ExpenseAtom";
-import { paidUsersAtom } from "../atoms/ExpenseAtom";
+import { defaultPaidUserAtom } from "../../atoms/ExpenseAtom";
+import { paidUsersAtom } from "../../atoms/ExpenseAtom";
 import { useEffect } from "react";
 import {
   Grid,
@@ -13,7 +13,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { GROUP_MEMBERS_DATA } from "../data/GroupMembersData";
+import { GROUP_MEMBERS_DATA } from "../../data/GroupMembersData";
 
 const SinglePaidUser = ({ setIsMultiPayer }) => {
   const defaultPayer = useAtomValue(defaultPaidUserAtom);
