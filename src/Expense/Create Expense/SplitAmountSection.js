@@ -11,11 +11,11 @@ import {
   FormControl,
   MenuItem,
 } from "@mui/material";
-import { GROUP_MEMBERS_DATA } from "../data/GroupMembersData";
-import UserAvatarLabel from "../UserAvatarLabel";
-import CreateUserSplits from "./SplitCards/CreateUserSplits";
+import { GROUP_MEMBERS_DATA } from "../../data/GroupMembersData";
+import UserAvatarLabel from "../../UserAvatarLabel";
+import CreateUserSplits from "../SplitCards/CreateUserSplits";
 import { useAtom } from "jotai";
-import { participantShareListAtom, splitTypeAtom } from "../atoms/ExpenseAtom";
+import { participantShareListAtom, splitTypeAtom } from "../../atoms/ExpenseAtom";
 
 const SplitAmountSection = ({group}) => {
 
