@@ -5,6 +5,7 @@ import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { getSplitTypeIcon, getSplitTypeText } from "./SplitTypeService";
+import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
 import {
   AvatarGroup,
   Box,
@@ -21,16 +22,18 @@ import { useTheme } from "@mui/material/styles";
 import ExpenseOweSummaryChip from "./ExpenseOweSummaryChip";
 import ExpenseSummary from "./ExpenseSummary";
 import TimelineIcon from "@mui/icons-material/Timeline";
-import InsertChartIcon from "@mui/icons-material/InsertChart";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import CommentBox from "./CommentBox";
+import CommentSection from "./CommentSection";
+import ExpenseDialog from "./Create Expense/ExpenseDialog";
 
 const ExpenseList = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
 
-  const handleModifyExpense = () => {
-    alert("modify expense");
+  const handleModifyExpense = (expenseId) => {
+
+    alert("clicked");
+    <ExpenseDialog/>
   };
 
   return (
@@ -120,7 +123,7 @@ const ExpenseList = () => {
                   ml: 4,
                 }}
               >
-                <ModeEditOutlineOutlinedIcon onClick={handleModifyExpense} />
+                <ModeEditOutlineOutlinedIcon onClick={() => handleModifyExpense(expense.expenseId)} />
               </Box>
             </AccordionSummary>
             <AccordionDetails>
@@ -135,19 +138,20 @@ const ExpenseList = () => {
                       gap: 1,
                     }}
                   >
-                    <InsertChartIcon />
+                    <InsertChartOutlinedIcon />
                     Summary
                   </Typography>
                   <Box
                     sx={{
                       p: 1,
                       border: "1px solid lightgray",
-                      borderRadius: "8px",
+                      borderRadius: 1,
                       bgcolor: "#f9fafb",
+                      my:1
                     }}
                   >
                     <Typography
-                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      sx={{ display: "flex", alignItems: "center", gap: 1}}
                     >
                       <SwapHorizIcon />
                       Split
@@ -178,7 +182,7 @@ const ExpenseList = () => {
                   </Typography>
                 </Grid>
               </Grid>
-              <CommentBox/>
+              <CommentSection expenseId={expense.expenseId}/>
             </AccordionDetails>
           </Accordion>
         ))

@@ -1,19 +1,52 @@
-import { Box, Button, TextField } from "@mui/material";
 import React, { useState } from "react";
+import { TextField, Box, Button } from "@mui/material";
 
-const CommentBox = ({commentsList}) => {
+function CommentBox({ saveComments }) {
   const [commentText, setCommentText] = useState(null);
+
+  const handlePostComment = () => {
+    saveComments(commentText);
+  };
+
   return (
-    <Box sx={{display:"flex", gap:2}}>
+    <Box
+      sx={{
+        display: "flex",
+        alignItems: "center",
+        width: "100%",
+        py: 0.5,
+        backgroundColor: "#fff",
+        gap: 1.5,
+        mt: 1,
+      }}
+    >
       <TextField
+        variant="outlined"
+        placeholder="Add your comment..."
         fullWidth
-        type="text"
         value={commentText}
-        onChange={(e) => e.target.value}
+        onChange={(e) => setCommentText(e.target.value)}
+        sx={{
+          "& .MuiOutlinedInput-root": {
+            borderRadius: "16px",
+          },
+        }}
       />
-      <Button variant="contained" color="primary" sx={{borderRadius:3}} my={1}> Post </Button>
+      <Button
+        variant="contained"
+        size="large"
+        onClick={handlePostComment}
+        sx={{
+          textTransform: "none",
+          bgcolor: "#e0e7ff",
+          color: "#4338ca",
+          borderRadius: 2,
+        }}
+      >
+        Post
+      </Button>
     </Box>
   );
-};
+}
 
 export default CommentBox;

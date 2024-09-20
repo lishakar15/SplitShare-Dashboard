@@ -1,6 +1,7 @@
 export const EXPENSE_DATA = [
   {
     groupId: 1,
+    expenseId: 1,
     paidUsers: [
       {
         userId: 103,
@@ -44,6 +45,7 @@ export const EXPENSE_DATA = [
   },
   {
     groupId: 1,
+    expenseId: 2,
     paidUsers: [
       {
         userId: 101,
@@ -57,7 +59,7 @@ export const EXPENSE_DATA = [
     createDate: null,
     lastUpdateDate: null,
     category: "Party",
-    splitType: "EQUAL",
+    splitType: "PERCENTAGE",
     createdBy: 1,
     participantShareList: [
       {
