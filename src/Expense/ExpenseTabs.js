@@ -8,8 +8,10 @@ import TabPanel from "@mui/lab/TabPanel";
 import AttachMoneyIcon from "@mui/icons-material/AttachMoney";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import PeopleTwoToneIcon from "@mui/icons-material/PeopleTwoTone";
+import PaymentIcon from '@mui/icons-material/Payment';
+import ExpenseList from "./ExpenseList";
 const ExpenseTabs = () => {
-  const [value, setValue] = useState("balances");
+  const [value, setValue] = useState("expenses");
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -27,9 +29,15 @@ const ExpenseTabs = () => {
           }}
         >
           <Tab
+            icon={<PaymentIcon />}
+            label="Expenses"
+            value="expenses"
+            iconPosition="start"
+          />
+           <Tab
             icon={<AttachMoneyIcon />}
-            label="Balances"
-            value="balances"
+            label="Settlements"
+            value="settlements"
             iconPosition="start"
           />
           <Tab
@@ -46,9 +54,10 @@ const ExpenseTabs = () => {
           />
         </TabList>
       </Box>
-      <TabPanel value="balances">Balance Tab</TabPanel>
-      <TabPanel value="activity">Activity Tab</TabPanel>
-      <TabPanel value="members">Members Tab</TabPanel>
+      <TabPanel sx ={{p:0,mt:2}} value="expenses"><ExpenseList/></TabPanel>
+      <TabPanel value="settlements">settlements Tab</TabPanel>
+      <TabPanel value="activity">activity Tab</TabPanel>
+      <TabPanel value="members">members Tab</TabPanel>
     </TabContext>
   );
 };
