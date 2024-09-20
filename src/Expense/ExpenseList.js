@@ -4,7 +4,15 @@ import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { AvatarGroup, Box, Chip, useMediaQuery } from "@mui/material";
+import { getSplitTypeIcon, getSplitTypeText } from "./SplitTypeService";
+import {
+  AvatarGroup,
+  Box,
+  Chip,
+  Divider,
+  Grid,
+  useMediaQuery,
+} from "@mui/material";
 import { EXPENSE_DATA } from "../data/ExpenseData";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AvatarGenerator from "../AvatarGenerator";
@@ -12,6 +20,10 @@ import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutl
 import { useTheme } from "@mui/material/styles";
 import ExpenseOweSummaryChip from "./ExpenseOweSummaryChip";
 import ExpenseSummary from "./ExpenseSummary";
+import TimelineIcon from "@mui/icons-material/Timeline";
+import InsertChartIcon from "@mui/icons-material/InsertChart";
+import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
+import CommentBox from "./CommentBox";
 
 const ExpenseList = () => {
   const theme = useTheme();
@@ -32,14 +44,16 @@ const ExpenseList = () => {
                 sx={{
                   display: "flex",
                   justifyContent: "space-between",
-                  alignItems: isSmallScreen ? "flex-start":"center",
+                  alignItems: isSmallScreen ? "flex-start" : "center",
                   width: "100%",
                   flexDirection: isSmallScreen ? "column" : "row",
-                  gap: isSmallScreen ? 2 : ""
+                  gap: isSmallScreen ? 2 : "",
                 }}
               >
                 <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography sx={{whiteSpace:"nowrap"}}>{expense.expenseDescription}</Typography>
+                  <Typography sx={{ whiteSpace: "nowrap" }}>
+                    {expense.expenseDescription}
+                  </Typography>
                   <KeyboardArrowDownIcon />
                   <Chip
                     label={"🎬 " + expense.category}
@@ -48,7 +62,7 @@ const ExpenseList = () => {
                     sx={{ ml: 1 }}
                   />
                 </Box>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2}}>
+                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box sx={{ display: "flex", flexDirection: "column" }}>
                     <Box sx={{ display: "flex", gap: 1 }}>
                       <AvatarGroup total={expense.paidUsers.length} max={4}>
@@ -85,8 +99,16 @@ const ExpenseList = () => {
                     </Box>
                   </Box>
 
-                  <Typography sx={{ whiteSpace: "nowrap" }}>
-                    = {expense.participantShareList.length}
+                  <Typography
+                    sx={{
+                      whiteSpace: "nowrap",
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    {getSplitTypeIcon(expense.splitType)}
+                    {expense.participantShareList.length}
                   </Typography>
                 </Box>
               </Box>
@@ -102,7 +124,61 @@ const ExpenseList = () => {
               </Box>
             </AccordionSummary>
             <AccordionDetails>
-             <ExpenseSummary expense={expense}/>
+              <Divider sx={{ mb: 2 }} />
+              <Grid container spacing={2}>
+                <Grid item xs={12} sm={6}>
+                  <Typography
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <InsertChartIcon />
+                    Summary
+                  </Typography>
+                  <Box
+                    sx={{
+                      p: 1,
+                      border: "1px solid lightgray",
+                      borderRadius: "8px",
+                      bgcolor: "#f9fafb",
+                    }}
+                  >
+                    <Typography
+                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                    >
+                      <SwapHorizIcon />
+                      Split
+                      <Typography sx={{ fontWeight: "bold" }}>
+                        ₹{expense.totalAmount.toFixed(2)}{" "}
+                        {getSplitTypeText(expense.splitType)}{" "}
+                      </Typography>
+                      between
+                      <Typography sx={{ fontWeight: "bold" }}>
+                        {expense.participantShareList.length} people
+                      </Typography>
+                    </Typography>
+                  </Box>
+
+                  <ExpenseSummary expense={expense} />
+                </Grid>
+                <Grid item xs={12} sm={6}>
+                  <Typography
+                    sx={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <TimelineIcon />
+                    Activities
+                  </Typography>
+                </Grid>
+              </Grid>
+              <CommentBox/>
             </AccordionDetails>
           </Accordion>
         ))

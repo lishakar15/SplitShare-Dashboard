@@ -7,6 +7,8 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Paper from "@mui/material/Paper";
+import UserAvatarLabel from "../UserAvatarLabel";
+import { Typography } from "@mui/material";
 
 export default function ExpenseSummary({ expense }) {
   const [users, setUsers] = useState([]);
@@ -38,26 +40,32 @@ export default function ExpenseSummary({ expense }) {
     return participant ? participant.shareAmount : 0;
   };
   const calculateUserBalance = (userId) => {
-    return getUserPaidAmount(userId) - getUserShareAmount(userId);
+     const balance = getUserPaidAmount(userId) - getUserShareAmount(userId);
+     if(balance>0)
+     {
+      return <Typography sx={{color:"#4caf50"}}>₹50.00</Typography>
+     }
+
+     return <Typography sx={{color:"red"}}>- ₹50.00</Typography>
   };
   return (
-    <TableContainer component={Paper}>
+    <TableContainer component={Paper} >
       <Table aria-label="spanning table">
         <TableHead>
           <TableRow>
-            <TableCell>Users</TableCell>
-            <TableCell align="right">Paid</TableCell>
-            <TableCell align="right">Owed</TableCell>
-            <TableCell align="right">Balance</TableCell>
+            <TableCell sx={{fontWeight:"bold"}}>Users</TableCell>
+            <TableCell sx={{fontWeight:"bold"}} align="right">Paid</TableCell>
+            <TableCell sx={{fontWeight:"bold"}} align="right">Owed</TableCell>
+            <TableCell sx={{fontWeight:"bold"}} align="right">Balance</TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
           {users.map((user) => (
             <TableRow key={user.userId}>
-              <TableCell>{user.userName}</TableCell>
+              <TableCell><UserAvatarLabel userName={user.userName} size={"xs"}/></TableCell>
               <TableCell align="right">₹{getUserPaidAmount(user.userId).toFixed(2)}</TableCell>
               <TableCell align="right">₹{getUserShareAmount(user.userId).toFixed(2)}</TableCell>
-              <TableCell align="right">₹{calculateUserBalance(user.userId).toFixed(2)}</TableCell>
+              <TableCell align="right">{calculateUserBalance(user.userId)}</TableCell>
             </TableRow>
           ))}
           <TableRow>
