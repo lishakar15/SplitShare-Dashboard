@@ -1,11 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
 import Typography from "@mui/material/Typography";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { getSplitTypeIcon, getSplitTypeText } from "./SplitTypeService";
-import InsertChartOutlinedIcon from '@mui/icons-material/InsertChartOutlined';
+import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
 import {
   AvatarGroup,
   Box,
@@ -29,13 +29,14 @@ import ExpenseDialog from "./Create Expense/ExpenseDialog";
 const ExpenseList = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
 
   const handleModifyExpense = (expenseId) => {
-
-    alert("clicked");
-    <ExpenseDialog/>
+    setIsOpenExpenseDialog(true);
   };
-
+  const handleExpenseDialogClose = () => {
+    setIsOpenExpenseDialog(false);
+  };
   return (
     <>
       {EXPENSE_DATA ? (
@@ -123,7 +124,9 @@ const ExpenseList = () => {
                   ml: 4,
                 }}
               >
-                <ModeEditOutlineOutlinedIcon onClick={() => handleModifyExpense(expense.expenseId)} />
+                <ModeEditOutlineOutlinedIcon
+                  onClick={() => handleModifyExpense(expense.expenseId)}
+                />
               </Box>
             </AccordionSummary>
             <AccordionDetails>
@@ -147,11 +150,11 @@ const ExpenseList = () => {
                       border: "1px solid lightgray",
                       borderRadius: 1,
                       bgcolor: "#f9fafb",
-                      my:1
+                      my: 1,
                     }}
                   >
                     <Typography
-                      sx={{ display: "flex", alignItems: "center", gap: 1}}
+                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
                     >
                       <SwapHorizIcon />
                       Split
@@ -182,7 +185,7 @@ const ExpenseList = () => {
                   </Typography>
                 </Grid>
               </Grid>
-              <CommentSection expenseId={expense.expenseId}/>
+              <CommentSection expenseId={expense.expenseId} />
             </AccordionDetails>
           </Accordion>
         ))
@@ -197,6 +200,10 @@ const ExpenseList = () => {
           <Typography>You are all Settled up!!!</Typography>
         </Box>
       )}
+      <ExpenseDialog
+        open={isOpenExpenseDialog}
+        onClose={handleExpenseDialogClose}
+      />
     </>
   );
 };
