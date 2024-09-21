@@ -28,10 +28,8 @@ import {
   splitTypeAtom,
 } from "../../atoms/ExpenseAtom";
 
-function ExpenseDialog({ open, onClose, payerName, receiverName }) {
+function ExpenseDialog({ open, onClose}) {
   const [totalAmount, setTotalAmount] = useAtom(totalExpenseAmountAtom);
-  const [payer, setPayer] = useState(payerName);
-  const [receiver, setReceiver] = useState(receiverName);
   const [expenseDescription, setExpenseDescription] = useState("");
   const [spentOnDate, setSpentOnDate] = useState(null);
   const [createDate, setCreateDate] = useState(null);
@@ -104,10 +102,6 @@ function ExpenseDialog({ open, onClose, payerName, receiverName }) {
 
   const handleClose = () => {
     onClose();
-  };
-  const handlePayerChange = () => {
-    setPayer(receiver);
-    setReceiver(payer);
   };
 
   const handleTotalChange = (newAmount) => {

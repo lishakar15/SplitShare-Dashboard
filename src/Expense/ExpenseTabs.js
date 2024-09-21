@@ -10,6 +10,7 @@ import TimelineIcon from "@mui/icons-material/Timeline";
 import PeopleTwoToneIcon from "@mui/icons-material/PeopleTwoTone";
 import PaymentIcon from '@mui/icons-material/Payment';
 import ExpenseList from "./ExpenseList";
+import SettlementList from "../Payment/SettlementList";
 const ExpenseTabs = () => {
   const [value, setValue] = useState("expenses");
 
@@ -55,9 +56,9 @@ const ExpenseTabs = () => {
         </TabList>
       </Box>
       <TabPanel sx ={{p:0,mt:2}} value="expenses"><ExpenseList/></TabPanel>
-      <TabPanel value="settlements">settlements Tab</TabPanel>
-      <TabPanel value="activity">activity Tab</TabPanel>
-      <TabPanel value="members">members Tab</TabPanel>
+      <TabPanel sx ={{p:0,mt:2}} value="settlements"><SettlementList/></TabPanel>
+      <TabPanel sx ={{p:0,mt:2}} value="activity">activity Tab</TabPanel>
+      <TabPanel sx ={{p:0,mt:2}} value="members">members Tab</TabPanel>
     </TabContext>
   );
 };
