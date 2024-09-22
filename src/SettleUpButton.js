@@ -1,7 +1,7 @@
 import React from 'react';
 import PaymentDialog from './Payment/PaymentDialog';
 import { Box, Button } from '@mui/material';
-
+import { SETTLEMENT_DATA } from './data/SettlementData';
 const SettleUpButton = () => {
    
   const [open, setOpen] = React.useState(false);
@@ -20,9 +20,7 @@ const SettleUpButton = () => {
     <PaymentDialog
       open={open}
       onClose={handleClose}
-      payerName={"Andy"}
-      receiverName={"Steve"}
-      payableAmount={15}
+      settlementReq={SETTLEMENT_DATA[0]}
     />
   </Box>
   )

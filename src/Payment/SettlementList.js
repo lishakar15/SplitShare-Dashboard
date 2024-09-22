@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -19,16 +19,19 @@ import PaymentDialog from "./PaymentDialog";
 const SettlementList = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const [selectedSettlement, setSelectedSettlement] = useState(null);
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
 
-  const handleModifySettlement = (settlementId) => {
+  const handleModifySettlement = (selectedSettlementId) => {
+    setSelectedSettlement(SETTLEMENT_DATA.find((settlement) => settlement.settlementId === selectedSettlementId));
     setIsOpenExpenseDialog(true);
   };
 
   const handleSettlementDialogClose = () => {
+    setSelectedSettlement(null);
     setIsOpenExpenseDialog(false);
   };
-
+ 
   return (
     <>
       {SETTLEMENT_DATA ? (
@@ -142,9 +145,8 @@ const SettlementList = () => {
       <PaymentDialog
         open={isOpenExpenseDialog}
         onClose={handleSettlementDialogClose}
-        payerName={"Andy"}
-        receiverName={"Steve"}
-        payableAmount={15}
+        settlementReq={selectedSettlement}
+        isModReq={true}
       />
     </>
   );
