@@ -12,34 +12,44 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import { useMediaQuery } from "@mui/material";
 import SearchBar from "./SearchBar";
+import { loggedInUserAtom } from "./atoms/UserAtom";
+import LoginUser from "./LoginUser";
+import RegisterUser from "./RegisterUser";
 
 function App() {
   const isSmallScreen = useMediaQuery("(max-width:1200px)");
 
   return (
     <>
-      <Box sx={{ m: 1 }}>
-        <Grid container sx={{ height: "100vh" }}>
-          {isSmallScreen ? null : (
-            <Grid size={2}>
-              <SideNavBar />
+      {loggedInUserAtom ? (
+        <Routes>
+          <Route path="/login" element={<LoginUser />} />
+          <Route path="/register" element={<RegisterUser />} />
+        </Routes>
+      ) : (
+        <Box sx={{ m: 1 }}>
+          <Grid container sx={{ height: "100vh" }}>
+            {isSmallScreen ? null : (
+              <Grid size={2}>
+                <SideNavBar />
+              </Grid>
+            )}
+            <Grid size={{ xs: 12, lg: 10 }}>
+              <Box container sx={{ ml: "15px" }}>
+                <SearchBar />
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/activities" element={<Activity />} />
+                  <Route path="/friends" element={<Friends />} />
+                  <Route path="/groups" element={<Groups />} />
+                  <Route path="/expenses" element={<Expense />} />
+                  <Route path="*" element={<PageNotFound />} />
+                </Routes>
+              </Box>
             </Grid>
-          )}
-          <Grid size={{ xs: 12, lg: 10 }}>
-            <Box container sx={{ ml: "15px" }}>
-              <SearchBar />
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/activities" element={<Activity />} />
-                <Route path="/friends" element={<Friends />} />
-                <Route path="/groups" element={<Groups />} />
-                <Route path="/expenses" element={<Expense />} />
-                <Route path="*" element={<PageNotFound />} />
-              </Routes>
-            </Box>
           </Grid>
-        </Grid>
-      </Box>
+        </Box>
+      )}
     </>
   );
 }
