@@ -2,6 +2,7 @@ export const SETTLEMENT_DATA = [
     {
         "settlementId" : 1,
         "groupId" : 1,
+        "groupName" : "Cognizant Group",
         "paidBy" : 101,
         "paidByUserName" : "Lisha",
         "paidTo" : 103,
@@ -22,7 +23,7 @@ export const SETTLEMENT_DATA = [
         "paidToUserName" : "Andy",
         "createdBy" : 101,
         "modifiedBy" : null,
-        "amountPaid" : 	33.33,
+        "amountPaid" : 	55.00,
         "paymentMethod" : "Cash",
         "settlementDate" : "2024-07-21T12:34:56Z",
         "lastUpdateDate" : null
