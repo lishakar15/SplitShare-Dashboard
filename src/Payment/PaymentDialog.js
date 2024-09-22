@@ -1,8 +1,4 @@
-import * as React from "react";
-import { useState } from "react";
-import InputAdornment from "@mui/material/InputAdornment";
-
-
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogActions,
@@ -18,57 +14,80 @@ import {
   FormControlLabel,
   Radio,
   Typography,
+  InputAdornment,
 } from "@mui/material";
 import UserTransactionAvatar from "./UserTransactionAvatar";
 
-function PaymentDialog({
-  open,
-  onClose,
-  payerName,
-  receiverName,
-  payableAmount,
-}) {
-  const [payer, setPayer] = useState(payerName);
-  const [receiver, setReceiver] = useState(receiverName);
-  const [amount, setAmount] = useState(payableAmount);
-  const [date, setDate] = useState("");
-  const [group, setGroup] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("Cash");
+function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [settlement, setSettlement] = useState({});
+  const [isModRequest, setIsModRequest] = useState(isModReq);
+
+  useEffect(() => {
+    if (settlementReq) {
+      setSettlement(settlementReq);
+    }
+  }, [settlementReq]);
 
   const handleSave = () => {
     // Handle save logic here
-    handleClose();
-  };
-
-  const handleClose = () => {
+    setIsLoading(true)
     onClose();
   };
-  const handlePayerChange = () => {
-    setPayer(receiver);
-    setReceiver(payer);
-  };
- 
 
+  const handleAmountChange = (e) => {
+    setSettlement((prevVal) => ({
+      ...prevVal,
+      amountPaid: e.target.value,
+    }));
+  };
+
+  const handleDateChange = (e) => {
+    setSettlement((prevVal) => ({
+      ...prevVal,
+      settlementDate: e.target.value,
+    }));
+  };
+
+  const handleGroupChange = (e) => {
+    setSettlement((prevVal) => ({
+      ...prevVal,
+      groupName: e.target.value,
+    }));
+  };
+
+  const handlePaymentMethodChange = (e) => {
+    setSettlement((prevVal) => ({
+      ...prevVal,
+      paymentMethod: e.target.value,
+    }));
+  };
+  
+  const getISOdate = (dateStr) =>{
+      return dateStr.split("T")[0];
+  }
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>New Payment</DialogTitle>
+    <Dialog open={open} onClose={onClose}>
+      <DialogTitle>{isModReq ? "Modify Payment" : "New Payment"}</DialogTitle>
       <DialogContent>
-      <UserTransactionAvatar payer={payer} receiver={receiver} handlePayerChange={handlePayerChange}/>
+        <UserTransactionAvatar
+          settlement={settlement}
+          setSettlement={setSettlement}
+        />
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
             <Typography>Amount</Typography>
             <TextField
               fullWidth
               variant="outlined"
-              value={amount}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">₹</InputAdornment>
-                  ),
-                },
+              value={settlement.amountPaid || ''}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">₹</InputAdornment>
+                ),
               }}
-              onChange={(e) => setAmount(e.target.value)}
+              onChange={handleAmountChange}
             />
           </Grid>
           <Grid item xs={12} md={6}>
@@ -76,16 +95,16 @@ function PaymentDialog({
             <TextField
               fullWidth
               type="date"
-              value={date}
-              onChange={(e) => setDate(e.target.value)}
+              value={settlement.settlementDate ? getISOdate(settlement.settlementDate): ''}
+              onChange={handleDateChange}
             />
           </Grid>
           <Grid item xs={12}>
             <Typography>Group</Typography>
             <FormControl fullWidth>
               <Select
-                value={group}
-                onChange={(e) => setGroup(e.target.value)}
+                value={settlement.groupName || ''}
+                onChange={handleGroupChange}
                 label="Within Group"
               >
                 <MenuItem value="Cognizant Team">Cognizant Team</MenuItem>
@@ -97,27 +116,32 @@ function PaymentDialog({
             <FormControl component="fieldset">
               <RadioGroup
                 row
-                value={paymentMethod}
-                onChange={(e) => setPaymentMethod(e.target.value)}
+                value={settlement.paymentMethod || ''}
+                onChange={handlePaymentMethodChange}
               >
                 <FormControlLabel
-                  value="Cash"
+                  value={isModRequest ? settlement.paymentMethod : "cash"}
                   control={<Radio />}
                   label="Cash"
                 />
-                <FormControlLabel value="UPI" control={<Radio />} label="UPI" />
+                <FormControlLabel
+                  value="UPI"
+                  control={<Radio />}
+                  label="UPI"
+                />
               </RadioGroup>
             </FormControl>
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={onClose}>Cancel</Button>
         <Button onClick={handleSave} variant="contained" color="primary">
-          Save
+          {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
+
 export default PaymentDialog;

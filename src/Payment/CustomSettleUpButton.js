@@ -2,6 +2,7 @@ import React from 'react';
 import { Box, Button } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
 import PaymentDialog from './PaymentDialog';
+import { SETTLEMENT_DATA } from '../data/SettlementData';
 
 const CustomSettleUpButton = () => {
    
@@ -31,9 +32,7 @@ const CustomSettleUpButton = () => {
     <PaymentDialog
       open={open}
       onClose={handleClose}
-      payerName={"Sovon"}
-      receiverName={"Lishakar"}
-      payableAmount={200}
+      settlementReq={SETTLEMENT_DATA[1]}
     />
   </Box>
   )
