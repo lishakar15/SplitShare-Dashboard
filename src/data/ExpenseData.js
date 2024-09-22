@@ -19,7 +19,7 @@ export const EXPENSE_DATA = [
     spentOnDate: "2024-07-21T12:34:56Z",
     createDate: null,
     lastUpdateDate: null,
-    category: "Movie",
+    category: "Food",
     splitType: "EQUAL",
     createdBy: 1,
     participantShareList: [

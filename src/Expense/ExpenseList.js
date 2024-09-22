@@ -30,8 +30,11 @@ const ExpenseList = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
+  const [seletedExpense, setSelectedExpense] = useState(null);
 
-  const handleModifyExpense = (expenseId) => {
+  const handleModifyExpense = (selectedExpenseId) => {
+    //Loop throug the acual data and set the selected Expense
+    setSelectedExpense(EXPENSE_DATA.find((expense) => expense.expenseId === selectedExpenseId));
     setIsOpenExpenseDialog(true);
   };
   const handleExpenseDialogClose = () => {
@@ -203,6 +206,8 @@ const ExpenseList = () => {
       <ExpenseDialog
         open={isOpenExpenseDialog}
         onClose={handleExpenseDialogClose}
+        isModReq={true}
+        expenseData={seletedExpense}
       />
     </>
   );

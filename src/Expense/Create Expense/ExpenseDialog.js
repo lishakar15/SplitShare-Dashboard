@@ -1,7 +1,6 @@
 import * as React from "react";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
-
 import {
   Dialog,
   DialogActions,
@@ -28,52 +27,82 @@ import {
   splitTypeAtom,
 } from "../../atoms/ExpenseAtom";
 
-function ExpenseDialog({ open, onClose}) {
+function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
+  const [isLoading, setIsLoading] = useState(false);
+  const [expenseId, setExpenseId] = useState(null);
   const [totalAmount, setTotalAmount] = useAtom(totalExpenseAmountAtom);
   const [expenseDescription, setExpenseDescription] = useState("");
   const [spentOnDate, setSpentOnDate] = useState(null);
   const [createDate, setCreateDate] = useState(null);
-  const [category, setCategory] = useState(null);
-  const [group, setGroup] = useState("Cognizant Group");
+  const [category, setCategory] = useState("");
+  const [groupId, setGroupId] = useState(101); // Adjust as per real group id
+  const [group, setGroup] = useState("Cognizant Team");
+  const [createdBy, setCreatedBy] = useState(101); // Update with logged-in user
+  const [isModRequest, setIsModRequest] = useState(isModReq);
 
-  const [participantShareList, setParticipantShareList] = useAtom(
-    participantShareListAtom
-  );
-  const [defaultPayer,setDefaultPayer] = useAtom(defaultPaidUserAtom);
-  const [paidUsers,setPaidUsers] = useAtom(paidUsersAtom);
-  const [splitType,setSplitType] = useAtom(splitTypeAtom);
+  const [participantShareList, setParticipantShareList] = useAtom(participantShareListAtom);
+  const [defaultPayer, setDefaultPayer] = useAtom(defaultPaidUserAtom);
+  const [paidUsers, setPaidUsers] = useAtom(paidUsersAtom);
+  const [splitType, setSplitType] = useAtom(splitTypeAtom);
+
+  // Memoized default user values
+  const defaultPayerMemo = useMemo(() => ({ //Get from the logged in user Atom
+    userId: 101,
+    userName: "Lisha",   //Replace with loggedin user
+    paidAmount: totalAmount,
+  }), [totalAmount]);
+
+  const defaultParticipantMemo = useMemo(() => ({
+    userId: 101,
+    userName: "Lisha",
+    shareAmount: totalAmount,
+  }), [totalAmount]);
+
+  useEffect(() => {
+    if (isModRequest && expenseData) {
+      populateExpenseData(expenseData);
+    } else {
+      setDefaultPayer(defaultPayerMemo);
+      setParticipantShareList([defaultParticipantMemo]);
+    }
+  }, [isModRequest, expenseData, defaultPayerMemo, defaultParticipantMemo]);
 
   const handleSave = async () => {
-    //Validate the data before saving
     const expenseRequest = createExpenseRequest();
-    if (validateExpenseRequest) {
-      const isSavedSuccessfully = await backendService.saveExpenseDetails(
-        expenseRequest
-      );
-      if (isSavedSuccessfully) {
-        console.log("Saved successfully");
-        //Show succcess message in MUI snackbar
-      } else {
-        console.log("Error occured while saving data");
+
+    if (validateExpenseRequest(expenseRequest)) {
+      setIsLoading(true);
+      try {
+        const isSavedSuccessfully = await backendService.saveExpenseDetails(expenseRequest);
+        if (isSavedSuccessfully) {
+          console.log("Saved successfully");
+          // Show success message in MUI snackbar
+          handleClose();
+        } else {
+          console.log("Error occurred while saving data");
+          // Optionally display error snackbar
+        }
+      } catch (error) {
+        console.error("Error during save:", error);
+      } finally {
+        setIsLoading(false);
       }
-      //invalidateAtoms();
-      handleClose();
+    } else {
+      console.log("Validation failed");
     }
   };
 
   const createExpenseRequest = () => {
+    const participantShares = participantShareList.map((participant) => {
+      const isUserExists = paidUsers.some((paidUser) => paidUser.userId === participant.userId);
+      return {
+        ...participant,
+        isPaidUser: isUserExists,
+      };
+    });
 
-      const participantShares = participantShareList.map((participant) => {
-        const isUserExists = paidUsers.some(
-          (paidUser) => paidUser.userId === participant.userId
-        );
-        return isUserExists
-          ? { ...participant, isPaidUser: true }
-          : { ...participant, isPaidUser: false };
-      })
-
-    const expenseRequest = {
-      groupId: 1,
+    return {
+      groupId,
       paidUsers,
       totalAmount,
       expenseDescription,
@@ -82,51 +111,57 @@ function ExpenseDialog({ open, onClose}) {
       lastUpdateDate: new Date().toISOString(),
       category,
       splitType,
-      createdBy: 101,
-      participantShareList:participantShares,
+      createdBy,
+      participantShareList: participantShares,
     };
-    return expenseRequest;
   };
-  const validateExpenseRequest = (expenseRequest) => {
-    //Perform validation here
 
+  const validateExpenseRequest = (expenseRequest) => {
+    // Perform validation
+    if (!expenseRequest.totalAmount || expenseRequest.totalAmount <= 0) {
+      console.error("Total amount should be greater than 0");
+      return false;
+    }
+    if (!expenseRequest.expenseDescription) {
+      console.error("Expense description is required");
+      return false;
+    }
     return true;
   };
-  const invalidateAtoms = ()=>{
+
+  const invalidateAtoms = () => {
     setTotalAmount(0);
-    setParticipantShareList([])
-    //setDefaultPayer([]) --Need to enable it once logged in default user implemented
+    setParticipantShareList([]);
     setPaidUsers([]);
-    setSplitType("EQUAL"); //Default Split Type
-  }
+    setSplitType("EQUAL"); // Default Split Type
+  };
 
   const handleClose = () => {
+    invalidateAtoms();
     onClose();
   };
 
-  const handleTotalChange = (newAmount) => {
-    setTotalAmount(newAmount);
+  const populateExpenseData = (expense) => {
+    if (expenseData) {
+      setExpenseId(expense.expenseId);
+      setExpenseDescription(expense.expenseDescription);
+      setTotalAmount(expense.totalAmount);
+      const dateString = expense.spentOnDate;
+      const formattedDate = dateString.split("T")[0];
+      setSpentOnDate(formattedDate);
+      setCreateDate(expense.createDate);
+      setCategory(expense.category);
+      setSplitType(expense.splitType);
+      setGroupId(expense.groupId);
+      setCreatedBy(expense.createdBy);
+      setPaidUsers(expense.paidUsers);
+      setParticipantShareList(expense.participantShareList);
+    }
   };
-
-  useEffect(() => {
-    const defaultPayer = {
-      //Need to get it from current logged in user atom
-      userId: 101,
-      userName: "Lisha",
-      paidAmount: totalAmount,
-    };
-    const defaultParticipant = {
-      userId: 101,
-      userName: "Lisha",
-      shareAmount: totalAmount,
-    };
-    setDefaultPayer(defaultPayer);
-    setParticipantShareList([defaultParticipant]);
-  }, []);
 
   return (
     <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>New Expense</DialogTitle>
+      <DialogTitle>{isModRequest ? "Modify Expense" : "New Expense"}</DialogTitle>
       <DialogContent>
         <Grid container spacing={2}>
           <Grid item xs={12} md={8}>
@@ -144,14 +179,10 @@ function ExpenseDialog({ open, onClose}) {
               fullWidth
               variant="outlined"
               value={totalAmount}
-              slotProps={{
-                input: {
-                  startAdornment: (
-                    <InputAdornment position="start">₹</InputAdornment>
-                  ),
-                },
+              InputProps={{
+                startAdornment: <InputAdornment position="start">₹</InputAdornment>,
               }}
-              onChange={(e) => handleTotalChange(e.target.value)}
+              onChange={(e) => setTotalAmount(e.target.value)}
             />
           </Grid>
           <Grid item xs={12} md={4}>
@@ -177,16 +208,16 @@ function ExpenseDialog({ open, onClose}) {
           <PaidUsersSection />
           <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
           <SplitAmountSection group={group} />
-          <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleSave} variant="contained" color="primary">
-          Create
+        <Button onClick={handleClose} disabled={isLoading}>Cancel</Button>
+        <Button onClick={handleSave} variant="contained" color="primary" disabled={isLoading}>
+          {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}
         </Button>
       </DialogActions>
     </Dialog>
   );
 }
+
 export default ExpenseDialog;
