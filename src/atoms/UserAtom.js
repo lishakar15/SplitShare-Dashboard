@@ -1,4 +1,4 @@
 import { atom } from "jotai";
 
-const loggedInUserId = 0;
+const loggedInUserId = true;
 export const loggedInUserAtom = atom(loggedInUserId)

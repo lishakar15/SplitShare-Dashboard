@@ -1,6 +1,6 @@
 import "./App.css";
 import React from "react";
-import { Routes, Route } from "react-router-dom";
+import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import Home from "./Home";
 import Activity from "./Activity";
 import Friends from "./Friends";
@@ -15,16 +15,18 @@ import SearchBar from "./SearchBar";
 import { loggedInUserAtom } from "./atoms/UserAtom";
 import LoginUser from "./LoginUser";
 import RegisterUser from "./RegisterUser";
+import { useAtom } from "jotai";
 
 function App() {
   const isSmallScreen = useMediaQuery("(max-width:1200px)");
-
+  const [isUserLoggedIn,setIsUserLoggedIn] = useAtom(loggedInUserAtom)
   return (
     <>
-      {loggedInUserAtom ? (
+      {isUserLoggedIn === 0 ? (
         <Routes>
           <Route path="/login" element={<LoginUser />} />
           <Route path="/register" element={<RegisterUser />} />
+          <Route path="*"  element={<LoginUser/>}/>
         </Routes>
       ) : (
         <Box sx={{ m: 1 }}>
@@ -42,7 +44,8 @@ function App() {
                   <Route path="/activities" element={<Activity />} />
                   <Route path="/friends" element={<Friends />} />
                   <Route path="/groups" element={<Groups />} />
-                  <Route path="/expenses" element={<Expense />} />
+                  <Route path="/expenses/" element={<Expense />} />
+                  <Route path="/expenses/group/:groupId" element={<Expense />} />
                   <Route path="*" element={<PageNotFound />} />
                 </Routes>
               </Box>
@@ -52,6 +55,7 @@ function App() {
       )}
     </>
   );
+  
 }
 
 export default App;

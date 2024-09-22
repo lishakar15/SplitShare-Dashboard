@@ -10,10 +10,13 @@ import AvatarGenerator from "../AvatarGenerator";
 import { GROUP_DATA } from "../data/groupsData";
 import { GROUP_OWE_SUMMARY } from "../data/GroupOwedData";
 import GroupOweSummaryChip from "./GroupOweSummaryChip";
+import { useNavigate } from "react-router-dom";
 
 const GroupList = () => {
-  const handleGroupClick = () => {
-    alert("group clicked");
+  const navigate = useNavigate();
+
+  const handleGroupClick = (groupId) => {
+    navigate(`/expenses/group/${groupId}`)
   };
 
   const getGroupOwe = (currentGroup)=>
@@ -27,13 +30,12 @@ const GroupList = () => {
           <Card sx={{ my: 2, border: "1px solid #e5e7eb" }}>
             <>
               <CardContent
-                onClick={handleGroupClick}
+                onClick={()=>handleGroupClick(group.groupId)}
                 sx={{
                   px: 3,
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-
                   cursor: "pointer",
                   "&:hover": {
                     backgroundColor: "grey.300",
