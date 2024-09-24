@@ -12,17 +12,17 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import { useMediaQuery } from "@mui/material";
 import SearchBar from "./SearchBar";
-import { loggedInUserAtom } from "./atoms/UserAtom";
+import { isUserLoggedInAtom, loggedInUserAtom } from "./atoms/UserAtom";
 import LoginUser from "./LoginUser";
 import RegisterUser from "./RegisterUser";
 import { useAtom } from "jotai";
 
 function App() {
   const isSmallScreen = useMediaQuery("(max-width:1200px)");
-  const [isUserLoggedIn,setIsUserLoggedIn] = useAtom(loggedInUserAtom)
+  const [isUserLoggedIn,setIsUserLoggedIn] = useAtom(isUserLoggedInAtom)
   return (
     <>
-      {isUserLoggedIn === 0 ? (
+      {!isUserLoggedIn ? (
         <Routes>
           <Route path="/login" element={<LoginUser />} />
           <Route path="/register" element={<RegisterUser />} />

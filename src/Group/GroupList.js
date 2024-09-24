@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   AvatarGroup,
   Box,
@@ -7,17 +7,37 @@ import {
   Typography,
 } from "@mui/material";
 import AvatarGenerator from "../AvatarGenerator";
-import { GROUP_DATA } from "../data/groupsData";
 import { GROUP_OWE_SUMMARY } from "../data/GroupOwedData";
 import GroupOweSummaryChip from "./GroupOweSummaryChip";
 import { useNavigate } from "react-router-dom";
+import { backendService } from "../services/backendServices";
+import { useAtomValue } from "jotai";
+import { loggedInUserAtom } from "../atoms/UserAtom";
 
 const GroupList = () => {
-  const navigate = useNavigate();
 
+  const [groupsData,setGroupsData] = useState(null);
+  const navigate = useNavigate();
+  const loggedInUser = useAtomValue(loggedInUserAtom);
   const handleGroupClick = (groupId) => {
     navigate(`/expenses/group/${groupId}`)
   };
+  
+
+  useEffect(() => {
+    const fetchGroupsData = async () => {
+        try {
+            const response = await backendService.getGroupsDataByUserId(loggedInUser.userId);
+            console.log("response "+response);
+            setGroupsData(response);
+        } catch (error) {
+            console.error("Error fetching groups data: ", error);
+        }
+    };
+
+    fetchGroupsData();
+}, [loggedInUser.userId]);
+
 
   const getGroupOwe = (currentGroup)=>
   {
@@ -25,8 +45,8 @@ const GroupList = () => {
   }
   return (
     <>
-      {GROUP_DATA ? (
-        GROUP_DATA.map((group) => (
+      {groupsData ? (
+        groupsData.map((group) => (
           <Card sx={{ my: 2, border: "1px solid #e5e7eb" }}>
             <>
               <CardContent

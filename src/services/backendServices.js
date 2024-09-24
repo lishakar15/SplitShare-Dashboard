@@ -1,6 +1,5 @@
 import axios from "axios";
 export const backendService = {
-
   async saveExpenseDetails(expenseRequest) {
     let isExpenseCreated = false;
     try {
@@ -17,4 +16,19 @@ export const backendService = {
     }
     return isExpenseCreated;
   },
+
+  async getGroupsDataByUserId(userId) {
+    try {
+        const response = await axios.get(`http://localhost:8080/group/get-groups/${userId}`);
+        
+        if (response.status === 200) {
+            return response.data;
+        } else {
+            throw new Error("Service error " + response.status);
+        }
+    } catch (err) {
+        console.log("Error occurred while getting groups data: " + err);
+    }
+},
+
 };
