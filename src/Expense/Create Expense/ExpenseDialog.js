@@ -18,7 +18,7 @@ import {
 import PaidUsersSection from "./PaidUsersSection";
 import SplitAmountSection from "./SplitAmountSection";
 import { backendService } from "../../services/backendServices";
-import { useAtom } from "jotai";
+import { useAtom,useAtomValue,useSetAtom } from "jotai";
 import {
   defaultPaidUserAtom,
   totalExpenseAmountAtom,
@@ -27,7 +27,10 @@ import {
   splitTypeAtom,
 } from "../../atoms/ExpenseAtom";
 
-function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
+import { groupMembersAtom } from "../../atoms/GroupAtom";
+import { loggedInUserAtom } from "../../atoms/UserAtom";
+
+function ExpenseDialog({ open, onClose, isModReq, expenseData, groupData}) {
   const [isLoading, setIsLoading] = useState(false);
   const [expenseId, setExpenseId] = useState(null);
   const [totalAmount, setTotalAmount] = useAtom(totalExpenseAmountAtom);
@@ -36,7 +39,6 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
   const [createDate, setCreateDate] = useState(null);
   const [category, setCategory] = useState("");
   const [groupId, setGroupId] = useState(101); // Adjust as per real group id
-  const [group, setGroup] = useState("Cognizant Team");
   const [createdBy, setCreatedBy] = useState(101); // Update with logged-in user
   const [isModRequest, setIsModRequest] = useState(isModReq);
 
@@ -44,28 +46,29 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
   const [defaultPayer, setDefaultPayer] = useAtom(defaultPaidUserAtom);
   const [paidUsers, setPaidUsers] = useAtom(paidUsersAtom);
   const [splitType, setSplitType] = useAtom(splitTypeAtom);
-
-  // Memoized default user values
-  const defaultPayerMemo = useMemo(() => ({ //Get from the logged in user Atom
-    userId: 101,
-    userName: "Lisha",   //Replace with loggedin user
-    paidAmount: totalAmount,
-  }), [totalAmount]);
-
-  const defaultParticipantMemo = useMemo(() => ({
-    userId: 101,
-    userName: "Lisha",
-    shareAmount: totalAmount,
-  }), [totalAmount]);
+  const loggedInUser = useAtomValue(loggedInUserAtom);
+  const setGroupMembers = useSetAtom(groupMembersAtom);
 
   useEffect(() => {
     if (isModRequest && expenseData) {
       populateExpenseData(expenseData);
-    } else {
-      setDefaultPayer(defaultPayerMemo);
-      setParticipantShareList([defaultParticipantMemo]);
     }
-  }, [isModRequest, expenseData, defaultPayerMemo, defaultParticipantMemo]);
+  }, [isModRequest, expenseData]);
+
+  useEffect(() => {
+    if(groupData){
+      setGroupMembers(groupData.groupMembers);
+    }
+  },[groupData]);
+
+  useEffect(()=>{
+    const defaultParticipant = {
+      userId: loggedInUser.userId,
+      userName: loggedInUser.userName,
+      shareAmount: totalAmount,
+    };
+    setParticipantShareList([defaultParticipant]);
+  },[])
 
   const handleSave = async () => {
     const expenseRequest = createExpenseRequest();
@@ -207,7 +210,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
           <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
           <PaidUsersSection />
           <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
-          <SplitAmountSection group={group} />
+          <SplitAmountSection groupData={groupData} setGroupId={setGroupId} />
         </Grid>
       </DialogContent>
       <DialogActions>

@@ -13,21 +13,21 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
-import { GROUP_MEMBERS_DATA } from "../../data/GroupMembersData";
+import { groupMembersAtom } from "../../atoms/GroupAtom";
 
 const SinglePaidUser = ({ setIsMultiPayer }) => {
   const defaultPayer = useAtomValue(defaultPaidUserAtom);
   const [paidUsers, setPaidUsers] = useAtom(paidUsersAtom);
+  const groupMembers = useAtomValue(groupMembersAtom);
 
   const handleChangePayer = (changedUser) => {
-    
-    if(changedUser !== null)
-      {
-        setPaidUsers([{ ...changedUser, paidAmount: 0 }]);
-      }
-      else{
-        setPaidUsers([])
-      }
+
+    if (changedUser !== null) {
+      setPaidUsers([{ ...changedUser, paidAmount: 0 }]);
+    }
+    else {
+      setPaidUsers([])
+    }
     setIsMultiPayer(false);
   };
 
@@ -37,6 +37,7 @@ const SinglePaidUser = ({ setIsMultiPayer }) => {
   useEffect(() => {
     setPaidUsers(defaultPayer ? [defaultPayer] : []);
   }, []);
+  
   return (
     <>
       <Grid md={5} xs={12} sx={{ pl: 2 }}>
@@ -94,11 +95,12 @@ const SinglePaidUser = ({ setIsMultiPayer }) => {
                   value={""}
                   onChange={(e) => handleChangePayer(e.target.value)}
                 >
-                  {GROUP_MEMBERS_DATA.map((user) => (
+                  {groupMembers && groupMembers.map((user) => (
                     <MenuItem key={user.userId} value={user}>
                       <UserAvatarLabel userName={user.userName} size="xs" />
                     </MenuItem>
-                  ))}
+                  ))
+                  }
                 </Select>
               </FormControl>
               <Typography
