@@ -19,16 +19,33 @@ export const backendService = {
 
   async getGroupsDataByUserId(userId) {
     try {
-        const response = await axios.get(`http://localhost:8080/group/get-groups/${userId}`);
-        
-        if (response.status === 200) {
-            return response.data;
-        } else {
-            throw new Error("Service error " + response.status);
-        }
+      const response = await axios.get(`http://localhost:8080/group/get-all-groups/${userId}`);
+
+      if (response.status === 200) {
+        return response.data;
+      } else {
+        throw new Error("Service error " + response.status);
+      }
     } catch (err) {
-        console.log("Error occurred while getting groups data: " + err);
+      console.log("Error occurred while getting groups data in getGroupsDataByUserId(): " + err);
     }
-},
+  },
+
+  async getGroupDataByGroupId(groupId) {
+    try {
+      const response = await axios.get(`http://localhost:8080/group/get-group/${groupId}`);
+
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw new Error("Service error " + response.status);
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while getting group data in  getGroupDataByGroupId():" + err);
+    }
+
+  }
 
 };

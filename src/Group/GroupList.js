@@ -19,6 +19,7 @@ const GroupList = () => {
   const [groupsData,setGroupsData] = useState(null);
   const navigate = useNavigate();
   const loggedInUser = useAtomValue(loggedInUserAtom);
+
   const handleGroupClick = (groupId) => {
     navigate(`/expenses/group/${groupId}`)
   };
@@ -28,7 +29,6 @@ const GroupList = () => {
     const fetchGroupsData = async () => {
         try {
             const response = await backendService.getGroupsDataByUserId(loggedInUser.userId);
-            console.log("response "+response);
             setGroupsData(response);
         } catch (error) {
             console.error("Error fetching groups data: ", error);
