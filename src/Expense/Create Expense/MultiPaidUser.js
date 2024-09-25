@@ -16,12 +16,15 @@ import { defaultPaidUserAtom } from "../../atoms/ExpenseAtom";
 import { paidUsersAtom } from "../../atoms/ExpenseAtom";
 import { totalExpenseAmountAtom } from "../../atoms/ExpenseAtom";
 import { GROUP_MEMBERS_DATA } from "../../data/GroupMembersData";
+import { groupMembersAtom } from "../../atoms/GroupAtom";
 
 const MultiPaidUser = ({ setIsMultiPayer }) => {
   const [isCustomPaidType, setIsCustomPaidType] = useState(false);
   const defaultPayer = useAtomValue(defaultPaidUserAtom);
   const [paidUsers, setPaidUsers] = useAtom(paidUsersAtom);
   const totalAmount = useAtomValue(totalExpenseAmountAtom);
+  const groupMembers = useAtomValue(groupMembersAtom);
+
 
   const changeToDefaultPayer = () => {
     setPaidUsers(defaultPayer ? [defaultPayer] : []);
@@ -103,7 +106,7 @@ const MultiPaidUser = ({ setIsMultiPayer }) => {
               value={""}
               onChange={(e) => handleAddPayers(e.target.value)}
             >
-              {GROUP_MEMBERS_DATA.map((user) => (
+              {groupMembers && groupMembers.map((user) => (
                 <MenuItem key={user.userId} value={user}>
                   <UserAvatarLabel userName={user.userName} size="xs" />
                 </MenuItem>

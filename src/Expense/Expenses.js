@@ -15,6 +15,7 @@ const Expense = () => {
         {
           try{
             const response = await backendService.getGroupDataByGroupId(groupId);
+            console.log(" get by groupId response "+ response )
             setGroupData(response);
           }
           catch(err){

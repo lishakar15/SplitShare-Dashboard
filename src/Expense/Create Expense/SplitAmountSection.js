@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { TbArrowsSplit } from "react-icons/tb";
 import {
   Grid,
@@ -11,16 +11,35 @@ import {
   FormControl,
   MenuItem,
 } from "@mui/material";
-import { GROUP_MEMBERS_DATA } from "../../data/GroupMembersData";
 import UserAvatarLabel from "../../UserAvatarLabel";
 import CreateUserSplits from "../SplitCards/CreateUserSplits";
 import { useAtom } from "jotai";
 import { participantShareListAtom, splitTypeAtom } from "../../atoms/ExpenseAtom";
 
-const SplitAmountSection = ({group}) => {
+const SplitAmountSection = ({ groupData, setGroupId }) => {
 
   const [splitType, setSplitType] = useAtom(splitTypeAtom);
   const [splitList, setSplitList] = useAtom(participantShareListAtom);
+  const [group, setGroup] = useState(null);
+  const [groupList, setGroupList] = useState([]);
+
+  useEffect(() => {
+    if(groupData)
+    {
+      setGroupId(groupData.groupId)
+      const groupObj = { groupId: groupData.groupId, groupName: groupData.groupName };
+      setGroup(groupObj)
+      setGroupList([groupObj])
+    }
+    else{
+      //Make API call to get all groups that user part of
+    }
+
+  }, [groupData])
+
+  const handleGroupChange = (selectedGroup) =>{
+    setGroup(selectedGroup);
+  }
 
   const isSmallScreen = useMediaQuery("(max-width:1200px)");
 
@@ -31,10 +50,10 @@ const SplitAmountSection = ({group}) => {
   const handleAddSplit = (newUser) => {
     const isExistingUser = splitList.some((user) => user.userId === newUser.userId);
     if (!isExistingUser) {
-      setSplitList([...splitList, {...newUser,shareAmount:0}]);
+      setSplitList([...splitList, { ...newUser, shareAmount: 0 }]);
     }
   };
-  
+
 
   return (
     <>
@@ -80,13 +99,19 @@ const SplitAmountSection = ({group}) => {
         splitType={splitType}
       />
       <Grid container >
-        
+
       </Grid>
       <Grid item md={6} xs={12}>
         <Typography>Group</Typography>
         <FormControl fullWidth>
-          <Select value={group}>
-            <MenuItem value="Cognizant Team">Cognizant Team</MenuItem>
+          <Select 
+           value={group}
+           onChange={(e) => handleGroupChange(e.target.value)}
+           >
+            {groupList.map((group)=> (
+               <MenuItem key ={group.groupId} value={group}>{groupData.groupName}</MenuItem>
+            )
+            )}
             {/* Add other groups */}
           </Select>
         </FormControl>
@@ -95,7 +120,7 @@ const SplitAmountSection = ({group}) => {
         <Typography>Add Split</Typography>
         <FormControl fullWidth>
           <Select value={""} onChange={(e) => handleAddSplit(e.target.value)}>
-            {GROUP_MEMBERS_DATA.map((user) => (
+            {groupData && groupData.groupMembers.map((user) => (
               <MenuItem key={user.userId} value={user}>
                 <UserAvatarLabel userName={user.userName} size={"xs"} />
               </MenuItem>

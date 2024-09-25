@@ -73,8 +73,8 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
               width: isSmallScreen ? "100%" : "auto",
             }}
           >
-            <AddExpenseButton fullWidth={isSmallScreen} />
-            <SettleUpButton fullWidth={isSmallScreen} />
+            <AddExpenseButton groupData={groupData} />
+            <SettleUpButton />
           </Box>
         </CardContent>
       </Card >
