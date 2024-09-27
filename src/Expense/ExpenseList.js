@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Accordion from "@mui/material/Accordion";
 import AccordionSummary from "@mui/material/AccordionSummary";
 import AccordionDetails from "@mui/material/AccordionDetails";
@@ -14,7 +14,6 @@ import {
   Grid,
   useMediaQuery,
 } from "@mui/material";
-import { EXPENSE_DATA } from "../data/ExpenseData";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
 import AvatarGenerator from "../AvatarGenerator";
 import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
@@ -25,25 +24,38 @@ import TimelineIcon from "@mui/icons-material/Timeline";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import CommentSection from "./CommentSection";
 import ExpenseDialog from "./Create Expense/ExpenseDialog";
+import { backendService } from "../services/backendServices";
 
-const ExpenseList = () => {
+const ExpenseList = ({ groupId }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
   const [seletedExpense, setSelectedExpense] = useState(null);
+  const [exenseList, setExpenseList] = useState([]);
 
   const handleModifyExpense = (selectedExpenseId) => {
     //Loop throug the acual data and set the selected Expense
-    setSelectedExpense(EXPENSE_DATA.find((expense) => expense.expenseId === selectedExpenseId));
+    setSelectedExpense(exenseList.find((expense) => expense.expenseId === selectedExpenseId));
     setIsOpenExpenseDialog(true);
   };
   const handleExpenseDialogClose = () => {
     setIsOpenExpenseDialog(false);
   };
+
+  useEffect(() => {
+
+    const getExpenses = async () => {
+      if (groupId) {
+        const expenses = await backendService.getExpensesByGroupId(groupId);
+        setExpenseList(expenses);
+      }
+    }
+    getExpenses()
+  }, [groupId]);
   return (
     <>
-      {EXPENSE_DATA ? (
-        EXPENSE_DATA.map((expense) => (
+      {exenseList ? (
+        exenseList.map((expense) => (
           <Accordion>
             <AccordionSummary aria-controls="panel2-content" id="panel2-header">
               <Box

@@ -4,11 +4,7 @@ const currentGroupMembers = [];
 
 const paidUsers = [];
 const participantShareList = [];
-const defaultPaidUser = {
-  userId: 101,
-  userName: "Lisha",
-  paidAmount: 0.0,
-};
+const defaultPaidUser = null;
 
 export const paidUsersAtom = atom(paidUsers);
 export const participantShareListAtom = atom(participantShareList);

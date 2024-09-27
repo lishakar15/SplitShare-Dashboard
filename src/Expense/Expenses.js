@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { GROUP_DATA } from "../data/groupsData";
 import ExpenseGroupInfoCard from "./ExpenseGroupInfoCard";
 import ExpenseTabs from "./ExpenseTabs";
 import { useParams } from "react-router-dom";
@@ -15,7 +14,6 @@ const Expense = () => {
         {
           try{
             const response = await backendService.getGroupDataByGroupId(groupId);
-            console.log(" get by groupId response "+ response )
             setGroupData(response);
           }
           catch(err){
@@ -28,7 +26,7 @@ const Expense = () => {
   return (
     <>
       <ExpenseGroupInfoCard groupData={groupData} />
-      <ExpenseTabs />
+      <ExpenseTabs groupId={groupId}/>
     </>
   );
 };

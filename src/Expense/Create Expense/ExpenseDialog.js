@@ -38,16 +38,15 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, groupData}) {
   const [spentOnDate, setSpentOnDate] = useState(null);
   const [createDate, setCreateDate] = useState(null);
   const [category, setCategory] = useState("");
-  const [groupId, setGroupId] = useState(101); // Adjust as per real group id
-  const [createdBy, setCreatedBy] = useState(101); // Update with logged-in user
   const [isModRequest, setIsModRequest] = useState(isModReq);
-
   const [participantShareList, setParticipantShareList] = useAtom(participantShareListAtom);
-  const [defaultPayer, setDefaultPayer] = useAtom(defaultPaidUserAtom);
+  const setDefaultPayer = useSetAtom(defaultPaidUserAtom);
   const [paidUsers, setPaidUsers] = useAtom(paidUsersAtom);
   const [splitType, setSplitType] = useAtom(splitTypeAtom);
   const loggedInUser = useAtomValue(loggedInUserAtom);
   const setGroupMembers = useSetAtom(groupMembersAtom);
+  const [groupId, setGroupId] = useState(null);
+  const [createdBy, setCreatedBy] = useState(loggedInUser.userId);
 
   useEffect(() => {
     if (isModRequest && expenseData) {
@@ -68,6 +67,13 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, groupData}) {
       shareAmount: totalAmount,
     };
     setParticipantShareList([defaultParticipant]);
+    
+    const defaultPayer = {
+      userId: loggedInUser.userId,
+      userName: loggedInUser.userName,
+      paidAmount:totalAmount
+    }
+    setDefaultPayer(defaultPayer)
   },[])
 
   const handleSave = async () => {

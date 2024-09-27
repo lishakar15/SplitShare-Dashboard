@@ -4,7 +4,7 @@ export const backendService = {
     let isExpenseCreated = false;
     try {
       const response = await axios.post(
-        "http://localhost:8081/expense/add-expense",
+        "http://localhost:8085/expense/add-expense",
         expenseRequest
       );
       if (response.status === 200) {
@@ -19,7 +19,7 @@ export const backendService = {
 
   async getGroupsDataByUserId(userId) {
     try {
-      const response = await axios.get(`http://localhost:8080/group/get-all-groups/${userId}`);
+      const response = await axios.get(`http://localhost:8085/group/get-all-groups/${userId}`);
 
       if (response.status === 200) {
         return response.data;
@@ -33,7 +33,7 @@ export const backendService = {
 
   async getGroupDataByGroupId(groupId) {
     try {
-      const response = await axios.get(`http://localhost:8080/group/get-group/${groupId}`);
+      const response = await axios.get(`http://localhost:8085/group/get-group/${groupId}`);
 
       if (response.status === 200) {
         return response.data;
@@ -46,6 +46,25 @@ export const backendService = {
       console.log("Error occurred while getting group data in  getGroupDataByGroupId():" + err);
     }
 
+  },
+
+  async getExpensesByGroupId(groupId){
+    try{
+      const response = await axios.get(`http://localhost:8085/expense/get-expenses/${groupId}`);
+      if(response.status === 200)
+        {
+          console.log("resonse  = "+response);
+          return response.data;
+        } 
+        else
+        {
+          throw new Error("Service error "+response.status);
+        }
+    }
+    catch(err)
+    {
+      console.log("Error occurred while getting expenses for the group "+err);
+    }
   }
 
 };
