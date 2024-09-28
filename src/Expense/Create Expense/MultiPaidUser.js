@@ -52,7 +52,6 @@ const MultiPaidUser = ({ setIsMultiPayer }) => {
     }
   };
   const calculateEqualPayment = () => {
-    console.log("doClacukate")
     const averageAmount =
       totalAmount > 0 && paidUsers && paidUsers.length > 0
         ? totalAmount / paidUsers.length

@@ -2,7 +2,7 @@ import React from 'react';
 import { Box, Button } from '@mui/material';
 import ExpenseDialog from './ExpenseDialog';
 
-const AddExpenseDialog = ({groupData}) => {
+const AddExpenseButton = () => {
    
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
@@ -18,13 +18,9 @@ const AddExpenseDialog = ({groupData}) => {
     <ExpenseDialog
       open={open}
       onClose={handleClose}
-      payerName={"Andy"}
-      receiverName={"Steve"}
-      payableAmount={15}
-      groupData={groupData}
     />
   </Box>
   )
 }
 
-export default AddExpenseDialog;
+export default AddExpenseButton;

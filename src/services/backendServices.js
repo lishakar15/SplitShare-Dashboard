@@ -16,6 +16,27 @@ export const backendService = {
     }
     return isExpenseCreated;
   },
+  //Write Update here
+
+  async deleteExpense(expenseId, deletedBy) {
+    let isDeleted = false;
+    try {
+      const response = await axios.delete(`http://localhost:8085/expense/delete-expense/${expenseId}/${deletedBy}`)
+      if (response.status === 200) {
+        isDeleted = true
+      }
+      else {
+        throw Error(response.status);
+      }
+    }
+    catch (err) {
+      console.log(`Error occurred while deleting the expense ${expenseId}` + err);
+      throw err;
+    }
+    finally{
+      return isDeleted;
+    }
+  },
 
   async getGroupsDataByUserId(userId) {
     try {
@@ -48,22 +69,19 @@ export const backendService = {
 
   },
 
-  async getExpensesByGroupId(groupId){
-    try{
+  async getExpensesByGroupId(groupId) {
+    try {
       const response = await axios.get(`http://localhost:8085/expense/get-expenses/${groupId}`);
-      if(response.status === 200)
-        {
-          console.log("resonse  = "+response);
-          return response.data;
-        } 
-        else
-        {
-          throw new Error("Service error "+response.status);
-        }
+      if (response.status === 200) {
+        console.log("resonse  = " + response);
+        return response.data;
+      }
+      else {
+        throw new Error("Service error " + response.status);
+      }
     }
-    catch(err)
-    {
-      console.log("Error occurred while getting expenses for the group "+err);
+    catch (err) {
+      console.log("Error occurred while getting expenses for the group " + err);
     }
   }
 

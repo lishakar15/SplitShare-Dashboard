@@ -2,7 +2,7 @@ import React from "react";
 import { GiReceiveMoney } from "react-icons/gi";
 import UserAvatarLabel from "../../UserAvatarLabel";
 import { useAtom, useAtomValue } from "jotai";
-import { defaultPaidUserAtom } from "../../atoms/ExpenseAtom";
+import { defaultPaidUserAtom, totalExpenseAmountAtom } from "../../atoms/ExpenseAtom";
 import { paidUsersAtom } from "../../atoms/ExpenseAtom";
 import { useEffect } from "react";
 import {
@@ -19,11 +19,12 @@ const SinglePaidUser = ({ setIsMultiPayer }) => {
   const defaultPayer = useAtomValue(defaultPaidUserAtom);
   const [paidUsers, setPaidUsers] = useAtom(paidUsersAtom);
   const groupMembers = useAtomValue(groupMembersAtom);
+  const totalAmount = useAtomValue(totalExpenseAmountAtom);
 
   const handleChangePayer = (changedUser) => {
 
     if (changedUser !== null) {
-      setPaidUsers([{ ...changedUser, paidAmount: 0 }]);
+      setPaidUsers([{ ...changedUser, paidAmount: totalAmount}]);
     }
     else {
       setPaidUsers([])
@@ -35,7 +36,14 @@ const SinglePaidUser = ({ setIsMultiPayer }) => {
     setIsMultiPayer(true);
   };
   useEffect(() => {
-    setPaidUsers(defaultPayer ? [defaultPayer] : []);
+    if(!paidUsers || paidUsers.length === 0)
+    {
+      setPaidUsers(defaultPayer ? [defaultPayer] : []);
+      setIsMultiPayer(false)
+    }
+    else if(paidUsers.length > 1){
+      setIsMultiPayer(true);
+    }
   }, []);
   
   return (
@@ -54,7 +62,7 @@ const SinglePaidUser = ({ setIsMultiPayer }) => {
             <UserAvatarLabel userName={paidUsers[0].userName} size={"xs"} />
           ) : (
             <Typography sx={{ whiteSpace: "nowrap", color: "red" }}>
-              Non one
+              No one
             </Typography>
           )}
         </Box>

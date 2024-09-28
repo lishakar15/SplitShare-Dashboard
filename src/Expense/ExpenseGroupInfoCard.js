@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   AvatarGroup,
   Box,
@@ -13,10 +13,17 @@ import { GROUP_OWE_SUMMARY } from "../data/GroupOwedData";
 import GroupOweSummaryChip from "../Group/GroupOweSummaryChip";
 import SettleUpButton from "../SettleUpButton";
 import AddExpenseButton from "./Create Expense/AddExpenseButton";
+import { useSetAtom } from "jotai";
+import { currentGroupDataAtom } from "../atoms/GroupAtom";
 
 const ExpenseGroupInfoCard = ({ groupData }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const setGroupData = useSetAtom(currentGroupDataAtom);
+
+  useEffect(() =>{
+    setGroupData(groupData);
+  },[groupData])
 
   return groupData ?
     (
@@ -73,7 +80,7 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
               width: isSmallScreen ? "100%" : "auto",
             }}
           >
-            <AddExpenseButton groupData={groupData} />
+            <AddExpenseButton/>
             <SettleUpButton />
           </Box>
         </CardContent>

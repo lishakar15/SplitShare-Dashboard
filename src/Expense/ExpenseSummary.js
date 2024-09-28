@@ -43,10 +43,10 @@ export default function ExpenseSummary({ expense }) {
      const balance = getUserPaidAmount(userId) - getUserShareAmount(userId);
      if(balance>0)
      {
-      return <Typography sx={{color:"#4caf50"}}>₹50.00</Typography>
+      return <Typography sx={{color:"#4caf50"}}>₹{balance.toFixed(2)}</Typography>
      }
 
-     return <Typography sx={{color:"red"}}>- ₹50.00</Typography>
+     return <Typography sx={{color:"red"}}>- ₹{balance.toFixed(2)}</Typography>
   };
   return (
     <TableContainer component={Paper} >

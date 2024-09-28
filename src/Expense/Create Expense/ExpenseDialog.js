@@ -1,5 +1,5 @@
 import * as React from "react";
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import InputAdornment from "@mui/material/InputAdornment";
 import {
   Dialog,
@@ -14,11 +14,12 @@ import {
   Grid,
   Typography,
   Divider,
+  Box,
 } from "@mui/material";
 import PaidUsersSection from "./PaidUsersSection";
 import SplitAmountSection from "./SplitAmountSection";
 import { backendService } from "../../services/backendServices";
-import { useAtom,useAtomValue,useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import {
   defaultPaidUserAtom,
   totalExpenseAmountAtom,
@@ -27,10 +28,10 @@ import {
   splitTypeAtom,
 } from "../../atoms/ExpenseAtom";
 
-import { groupMembersAtom } from "../../atoms/GroupAtom";
+import { currentGroupDataAtom, groupMembersAtom } from "../../atoms/GroupAtom";
 import { loggedInUserAtom } from "../../atoms/UserAtom";
 
-function ExpenseDialog({ open, onClose, isModReq, expenseData, groupData}) {
+function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses}) {
   const [isLoading, setIsLoading] = useState(false);
   const [expenseId, setExpenseId] = useState(null);
   const [totalAmount, setTotalAmount] = useAtom(totalExpenseAmountAtom);
@@ -45,48 +46,59 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, groupData}) {
   const [splitType, setSplitType] = useAtom(splitTypeAtom);
   const loggedInUser = useAtomValue(loggedInUserAtom);
   const setGroupMembers = useSetAtom(groupMembersAtom);
+  const groupData = useAtomValue(currentGroupDataAtom);
   const [groupId, setGroupId] = useState(null);
   const [createdBy, setCreatedBy] = useState(loggedInUser.userId);
 
+  const defaultParticipant = {
+    userId: loggedInUser.userId,
+    userName: loggedInUser.userName,
+    shareAmount: totalAmount,
+  };
+
+  const defaultPayer = {
+    userId: loggedInUser.userId,
+    userName: loggedInUser.userName,
+    paidAmount: totalAmount
+  };
   useEffect(() => {
-    if (isModRequest && expenseData) {
+    if (isModRequest && expenseData && open) {
       populateExpenseData(expenseData);
     }
-  }, [isModRequest, expenseData]);
+  }, [isModRequest, expenseData, open]);
 
   useEffect(() => {
-    if(groupData){
+    if (groupData) {
       setGroupMembers(groupData.groupMembers);
     }
-  },[groupData]);
+  }, [groupData]);
 
-  useEffect(()=>{
-    const defaultParticipant = {
-      userId: loggedInUser.userId,
-      userName: loggedInUser.userName,
-      shareAmount: totalAmount,
-    };
-    setParticipantShareList([defaultParticipant]);
-    
-    const defaultPayer = {
-      userId: loggedInUser.userId,
-      userName: loggedInUser.userName,
-      paidAmount:totalAmount
+  useEffect(() => {
+    if (!isModReq) {
+      setParticipantShareList([defaultParticipant]);
+      setDefaultPayer(defaultPayer)
     }
-    setDefaultPayer(defaultPayer)
-  },[])
+  }, [])
 
   const handleSave = async () => {
     const expenseRequest = createExpenseRequest();
 
     if (validateExpenseRequest(expenseRequest)) {
       setIsLoading(true);
+      let isSavedSuccessfully = false;
       try {
-        const isSavedSuccessfully = await backendService.saveExpenseDetails(expenseRequest);
+        if (isModReq) {
+          isSavedSuccessfully = await backendService.saveExpenseDetails(expenseRequest);
+        }
+        else {
+          isSavedSuccessfully = await backendService.saveExpenseDetails(expenseRequest);
+        }
+
         if (isSavedSuccessfully) {
           console.log("Saved successfully");
           // Show success message in MUI snackbar
-          handleClose();
+          console.log(refreshExpenses);
+          refreshExpenses();
         } else {
           console.log("Error occurred while saving data");
           // Optionally display error snackbar
@@ -95,11 +107,33 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, groupData}) {
         console.error("Error during save:", error);
       } finally {
         setIsLoading(false);
+        handleClose();
       }
     } else {
       console.log("Validation failed");
     }
   };
+
+  const handleDeleteExpense = async (expenseId) => {
+    try {
+      const isDeleted = await backendService.deleteExpense(expenseId, loggedInUser.userId)
+      if (isDeleted) {
+        //Show Success Snack Bar
+        console.log(refreshExpenses);
+        refreshExpenses();
+      }
+      else {
+        //Show Error Snack Bar
+        alert("not deleted")
+      }
+    }
+    catch (err) {
+      console.log(err);
+    }
+    finally {
+      handleClose();
+    }
+  }
 
   const createExpenseRequest = () => {
     const participantShares = participantShareList.map((participant) => {
@@ -111,6 +145,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, groupData}) {
     });
 
     return {
+      expenseId,
       groupId,
       paidUsers,
       totalAmount,
@@ -140,8 +175,8 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, groupData}) {
 
   const invalidateAtoms = () => {
     setTotalAmount(0);
-    setParticipantShareList([]);
-    setPaidUsers([]);
+    setParticipantShareList([defaultParticipant]);
+    setPaidUsers([defaultPayer]);
     setSplitType("EQUAL"); // Default Split Type
   };
 
@@ -156,7 +191,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, groupData}) {
       setExpenseDescription(expense.expenseDescription);
       setTotalAmount(expense.totalAmount);
       const dateString = expense.spentOnDate;
-      const formattedDate = dateString.split("T")[0];
+      const formattedDate = dateString ? dateString.split("T")[0] : null;
       setSpentOnDate(formattedDate);
       setCreateDate(expense.createDate);
       setCategory(expense.category);
@@ -220,10 +255,17 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, groupData}) {
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose} disabled={isLoading}>Cancel</Button>
-        <Button onClick={handleSave} variant="contained" color="primary" disabled={isLoading}>
-          {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', m: 1 }}>
+          <Button onClick={() => handleDeleteExpense(expenseId)} variant="contained" color="error" disabled={isLoading || !isModReq}>
+            Delete
+          </Button>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button onClick={handleClose} variant="outlined" disabled={isLoading}>Cancel</Button>
+            <Button onClick={handleSave} variant="contained" color="primary" disabled={isLoading}>
+              {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}
+            </Button>
+          </Box>
+        </Box>
       </DialogActions>
     </Dialog>
   );

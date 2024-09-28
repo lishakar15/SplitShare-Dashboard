@@ -33,8 +33,8 @@ const ExpenseList = ({ groupId }) => {
   const [seletedExpense, setSelectedExpense] = useState(null);
   const [exenseList, setExpenseList] = useState([]);
 
-  const handleModifyExpense = (selectedExpenseId) => {
-    //Loop throug the acual data and set the selected Expense
+  const handleModifyExpense = (event, selectedExpenseId) => {
+    event.stopPropagation()
     setSelectedExpense(exenseList.find((expense) => expense.expenseId === selectedExpenseId));
     setIsOpenExpenseDialog(true);
   };
@@ -42,21 +42,21 @@ const ExpenseList = ({ groupId }) => {
     setIsOpenExpenseDialog(false);
   };
 
-  useEffect(() => {
-
-    const getExpenses = async () => {
-      if (groupId) {
-        const expenses = await backendService.getExpensesByGroupId(groupId);
-        setExpenseList(expenses);
-      }
+  const fetchExpenses = async () => {
+    if (groupId) {
+      const expenses = await backendService.getExpensesByGroupId(groupId);
+      setExpenseList(expenses);
     }
-    getExpenses()
+  }
+
+  useEffect(() => {
+    fetchExpenses()
   }, [groupId]);
   return (
     <>
       {exenseList ? (
         exenseList.map((expense) => (
-          <Accordion>
+          <Accordion key={expense.expenseId}>
             <AccordionSummary aria-controls="panel2-content" id="panel2-header">
               <Box
                 container
@@ -140,7 +140,7 @@ const ExpenseList = ({ groupId }) => {
                 }}
               >
                 <ModeEditOutlineOutlinedIcon
-                  onClick={() => handleModifyExpense(expense.expenseId)}
+                  onClick={(event) => handleModifyExpense(event, expense.expenseId)}
                 />
               </Box>
             </AccordionSummary>
@@ -220,6 +220,7 @@ const ExpenseList = ({ groupId }) => {
         onClose={handleExpenseDialogClose}
         isModReq={true}
         expenseData={seletedExpense}
+        refreshExpenses ={fetchExpenses}
       />
     </>
   );
