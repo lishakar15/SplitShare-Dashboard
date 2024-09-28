@@ -16,7 +16,23 @@ export const backendService = {
     }
     return isExpenseCreated;
   },
-  //Write Update here
+
+  async updateExpense(expense) {
+    let isUpdated = false;
+    try {
+      const response = await axios.put("http://localhost:8085/expense/update-expense", expense);
+      if (response.status === 200) {
+        isUpdated = true;
+      }
+    }
+    catch (err) {
+      console.log(`Error occurred while updating Expense ${expense.expenseId}` + err);
+      throw err;
+    }
+    finally {
+      return isUpdated;
+    }
+  },
 
   async deleteExpense(expenseId, deletedBy) {
     let isDeleted = false;
@@ -33,7 +49,7 @@ export const backendService = {
       console.log(`Error occurred while deleting the expense ${expenseId}` + err);
       throw err;
     }
-    finally{
+    finally {
       return isDeleted;
     }
   },

@@ -25,6 +25,8 @@ import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 import CommentSection from "./CommentSection";
 import ExpenseDialog from "./Create Expense/ExpenseDialog";
 import { backendService } from "../services/backendServices";
+import { useAtomValue } from "jotai";
+import { loggedInUserAtom } from "../atoms/UserAtom";
 
 const ExpenseList = ({ groupId }) => {
   const theme = useTheme();
@@ -32,6 +34,7 @@ const ExpenseList = ({ groupId }) => {
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
   const [seletedExpense, setSelectedExpense] = useState(null);
   const [exenseList, setExpenseList] = useState([]);
+  const loggedInUser = useAtomValue(loggedInUserAtom);
 
   const handleModifyExpense = (event, selectedExpenseId) => {
     event.stopPropagation()
@@ -113,7 +116,7 @@ const ExpenseList = ({ groupId }) => {
                     <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
                       <ExpenseOweSummaryChip
                         expense={expense}
-                        loggedInUserId={101}
+                        loggedInUserId={loggedInUser ? loggedInUser.userId : 0}
                       />
                     </Box>
                   </Box>

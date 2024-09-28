@@ -31,12 +31,13 @@ import {
 import { currentGroupDataAtom, groupMembersAtom } from "../../atoms/GroupAtom";
 import { loggedInUserAtom } from "../../atoms/UserAtom";
 
-function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses}) {
+function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }) {
   const [isLoading, setIsLoading] = useState(false);
   const [expenseId, setExpenseId] = useState(null);
   const [totalAmount, setTotalAmount] = useAtom(totalExpenseAmountAtom);
   const [expenseDescription, setExpenseDescription] = useState("");
-  const [spentOnDate, setSpentOnDate] = useState(null);
+  const today = new Date().toISOString().split('T')[0];
+  const [spentOnDate, setSpentOnDate] = useState(today);
   const [createDate, setCreateDate] = useState(null);
   const [category, setCategory] = useState("");
   const [isModRequest, setIsModRequest] = useState(isModReq);
@@ -88,7 +89,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses})
       let isSavedSuccessfully = false;
       try {
         if (isModReq) {
-          isSavedSuccessfully = await backendService.saveExpenseDetails(expenseRequest);
+          isSavedSuccessfully = await backendService.updateExpense(expenseRequest);
         }
         else {
           isSavedSuccessfully = await backendService.saveExpenseDetails(expenseRequest);

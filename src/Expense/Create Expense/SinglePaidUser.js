@@ -45,6 +45,15 @@ const SinglePaidUser = ({ setIsMultiPayer }) => {
       setIsMultiPayer(true);
     }
   }, []);
+
+  useEffect(()=>{
+    setPaidUsers((prev) => 
+      prev.map((user) => ({
+        ...user, 
+        paidAmount: totalAmount  // Set the new totalAmount for every user
+      }))
+    );
+  },[totalAmount]);
   
   return (
     <>
