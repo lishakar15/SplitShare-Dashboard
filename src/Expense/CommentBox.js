@@ -1,11 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { TextField, Box, Button } from "@mui/material";
 
 function CommentBox({ saveComments }) {
   const [commentText, setCommentText] = useState(null);
 
-  const handlePostComment = () => {
-    saveComments(commentText);
+  const handlePostComment = (event) => {
+    if (commentText !== "") {
+      saveComments(commentText);
+      setCommentText("");
+    }
   };
 
   return (

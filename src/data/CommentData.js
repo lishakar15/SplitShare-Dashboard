@@ -2,7 +2,7 @@ export const COMMENTS_DATA = [
   {
     commentId:1,
     settlementId: null,
-    expenseId: 1,
+    expenseId: 2,
     groupId: 1,
     commentedBy: 1,
     userName: "Sovon",
