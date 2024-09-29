@@ -12,18 +12,21 @@ import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutl
 import { useTheme } from "@mui/material/styles";
 import TimelineIcon from "@mui/icons-material/Timeline";
 import PaymentsIcon from "@mui/icons-material/Payments";
-import { SETTLEMENT_DATA } from "../data/SettlementData";
 import AvatarGenerator from "../AvatarGenerator";
 import PaymentDialog from "./PaymentDialog";
+import { backendService } from "../services/backendServices";
 
-const SettlementList = () => {
+const SettlementList = ({ groupId }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [selectedSettlement, setSelectedSettlement] = useState(null);
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
+  const [settlementList, setSettlementList] = useState([]);
+  const [expanded, setExpanded] = useState(null); // State to track the expanded accordion
 
-  const handleModifySettlement = (selectedSettlementId) => {
-    setSelectedSettlement(SETTLEMENT_DATA.find((settlement) => settlement.settlementId === selectedSettlementId));
+  const handleModifySettlement = (event, selectedSettlementId) => {
+    event.stopPropagation();
+    setSelectedSettlement(settlementList.find((settlement) => settlement.settlementId === selectedSettlementId));
     setIsOpenExpenseDialog(true);
   };
 
@@ -31,12 +34,30 @@ const SettlementList = () => {
     setSelectedSettlement(null);
     setIsOpenExpenseDialog(false);
   };
- 
+
+  useEffect(() => {
+    const getSettlements = async () => {
+      try {
+        const settlements = await backendService.getSettlements(groupId);
+        if (settlements) {
+          setSettlementList(settlements);
+        }
+      } catch (err) {
+        console.log("Error while fetching Settlements " + err);
+      }
+    };
+    getSettlements();
+  }, [groupId]);
+
+  const handleChange = (panel) => (event, isExpanded) => {
+    setExpanded(isExpanded ? panel : false);
+  };
+
   return (
     <>
-      {SETTLEMENT_DATA ? (
-        SETTLEMENT_DATA.map((settlement) => (
-          <Accordion>
+      {settlementList ? (
+        settlementList.map((settlement, index) => (
+          <Accordion key={settlement.settlementId} expanded={expanded === index} onChange={handleChange(index)}>
             <AccordionSummary aria-controls="panel2-content" id="panel2-header">
               <Box
                 container
@@ -102,8 +123,8 @@ const SettlementList = () => {
                 }}
               >
                 <ModeEditOutlineOutlinedIcon
-                  onClick={() =>
-                    handleModifySettlement(settlement.settlementId)
+                  onClick={(event) =>
+                    handleModifySettlement(event, settlement.settlementId)
                   }
                 />
               </Box>
@@ -125,7 +146,7 @@ const SettlementList = () => {
                   </Typography>
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <CommentSection settlementId={settlement.settlementId} />
+                  {expanded === index && <CommentSection settlementId={settlement.settlementId} />}
                 </Grid>
               </Grid>
             </AccordionDetails>
@@ -136,7 +157,7 @@ const SettlementList = () => {
           sx={{
             display: "flex",
             justifyContent: "center",
-            alignItems: "ceneter",
+            alignItems: "center",
           }}
         >
           <Typography>You are all Settled up!!!</Typography>

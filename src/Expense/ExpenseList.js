@@ -32,15 +32,17 @@ const ExpenseList = ({ groupId }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
-  const [seletedExpense, setSelectedExpense] = useState(null);
-  const [exenseList, setExpenseList] = useState([]);
+  const [selectedExpense, setSelectedExpense] = useState(null);
+  const [expenseList, setExpenseList] = useState([]);
   const loggedInUser = useAtomValue(loggedInUserAtom);
+  const [expanded, setExpanded] = useState(false);
 
   const handleModifyExpense = (event, selectedExpenseId) => {
-    event.stopPropagation()
-    setSelectedExpense(exenseList.find((expense) => expense.expenseId === selectedExpenseId));
+    event.stopPropagation();
+    setSelectedExpense(expenseList.find((expense) => expense.expenseId === selectedExpenseId));
     setIsOpenExpenseDialog(true);
   };
+
   const handleExpenseDialogClose = () => {
     setIsOpenExpenseDialog(false);
   };
@@ -50,16 +52,21 @@ const ExpenseList = ({ groupId }) => {
       const expenses = await backendService.getExpensesByGroupId(groupId);
       setExpenseList(expenses);
     }
-  }
+  };
 
   useEffect(() => {
-    fetchExpenses()
+    fetchExpenses();
   }, [groupId]);
+
+  const handleAccordionChange = (index) => {
+    setExpanded(prev => (prev === index ? false : index));
+  };
+
   return (
     <>
-      {exenseList ? (
-        exenseList.map((expense) => (
-          <Accordion key={expense.expenseId}>
+      {expenseList.length > 0 ? (
+        expenseList.map((expense, index) => (
+          <Accordion key={expense.expenseId} onChange={() => handleAccordionChange(index)}>
             <AccordionSummary aria-controls="panel2-content" id="panel2-header">
               <Box
                 container
@@ -203,7 +210,7 @@ const ExpenseList = ({ groupId }) => {
                   </Typography>
                 </Grid>
               </Grid>
-              <CommentSection expenseId={expense.expenseId} />
+              {expanded === index && <CommentSection expenseId={expense.expenseId} />}
             </AccordionDetails>
           </Accordion>
         ))
@@ -212,7 +219,7 @@ const ExpenseList = ({ groupId }) => {
           sx={{
             display: "flex",
             justifyContent: "center",
-            alignItems: "ceneter",
+            alignItems: "center",
           }}
         >
           <Typography>You are all Settled up!!!</Typography>
@@ -222,8 +229,8 @@ const ExpenseList = ({ groupId }) => {
         open={isOpenExpenseDialog}
         onClose={handleExpenseDialogClose}
         isModReq={true}
-        expenseData={seletedExpense}
-        refreshExpenses ={fetchExpenses}
+        expenseData={selectedExpense}
+        refreshExpenses={fetchExpenses}
       />
     </>
   );

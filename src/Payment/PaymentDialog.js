@@ -15,14 +15,19 @@ import {
   Radio,
   Typography,
   InputAdornment,
+  Box,
 } from "@mui/material";
 import UserTransactionAvatar from "./UserTransactionAvatar";
+import { backendService } from "../services/backendServices";
+import { useAtomValue } from "jotai";
+import { loggedInUserAtom } from "../atoms/UserAtom";
 
 function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
 
   const [isLoading, setIsLoading] = useState(false);
   const [settlement, setSettlement] = useState({});
   const [isModRequest, setIsModRequest] = useState(isModReq);
+  const loggedInUser = useAtomValue(loggedInUserAtom);
 
   useEffect(() => {
     if (settlementReq) {
@@ -30,11 +35,54 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
     }
   }, [settlementReq]);
 
-  const handleSave = () => {
-    // Handle save logic here
-    setIsLoading(true)
-    onClose();
+  const handleSave = async () => {
+
+    try {
+      setIsLoading(true)
+      let isSettlementSaved = false;
+      if(isModReq)
+      {
+        isSettlementSaved = await backendService.updateSettlement(settlement);
+      }
+      else{
+        isSettlementSaved = await backendService.saveSettlement(settlement);
+      }
+      if (isSettlementSaved) {
+        //show Succcess Snack Bar
+      }
+      else {
+        //Error Snack Bar
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while saving Settlement data" + err);
+    }
+    finally {
+      setIsLoading(false)
+      onClose();
+    }
   };
+
+  const handleDeleteSettlement = async (settlementId) => {
+      try{
+          const isSettlementDeleted = await backendService.deleteSettlement(settlementId,loggedInUser.userId);
+          if(isSettlementDeleted)
+          {
+            //Show success Snack Bar
+          }
+          else{
+            //Show error Snack Bar
+          }
+      }
+      catch(err)
+      {
+        //Show Error Snack Bar
+        console.log("Error occurred while deleting Settlement "+settlementId);
+      }
+      finally {
+        onClose();
+      }
+  }
 
   const handleAmountChange = (e) => {
     setSettlement((prevVal) => ({
@@ -63,9 +111,9 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
       paymentMethod: e.target.value,
     }));
   };
-  
-  const getISOdate = (dateStr) =>{
-      return dateStr.split("T")[0];
+
+  const getISOdate = (dateStr) => {
+    return dateStr.split("T")[0];
   }
   return (
     <Dialog open={open} onClose={onClose}>
@@ -95,7 +143,7 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
             <TextField
               fullWidth
               type="date"
-              value={settlement.settlementDate ? getISOdate(settlement.settlementDate): ''}
+              value={settlement.settlementDate ? getISOdate(settlement.settlementDate) : ''}
               onChange={handleDateChange}
             />
           </Grid>
@@ -103,42 +151,56 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
             <Typography>Group</Typography>
             <FormControl fullWidth>
               <Select
-                value={settlement.groupName || ''}
-                onChange={handleGroupChange}
-                label="Within Group"
+                value={settlement.groupId || ''}
+                onChange={(e) => handleGroupChange(e.target.value)}
               >
-                <MenuItem value="Cognizant Team">Cognizant Team</MenuItem>
-                {/* Add other groups */}
+                <MenuItem key={settlement.groupId} value={settlement.groupId}>{settlement.groupName}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
           <Grid item xs={12}>
-            <FormControl component="fieldset">
-              <RadioGroup
-                row
-                value={settlement.paymentMethod || ''}
-                onChange={handlePaymentMethodChange}
-              >
-                <FormControlLabel
-                  value={isModRequest ? settlement.paymentMethod : "cash"}
-                  control={<Radio />}
-                  label="Cash"
-                />
-                <FormControlLabel
-                  value="UPI"
-                  control={<Radio />}
-                  label="UPI"
-                />
-              </RadioGroup>
-            </FormControl>
+            <Box sx={{ display: "flex", alignItems: "center" }}>
+              <Grid item xs={6}>
+                <Typography>Payment Method</Typography>
+              </Grid>
+              <Grid item xs={6}>
+                <FormControl component="fieldset">
+                  <RadioGroup
+                    row
+                    value={settlement.paymentMethod || ''}
+                    onChange={handlePaymentMethodChange}
+                  >
+                    <FormControlLabel
+                      value={'Cash'}
+                      name={"paymentType"}
+                      control={<Radio />}
+                      label="Cash"
+                    />
+                    <FormControlLabel
+                      value="UPI"
+                      name={"paymentType"}
+                      control={<Radio />}
+                      label="UPI"
+                    />
+                  </RadioGroup>
+                </FormControl>
+              </Grid>
+            </Box>
           </Grid>
         </Grid>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onClose}>Cancel</Button>
-        <Button onClick={handleSave} variant="contained" color="primary">
-          {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}
-        </Button>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', m: 1 }}>
+          <Button onClick={() => handleDeleteSettlement(settlement.settlementId)} variant="contained" color="error" disabled={isLoading || !isModReq}>
+            Delete
+          </Button>
+          <Box sx={{ display: "flex", gap: 2 }}>
+            <Button onClick={onClose} variant="outlined" disabled={isLoading}>Cancel</Button>
+            <Button onClick={handleSave} variant="contained" color="primary" disabled={isLoading}>
+              {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}
+            </Button>
+          </Box>
+        </Box>
       </DialogActions>
     </Dialog>
   );

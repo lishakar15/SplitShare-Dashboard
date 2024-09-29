@@ -14,7 +14,9 @@ export const backendService = {
       isExpenseCreated = false;
       console.log("Error occured while saving Expense details " + err);
     }
-    return isExpenseCreated;
+    finally {
+      return isExpenseCreated;
+    }
   },
 
   async updateExpense(expense) {
@@ -27,7 +29,6 @@ export const backendService = {
     }
     catch (err) {
       console.log(`Error occurred while updating Expense ${expense.expenseId}` + err);
-      throw err;
     }
     finally {
       return isUpdated;
@@ -47,7 +48,6 @@ export const backendService = {
     }
     catch (err) {
       console.log(`Error occurred while deleting the expense ${expenseId}` + err);
-      throw err;
     }
     finally {
       return isDeleted;
@@ -89,7 +89,6 @@ export const backendService = {
     try {
       const response = await axios.get(`http://localhost:8085/expense/get-expenses/${groupId}`);
       if (response.status === 200) {
-        console.log("resonse  = " + response);
         return response.data;
       }
       else {
@@ -99,6 +98,138 @@ export const backendService = {
     catch (err) {
       console.log("Error occurred while getting expenses for the group " + err);
     }
-  }
+  },
 
+  async saveSettlement(settlement) {
+    let isSaved = false;
+    try {
+      const response = await axios.post("http://localhost:8085/settlement/settleAmount", settlement);
+      if (response.status === 200) {
+        isSaved = true;
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while saving Settlement data " + err);
+      isSaved = false;
+    }
+    finally {
+      return isSaved;
+    }
+  },
+
+  async getSettlements(groupId) {
+    try {
+      const response = await axios.get(`http://localhost:8085/settlement//getAllSettlements/${groupId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while fetching settlements " + err);
+    }
+  },
+
+  async updateSettlement(settlement) {
+    let isSaved = false;
+    try {
+      const response = await axios.put("http://localhost:8085/settlement/updateSettlement", settlement);
+      if (response.status === 200) {
+        isSaved = true;
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while updating Settlement data " + err);
+      isSaved = false;
+    }
+    finally {
+      return isSaved;
+    }
+  },
+
+  async deleteSettlement(settlementId, loggedInUser) {
+    let isDeleted = false;
+    try {
+      const response = await axios.delete(`http://localhost:8085/settlement/deleteSettlement/${settlementId}/${loggedInUser}`)
+      if (response.status === 200) {
+        isDeleted = true
+      }
+      else {
+        throw Error(response.status);
+      }
+    }
+    catch (err) {
+      console.log(`Error occurred while deleting the settlement ${settlementId}` + err);
+    }
+    finally {
+      return isDeleted;
+    }
+  },
+
+  async getExpenseComments(expenseId){
+    try{
+        const response = await axios.get(`http://localhost:8085/comments/get-comments/expense/${expenseId}`);
+        if(response.status === 200){
+          return response.data;
+        }
+        else{
+          throw Error("Error fecthing comments "+response.status);
+        }
+    }
+    catch(err)
+    {
+      console.log("Error occurred while fecthing comments for expense "+expenseId);
+      throw err;
+    }
+  },
+  async getSettlementComments(settlementId){
+    try{
+        const response = await axios.get(`http://localhost:8085/comments/get-comments/settlement/${settlementId}`);
+        if(response.status === 200){
+          return response.data;
+        }
+        else{
+          throw Error("Error fecthing comments "+response.status);
+        }
+    }
+    catch(err)
+    {
+      console.log("Error occurred while fecthing comments for settlement "+settlementId);
+      throw err;
+    }
+  },
+
+  async postComments(comment){
+    let isSaved = false;
+    try{
+      const response = await axios.post("http://localhost:8085/comments/post-comment",comment);
+      if(response.status === 200){
+        isSaved = true;
+      }
+      else{
+        throw Error("Error saving comments"+response.status);
+      }
+    }
+    catch(err){
+      console.log("Error occurred while saving comments data "+err);
+    }
+    finally{
+      return isSaved;
+    }
+  },
+
+async deleteComment(commentId,loggedInUser){
+  let isDeleted = false;
+  try{
+    const response = await axios.delete(`http://localhost:8085/comments/delete-comment/${commentId}/${loggedInUser}`)
+  if(response.status === 200){
+    isDeleted = true;
+  }
+  }
+  catch{
+      console.log("Error occurred while deleting comment "+commentId);
+  }
+  finally{
+    return isDeleted;
+  }
+}
 };
