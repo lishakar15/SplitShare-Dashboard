@@ -25,7 +25,8 @@ const Expense = () => {
     },[groupId]);
   return (
     <>
-      <ExpenseGroupInfoCard groupData={groupData} />
+
+      {groupId && <ExpenseGroupInfoCard groupData={groupData} />}
       <ExpenseTabs groupId={groupId}/>
     </>
   );
