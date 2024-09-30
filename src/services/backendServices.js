@@ -129,6 +129,18 @@ export const backendService = {
     }
   },
 
+  async getSettlementsByUserId(userId) {
+    try {
+      const response = await axios.get(`http://localhost:8085/settlement/getAllUserSettlements/${userId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while fetching all settlements for a user " + err);
+    }
+  },
+
   async updateSettlement(settlement) {
     let isSaved = false;
     try {

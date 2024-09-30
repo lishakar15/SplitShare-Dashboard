@@ -15,6 +15,10 @@ import PaymentsIcon from "@mui/icons-material/Payments";
 import AvatarGenerator from "../AvatarGenerator";
 import PaymentDialog from "./PaymentDialog";
 import { backendService } from "../services/backendServices";
+import { useAtomValue } from "jotai";
+import { loggedInUserAtom } from "../atoms/UserAtom";
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import { Link } from "react-router-dom";
 
 const SettlementList = ({ groupId }) => {
   const theme = useTheme();
@@ -22,7 +26,8 @@ const SettlementList = ({ groupId }) => {
   const [selectedSettlement, setSelectedSettlement] = useState(null);
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
   const [settlementList, setSettlementList] = useState([]);
-  const [expanded, setExpanded] = useState(null); // State to track the expanded accordion
+  const loggedInUser = useAtomValue(loggedInUserAtom);
+  const [expanded, setExpanded] = useState(null);
 
   const handleModifySettlement = (event, selectedSettlementId) => {
     event.stopPropagation();
@@ -38,7 +43,13 @@ const SettlementList = ({ groupId }) => {
   useEffect(() => {
     const getSettlements = async () => {
       try {
-        const settlements = await backendService.getSettlements(groupId);
+        let settlements = [];
+        if (groupId) {
+          settlements = await backendService.getSettlements(groupId); //Get Group Settlements
+        }
+        else {
+          settlements = await backendService.getSettlementsByUserId(loggedInUser.userId); //Get User's all Settlements
+        }
         if (settlements) {
           setSettlementList(settlements);
         }
@@ -77,6 +88,14 @@ const SettlementList = ({ groupId }) => {
                     <b>{settlement.paidToUserName}</b>
                   </Typography>
                   <KeyboardArrowDownIcon />
+                  {!groupId && 
+                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1 }}>
+                    <GroupsOutlinedIcon />
+                    <Link style={{ textDecoration: "none" }} to={`/expenses/group/${settlement.groupId}`} onClick={(event)=>event.stopPropagation()}>
+                      <Typography sx={{ color: "gray", "&:hover": { textDecoration:"underline" } }}>{settlement.groupName}</Typography>
+                    </Link>
+                  </Box>
+                  }
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box sx={{ display: "flex", flexDirection: "column" }}>
