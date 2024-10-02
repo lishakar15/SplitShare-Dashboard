@@ -6,6 +6,8 @@ import Typography from "@mui/material/Typography";
 import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
 import { getSplitTypeIcon, getSplitTypeText } from "./SplitTypeService";
 import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
+import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
+import { Link } from "react-router-dom";
 import {
   AvatarGroup,
   Box,
@@ -48,10 +50,18 @@ const ExpenseList = ({ groupId }) => {
   };
 
   const fetchExpenses = async () => {
+    let expenses = [];
     if (groupId) {
-      const expenses = await backendService.getExpensesByGroupId(groupId);
+      expenses = await backendService.getExpensesByGroupId(groupId);
+    }
+    else{
+      expenses = await backendService.getAllExpensesByUserId(loggedInUser.userId);
+    }
+    if(expenses)
+    {
       setExpenseList(expenses);
     }
+
   };
 
   useEffect(() => {
@@ -90,6 +100,14 @@ const ExpenseList = ({ groupId }) => {
                     variant="outlined"
                     sx={{ ml: 1 }}
                   />
+                  {!groupId && 
+                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1, ml:2}}>
+                    <GroupsOutlinedIcon />
+                    <Link style={{ textDecoration: "none" }} to={`/expenses/group/${expense.groupId}`} onClick={(event)=>event.stopPropagation()}>
+                      <Typography sx={{ color: "gray", "&:hover": { textDecoration:"underline" } }}>{expense.groupName}</Typography>
+                    </Link>
+                  </Box>
+                  }
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                   <Box sx={{ display: "flex", flexDirection: "column" }}>

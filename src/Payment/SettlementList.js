@@ -66,7 +66,7 @@ const SettlementList = ({ groupId }) => {
 
   return (
     <>
-      {settlementList ? (
+      {settlementList && settlementList.length>0 ? (
         settlementList.map((settlement, index) => (
           <Accordion key={settlement.settlementId} expanded={expanded === index} onChange={handleChange(index)}>
             <AccordionSummary aria-controls="panel2-content" id="panel2-header">

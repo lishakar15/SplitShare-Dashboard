@@ -100,6 +100,22 @@ export const backendService = {
     }
   },
 
+  async getAllExpensesByUserId(userId){
+    try{
+      const response = await axios.get(`http://localhost:8085/expense/get-user-expenses/${userId}`);
+      if(response.status === 200){
+        return response.data;
+      }
+      else{
+        throw Error("Service Error "+response.status);
+      }
+    }
+    catch( err )
+    {
+      console.log("Error occurred while fetching all expenses getAllExpensesByUserId() "+err);
+    }
+  },
+
   async saveSettlement(settlement) {
     let isSaved = false;
     try {
