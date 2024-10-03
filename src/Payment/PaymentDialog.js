@@ -25,13 +25,23 @@ import { loggedInUserAtom } from "../atoms/UserAtom";
 function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
 
   const [isLoading, setIsLoading] = useState(false);
-  const [settlement, setSettlement] = useState({});
   const [isModRequest, setIsModRequest] = useState(isModReq);
   const loggedInUser = useAtomValue(loggedInUserAtom);
+  const today = new Date().toISOString().split('T')[0];
+  const [settlementId, setSettlementId] = useState(null);
+  const [groupId, setGroupId] = useState(null);
+  const [groupName, setGroupName] = useState(null);
+  const [paidBy, setPaidBy] = useState(0);
+  const [paidByUserName, setPaidByUserName] = useState(null);
+  const [paidTo, setPaidTo] = useState(0);
+  const [paidToUserName, setPaidToUserName] = useState(null);
+  const [amountPaid, setAmountPaid] = useState(0);
+  const [settlementDate, setSettlementDate] = useState(today)
+  const [paymentMethod, setPaymentMethod] = useState("cash");
 
   useEffect(() => {
     if (settlementReq) {
-      setSettlement(settlementReq);
+      unPackExpenseData(settlementReq);
     }
   }, [settlementReq]);
 
@@ -40,11 +50,11 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
     try {
       setIsLoading(true)
       let isSettlementSaved = false;
-      if(isModReq)
-      {
+      const settlement = populateExpenseData();
+      if (isModReq) {
         isSettlementSaved = await backendService.updateSettlement(settlement);
       }
-      else{
+      else {
         isSettlementSaved = await backendService.saveSettlement(settlement);
       }
       if (isSettlementSaved) {
@@ -63,53 +73,88 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
     }
   };
 
+  const populateExpenseData = () => {
+    if (settlementReq != null) {
+      const settlement = {
+        settlementId: settlementId,
+        groupId: groupId,
+        paidBy: paidBy,
+        paidTo: paidTo,
+        createdBy: loggedInUser.userId,
+        modifiedBy: isModReq ? loggedInUser.userId : null,
+        amountPaid: amountPaid,
+        paymentMethod: paymentMethod,
+        settlementDate: settlementDate,
+        lastUpdateDate: isModReq ? today : null,
+      }
+      return settlement;
+    }
+  }
+
+  const unPackExpenseData = (settlementRequest) => {
+    setSettlementId(settlementRequest.settlementId)
+    setGroupId(settlementRequest.groupId);
+    setGroupName(settlementRequest.groupName);
+    setPaidBy(settlementRequest.paidBy);
+    setPaidByUserName(settlementRequest.paidByUserName);
+    setPaidTo(settlementRequest.paidTo);
+    setPaidToUserName(settlementRequest.paidToUserName);
+    setAmountPaid(settlementRequest.amountPaid);
+    if(settlementRequest.paymentMethod )
+    {
+      setPaymentMethod(settlementRequest.paymentMethod);
+    }
+    if(settlementRequest.settlementDate)
+    {
+      const settleDate = settlementRequest.settlementDate.split('T')[0]
+      setSettlementDate(settleDate);
+    }
+
+
+  }
+
   const handleDeleteSettlement = async (settlementId) => {
-      try{
-          const isSettlementDeleted = await backendService.deleteSettlement(settlementId,loggedInUser.userId);
-          if(isSettlementDeleted)
-          {
-            //Show success Snack Bar
-          }
-          else{
-            //Show error Snack Bar
-          }
+    try {
+      const isSettlementDeleted = await backendService.deleteSettlement(settlementId, loggedInUser.userId);
+      if (isSettlementDeleted) {
+        //Show success Snack Bar
       }
-      catch(err)
-      {
-        //Show Error Snack Bar
-        console.log("Error occurred while deleting Settlement "+settlementId);
+      else {
+        //Show error Snack Bar
       }
-      finally {
-        onClose();
-      }
+    }
+    catch (err) {
+      //Show Error Snack Bar
+      console.log("Error occurred while deleting Settlement " + settlementId);
+    }
+    finally {
+      onClose();
+    }
   }
 
   const handleAmountChange = (e) => {
-    setSettlement((prevVal) => ({
-      ...prevVal,
-      amountPaid: e.target.value,
-    }));
+    setAmountPaid(e.target.value);
   };
 
   const handleDateChange = (e) => {
-    setSettlement((prevVal) => ({
-      ...prevVal,
-      settlementDate: e.target.value,
-    }));
+    setSettlementDate(e.target.value);
   };
 
   const handleGroupChange = (e) => {
-    setSettlement((prevVal) => ({
-      ...prevVal,
-      groupName: e.target.value,
-    }));
+    setGroupId(e.target.value);
   };
 
   const handlePaymentMethodChange = (e) => {
-    setSettlement((prevVal) => ({
-      ...prevVal,
-      paymentMethod: e.target.value,
-    }));
+    setPaymentMethod(e.target.value);
+  };
+  const handlePayerExchange = () => {
+
+    const tempPaidUserId = paidBy;
+    setPaidBy(paidTo);
+    setPaidTo(tempPaidUserId);
+    const tempPaidUserName = paidByUserName;
+    setPaidByUserName(paidToUserName);
+    setPaidToUserName(tempPaidUserName)
   };
 
   const getISOdate = (dateStr) => {
@@ -120,8 +165,9 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
       <DialogTitle>{isModReq ? "Modify Payment" : "New Payment"}</DialogTitle>
       <DialogContent>
         <UserTransactionAvatar
-          settlement={settlement}
-          setSettlement={setSettlement}
+          paidByUserName={paidByUserName}
+          paidToUserName={paidToUserName}
+          handlePayerExchange={handlePayerExchange}
         />
         <Grid container spacing={2}>
           <Grid item xs={12} md={6}>
@@ -129,7 +175,7 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
             <TextField
               fullWidth
               variant="outlined"
-              value={settlement.amountPaid || ''}
+              value={amountPaid}
               InputProps={{
                 startAdornment: (
                   <InputAdornment position="start">₹</InputAdornment>
@@ -143,7 +189,7 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
             <TextField
               fullWidth
               type="date"
-              value={settlement.settlementDate ? getISOdate(settlement.settlementDate) : ''}
+              value={settlementDate}
               onChange={handleDateChange}
             />
           </Grid>
@@ -151,10 +197,10 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
             <Typography>Group</Typography>
             <FormControl fullWidth>
               <Select
-                value={settlement.groupId || ''}
+                value={groupId}
                 onChange={(e) => handleGroupChange(e.target.value)}
               >
-                <MenuItem key={settlement.groupId} value={settlement.groupId}>{settlement.groupName}</MenuItem>
+                <MenuItem key={groupId} value={groupId}>{groupName}</MenuItem>
               </Select>
             </FormControl>
           </Grid>
@@ -167,17 +213,17 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
                 <FormControl component="fieldset">
                   <RadioGroup
                     row
-                    value={settlement.paymentMethod || ''}
+                    value={paymentMethod}
                     onChange={handlePaymentMethodChange}
                   >
                     <FormControlLabel
-                      value={'Cash'}
+                      value={'cash'}
                       name={"paymentType"}
                       control={<Radio />}
                       label="Cash"
                     />
                     <FormControlLabel
-                      value="UPI"
+                      value="upi"
                       name={"paymentType"}
                       control={<Radio />}
                       label="UPI"
@@ -191,7 +237,7 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
       </DialogContent>
       <DialogActions>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', m: 1 }}>
-          <Button onClick={() => handleDeleteSettlement(settlement.settlementId)} variant="contained" color="error" disabled={isLoading || !isModReq}>
+          <Button onClick={() => handleDeleteSettlement(settlementId)} variant="contained" color="error" disabled={isLoading || !isModReq}>
             Delete
           </Button>
           <Box sx={{ display: "flex", gap: 2 }}>

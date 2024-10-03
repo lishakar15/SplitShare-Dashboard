@@ -1,19 +1,41 @@
 import { Box, Avatar, Chip, Button, Divider } from '@mui/material';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Grid from '@mui/material/Grid';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import Typography from '@mui/material/Typography';
-import { USER_BALANCES } from '../data/BalanceData';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import AvatarGenerator from '../AvatarGenerator';
 import CustomSettleUpButton from '../Payment/CustomSettleUpButton';
+import { useAtom, useAtomValue } from 'jotai';
+import { loggedInUserAtom } from '../atoms/UserAtom';
+import { backendService } from '../services/backendServices';
 
 const BalanceCard = () => {
+
+  const loggedInUser = useAtomValue(loggedInUserAtom);
+  const [balanceList, setBalanceList] = useState(null);
+
+  useEffect(()=>{
+
+    const getBalances = async () =>{
+      try{
+        const balances = await backendService.getBalancesOfUser(loggedInUser.userId);
+        setBalanceList(balances);
+      }
+      catch(err){
+        console.log("Error fecthing Balances for user "+err);
+      }
+    }
+    getBalances();
+    
+  },[]);
+
+
   return (
     <Box sx={{ flexGrow: 1, }}>
       <Grid container spacing={2}>
-        {USER_BALANCES.map((balance) => (
+        {balanceList && balanceList.map((balance) => (
           <Grid item xs={12} sm={6} md={4} lg={4} xl={4} key={balance.userName}>
             <Card sx={{ border: '1px solid #e5e7eb', height: '100%', display: 'flex' }}>
               <CardContent sx={{ flexGrow: 1 }}>
@@ -32,7 +54,7 @@ const BalanceCard = () => {
                       {balance.userName}
                     </Typography>
                     <Chip
-                      label={balance.isOwed ? `Owes you ₹${balance.balanceAmount}` : `You owe ₹${Math.abs(balance.balanceAmount)}`}
+                      label={balance.isOwed ? `Owes you ₹${balance.balanceAmount.toFixed(2)}` : `You owe ₹${Math.abs(balance.balanceAmount).toFixed(2)}`}
                       color={balance.isOwed ? 'success' : 'error'}
                       size="small"
                       variant="outlined"
@@ -49,12 +71,12 @@ const BalanceCard = () => {
                     </Typography>
                   </Box>
                   <Typography color={balance.isOwed ? 'success' : 'error'}>
-                    {balance.isOwed ? '+' : '-'}₹{balance.balanceAmount}
+                    {balance.isOwed ? '+' : '-'}₹{balance.balanceAmount.toFixed(2)}
                   </Typography>
                 </Box>
 
                 {/** Settle Up Button */}
-                <CustomSettleUpButton/>
+                <CustomSettleUpButton balance={balance}/>
               </CardContent>
             </Card>
           </Grid>

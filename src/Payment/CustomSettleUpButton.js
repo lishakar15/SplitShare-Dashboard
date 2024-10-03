@@ -1,15 +1,44 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
 import PaymentDialog from './PaymentDialog';
-import { SETTLEMENT_DATA } from '../data/SettlementData';
+import { loggedInUserAtom } from '../atoms/UserAtom';
+import { useAtom, useAtomValue } from 'jotai';
 
-const CustomSettleUpButton = () => {
+const CustomSettleUpButton = ({ balance }) => {
    
   const [open, setOpen] = React.useState(false);
+  const [settlementRequset, setSettlementRequest] = useState(null); 
+  const loggedInUser = useAtomValue(loggedInUserAtom);
   const handleClickOpen = () => {
+    const settlementReq = createSettlementRequest();
+    if(settlementReq)
+    {
+      setSettlementRequest(settlementReq);
+    }
     setOpen(true);
   };
+
+  const createSettlementRequest = ()=>
+  {
+    if(balance)
+    {
+      const settlementReq = {
+        groupId : balance.groupId,
+        groupName : balance.groupName,
+        paidBy : balance.userId,
+        paidByUserName : balance.userName,
+        paidTo : balance.owesTo,
+        paidToUserName : balance.owesToUserName,
+        createdBy : loggedInUser.userId,
+        amountPaid : balance.balanceAmount,
+      }
+      return settlementReq;
+    }
+    else{
+      return null;
+    }
+  }
 
   const handleClose = () => {
     setOpen(false);
@@ -32,7 +61,7 @@ const CustomSettleUpButton = () => {
     <PaymentDialog
       open={open}
       onClose={handleClose}
-      settlementReq={SETTLEMENT_DATA[1]}
+      settlementReq={settlementRequset}
     />
   </Box>
   )

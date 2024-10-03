@@ -3,16 +3,8 @@ import { Box, Button, Typography } from "@mui/material";
 import AvatarGenerator from "../AvatarGenerator";
 import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
 
-const UserTransactionAvatar = ({ settlement, setSettlement }) => {
-  const handlePayerChange = () => {
-    setSettlement((prevVal) => ({
-      ...prevVal,
-      paidBy: prevVal.paidTo,
-      paidByUserName: prevVal.paidToUserName,
-      paidTo: prevVal.paidBy,
-      paidToUserName: prevVal.paidByUserName,
-    }));
-  };
+const UserTransactionAvatar = ({ paidByUserName, paidToUserName, handlePayerExchange }) => {
+  
 
   return (
     <>
@@ -25,16 +17,16 @@ const UserTransactionAvatar = ({ settlement, setSettlement }) => {
         }}
       >
         <Box sx={{ display: "flex", gap: 2 }}>
-          <AvatarGenerator userName={settlement.paidByUserName} size="md" />
-          <Button onClick={() => handlePayerChange()}>
+          <AvatarGenerator userName={paidByUserName} size="md" />
+          <Button onClick={() => handlePayerExchange()}>
             <SwapHorizIcon fontSize="large"></SwapHorizIcon>
           </Button>
-          <AvatarGenerator userName={settlement.paidToUserName} size="md" />
+          <AvatarGenerator userName={paidToUserName} size="md" />
         </Box>
       </Box>
       <Box sx={{ display: "flex", justifyContent: "center" }}>
         <Typography variant="h5" gutterBottom>
-          {settlement.paidByUserName} paid {settlement.paidToUserName}
+          {paidByUserName} paid {paidToUserName}
         </Typography>
       </Box>
     </>

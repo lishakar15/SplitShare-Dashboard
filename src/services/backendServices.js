@@ -259,5 +259,22 @@ async deleteComment(commentId,loggedInUser){
   finally{
     return isDeleted;
   }
+},
+
+async getBalancesOfUser(userId){
+  try{
+      const response = await axios.get(`http://localhost:8085/balance/getUserAllBalances/${userId}`);
+      if(response.status === 200){
+        return response.data;
+      }
+      else
+      {
+        throw Error("Error fetching Balance data "+response.status);
+      }
+  }
+  catch(err){
+    console.log("Error occurred while getting Balance data "+err);
+    throw err;
+  }
 }
 };

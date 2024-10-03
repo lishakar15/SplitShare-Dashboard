@@ -108,7 +108,7 @@ const SplitAmountSection = ({ groupData, setGroupId }) => {
            value={group}
            onChange={(e) => handleGroupChange(e.target.value)}
            >
-            {groupList.map((group)=> (
+            {groupList && groupList.map((group)=> (
                <MenuItem key ={group.groupId} value={group}>{groupData.groupName}</MenuItem>
             )
             )}
@@ -120,7 +120,7 @@ const SplitAmountSection = ({ groupData, setGroupId }) => {
         <Typography>Add Split</Typography>
         <FormControl fullWidth>
           <Select value={""} onChange={(e) => handleAddSplit(e.target.value)}>
-            {groupData && groupData.groupMembers.map((user) => (
+            {groupData && groupData.groupMembers && groupData.groupMembers.map((user) => (
               <MenuItem key={user.userId} value={user}>
                 <UserAvatarLabel userName={user.userName} size={"xs"} />
               </MenuItem>

@@ -25,7 +25,7 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
     setGroupData(groupData);
   },[groupData])
 
-  return groupData ?
+  return groupData &&
     (
       <Card sx={{ my: 2, border: "1px solid #e5e7eb" }} >
         <CardContent
@@ -85,10 +85,6 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
           </Box>
         </CardContent>
       </Card >
-    )
-    :
-    (
-      <></>
     )
 }
 
