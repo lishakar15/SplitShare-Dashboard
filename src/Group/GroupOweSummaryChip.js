@@ -18,7 +18,7 @@ const GroupOweSummaryChip = ({ currentGroupId, groupOweList }) => {
           label={
             groupOwe.isOwed
               ? `You get ₹${groupOwe.amount? groupOwe.amount.toFixed(2): 0.00}`
-              : `You owe ₹${groupOwe.amount? groupOwe.amount.toFixed(2): 0.00}`
+              : `You owe ₹${groupOwe.amount? Math.abs(groupOwe.amount).toFixed(2): 0.00}`
           }
           color={groupOwe.isOwed ? "success" : "error"}
           size="small"

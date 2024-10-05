@@ -10,6 +10,7 @@ import CustomSettleUpButton from '../Payment/CustomSettleUpButton';
 import { useAtom, useAtomValue } from 'jotai';
 import { loggedInUserAtom } from '../atoms/UserAtom';
 import { backendService } from '../services/backendServices';
+import { Link } from 'react-router-dom';
 
 const BalanceCard = () => {
 
@@ -35,13 +36,13 @@ const BalanceCard = () => {
   return (
     <Box sx={{ flexGrow: 1, }}>
       <Grid container spacing={2}>
-        {balanceList && balanceList.map((balance) => (
-          <Grid item xs={12} sm={6} md={4} lg={4} xl={4} key={balance.userName}>
+        {balanceList && balanceList.map((balance,index) => (
+          <Grid item xs={12} sm={6} md={4} lg={4} xl={4} key={index}>
             <Card sx={{ border: '1px solid #e5e7eb', height: '100%', display: 'flex' }}>
               <CardContent sx={{ flexGrow: 1 }}>
                 {/** First Line in card */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <AvatarGenerator userName={balance.userName}/>
+                  <AvatarGenerator userName={balance.userName !== loggedInUser.userName ? balance.userName : balance.owesToUserName}/>
                   <Box sx={{ ml: 1, flexShrink: 0 }}>
                     <Typography
                       sx={{
@@ -51,7 +52,7 @@ const BalanceCard = () => {
                         whiteSpace: 'nowrap',
                       }}
                     >
-                      {balance.userName}
+                      {balance.userName !== loggedInUser.userName ? balance.userName : balance.owesToUserName}
                     </Typography>
                     <Chip
                       label={balance.isOwed ? `Owes you ₹${balance.balanceAmount.toFixed(2)}` : `You owe ₹${Math.abs(balance.balanceAmount).toFixed(2)}`}
@@ -66,9 +67,9 @@ const BalanceCard = () => {
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
                   <Box sx={{ display: 'flex', alignItems: 'center' }}>
                     <GroupsOutlinedIcon  sx={{color:"gray"}}/>
-                    <Typography component="a" href="#" sx={{ ml: 1, color:"black",textDecoration:"none", '&:hover': { textDecoration: 'underline' }}}>
-                      {balance.groupName}
-                    </Typography>
+                    <Link style={{ textDecoration: "none" }} to={`/expenses/group/${balance.groupId}`} onClick={(event)=>event.stopPropagation()}>
+                      <Typography sx={{ color: "gray", "&:hover": { textDecoration:"underline" }, ml:1 }}>{balance.groupName}</Typography>
+                    </Link>
                   </Box>
                   <Typography color={balance.isOwed ? 'success' : 'error'}>
                     {balance.isOwed ? '+' : '-'}₹{balance.balanceAmount.toFixed(2)}

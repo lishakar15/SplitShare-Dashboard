@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
   AvatarGroup,
   Box,
@@ -9,21 +9,37 @@ import {
 } from "@mui/material";
 import { useTheme } from "@mui/material/styles";
 import AvatarGenerator from "../AvatarGenerator";
-import { GROUP_OWE_SUMMARY } from "../data/GroupOwedData";
 import GroupOweSummaryChip from "../Group/GroupOweSummaryChip";
 import SettleUpButton from "../SettleUpButton";
 import AddExpenseButton from "./Create Expense/AddExpenseButton";
-import { useSetAtom } from "jotai";
+import { useAtomValue, useSetAtom } from "jotai";
 import { currentGroupDataAtom } from "../atoms/GroupAtom";
+import { backendService } from "../services/backendServices";
+import { loggedInUserAtom } from "../atoms/UserAtom";
 
 const ExpenseGroupInfoCard = ({ groupData }) => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   const setGroupData = useSetAtom(currentGroupDataAtom);
+  const loggedInUser = useAtomValue(loggedInUserAtom);
+  const [balanceSummaryList, setBalanceSummaryList] = useState(null);
 
-  useEffect(() =>{
+  useEffect(() => {
     setGroupData(groupData);
-  },[groupData])
+    fetchBalanceSummary();
+  }, [groupData])
+
+  const fetchBalanceSummary = async () => {
+    try {
+      const response = await backendService.getGroupBalanceSummary(groupData.groupId, loggedInUser.userId);
+      if (response) {
+        setBalanceSummaryList(response);
+      }
+    }
+    catch (err) {
+      console.log("Error fecthing user balance summary in group " + err);
+    }
+  }
 
   return groupData &&
     (
@@ -68,10 +84,13 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
                   ))}
                 </AvatarGroup>
               </Box>
-              <GroupOweSummaryChip
+              {balanceSummaryList && 
+                <GroupOweSummaryChip
                 currentGroupId={groupData.groupId}
-                groupOweList={GROUP_OWE_SUMMARY}
+                groupOweList={balanceSummaryList}
               />
+              }
+              
             </Box>
           </Box>
           <Box
@@ -80,7 +99,7 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
               width: isSmallScreen ? "100%" : "auto",
             }}
           >
-            <AddExpenseButton/>
+            <AddExpenseButton />
             <SettleUpButton />
           </Box>
         </CardContent>
