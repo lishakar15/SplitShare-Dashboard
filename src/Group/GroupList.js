@@ -7,7 +7,6 @@ import {
   Typography,
 } from "@mui/material";
 import AvatarGenerator from "../AvatarGenerator";
-import { GROUP_OWE_SUMMARY } from "../data/GroupOwedData";
 import GroupOweSummaryChip from "./GroupOweSummaryChip";
 import { useNavigate } from "react-router-dom";
 import { backendService } from "../services/backendServices";
@@ -16,41 +15,53 @@ import { loggedInUserAtom } from "../atoms/UserAtom";
 
 const GroupList = () => {
 
-  const [groupsData,setGroupsData] = useState(null);
+  const [groupsData, setGroupsData] = useState(null);
+  const [groupsOweSummaryList, setGroupsOweSummaryList] = useState(null);
   const navigate = useNavigate();
   const loggedInUser = useAtomValue(loggedInUserAtom);
 
   const handleGroupClick = (groupId) => {
     navigate(`/expenses/group/${groupId}`)
   };
-  
+
 
   useEffect(() => {
     const fetchGroupsData = async () => {
-        try {
-            const response = await backendService.getGroupsDataByUserId(loggedInUser.userId);
-            setGroupsData(response);
-        } catch (error) {
-            console.error("Error fetching groups data: ", error);
+      try {
+        const response = await backendService.getGroupsDataByUserId(loggedInUser.userId);
+        if (response) {
+          setGroupsData(response);
         }
+      } catch (error) {
+        console.error("Error fetching groups data: ", error);
+      }
     };
 
     fetchGroupsData();
-}, [loggedInUser.userId]);
+  }, []);
+
+  useEffect(() => {
+    const fetchoGroupSummaryData = async () => {
+      try {
+        const response = await backendService.getAllGroupBalanceSummary(loggedInUser.userId);
+        setGroupsOweSummaryList(response)
+      }
+      catch (err) {
+        console.log("Error fecthing groups balance summary data");
+      }
+    }
+    fetchoGroupSummaryData();
+  }, []);
 
 
-  const getGroupOwe = (currentGroup)=>
-  {
-    const groupOwe = GROUP_OWE_SUMMARY.find(((currentGroup.groupId)));
-  }
   return (
     <>
       {groupsData ? (
-        groupsData.map((group) => (
-          <Card sx={{ my: 2, border: "1px solid #e5e7eb" }}>
+        groupsData.map((group, index) => (
+          <Card key={index} sx={{ my: 2, border: "1px solid #e5e7eb" }}>
             <>
               <CardContent
-                onClick={()=>handleGroupClick(group.groupId)}
+                onClick={() => handleGroupClick(group.groupId)}
                 sx={{
                   px: 3,
                   display: "flex",
@@ -92,7 +103,7 @@ const GroupList = () => {
                   </Box>
                 </Box>
                 <Box>
-                    <GroupOweSummaryChip currentGroupId={group.groupId} groupOweList={GROUP_OWE_SUMMARY}/>
+                  {groupsOweSummaryList && <GroupOweSummaryChip currentGroupId={group.groupId} groupOweList={groupsOweSummaryList} />}
                 </Box>
               </CardContent>
             </>

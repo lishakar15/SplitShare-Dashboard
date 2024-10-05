@@ -4,6 +4,7 @@ import ExpenseTabs from "./ExpenseTabs";
 import { useParams } from "react-router-dom";
 import { backendService } from "../services/backendServices";
 import ExpenseSettlementBar from "./ExpenseSettlementBar";
+import GroupBalanceCardsSection from "../Group/GroupBalanceCardsSection";
 
 const Expense = () => {
   const { groupId } = useParams();
@@ -26,7 +27,12 @@ const Expense = () => {
   return (
     <>
 
-      {groupId ? <ExpenseGroupInfoCard groupData={groupData} /> : <ExpenseSettlementBar />}
+      {groupId ?
+        <>
+          <ExpenseGroupInfoCard groupData={groupData} />
+          <GroupBalanceCardsSection groupId={groupId} />
+        </>
+        : <ExpenseSettlementBar />}
       <ExpenseTabs groupId={groupId} />
     </>
   );

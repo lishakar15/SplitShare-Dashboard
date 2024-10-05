@@ -99,7 +99,7 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
     setPaidByUserName(settlementRequest.paidByUserName);
     setPaidTo(settlementRequest.paidTo);
     setPaidToUserName(settlementRequest.paidToUserName);
-    setAmountPaid(settlementRequest.amountPaid);
+    setAmountPaid(settlementRequest.amountPaid ? settlementRequest.amountPaid.toFixed(2): 0.00);
     if(settlementRequest.paymentMethod )
     {
       setPaymentMethod(settlementRequest.paymentMethod);
