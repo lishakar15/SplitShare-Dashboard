@@ -100,19 +100,18 @@ export const backendService = {
     }
   },
 
-  async getAllExpensesByUserId(userId){
-    try{
+  async getAllExpensesByUserId(userId) {
+    try {
       const response = await axios.get(`http://localhost:8085/expense/get-user-expenses/${userId}`);
-      if(response.status === 200){
+      if (response.status === 200) {
         return response.data;
       }
-      else{
-        throw Error("Service Error "+response.status);
+      else {
+        throw Error("Service Error " + response.status);
       }
     }
-    catch( err )
-    {
-      console.log("Error occurred while fetching all expenses getAllExpensesByUserId() "+err);
+    catch (err) {
+      console.log("Error occurred while fetching all expenses getAllExpensesByUserId() " + err);
     }
   },
 
@@ -193,88 +192,147 @@ export const backendService = {
     }
   },
 
-  async getExpenseComments(expenseId){
-    try{
-        const response = await axios.get(`http://localhost:8085/comments/get-comments/expense/${expenseId}`);
-        if(response.status === 200){
-          return response.data;
-        }
-        else{
-          throw Error("Error fecthing comments "+response.status);
-        }
+  async getExpenseComments(expenseId) {
+    try {
+      const response = await axios.get(`http://localhost:8085/comments/get-comments/expense/${expenseId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fecthing comments " + response.status);
+      }
     }
-    catch(err)
-    {
-      console.log("Error occurred while fecthing comments for expense "+expenseId);
+    catch (err) {
+      console.log("Error occurred while fecthing comments for expense " + expenseId);
       throw err;
     }
   },
-  async getSettlementComments(settlementId){
-    try{
-        const response = await axios.get(`http://localhost:8085/comments/get-comments/settlement/${settlementId}`);
-        if(response.status === 200){
-          return response.data;
-        }
-        else{
-          throw Error("Error fecthing comments "+response.status);
-        }
+  async getSettlementComments(settlementId) {
+    try {
+      const response = await axios.get(`http://localhost:8085/comments/get-comments/settlement/${settlementId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fecthing comments " + response.status);
+      }
     }
-    catch(err)
-    {
-      console.log("Error occurred while fecthing comments for settlement "+settlementId);
+    catch (err) {
+      console.log("Error occurred while fecthing comments for settlement " + settlementId);
       throw err;
     }
   },
 
-  async postComments(comment){
+  async postComments(comment) {
     let isSaved = false;
-    try{
-      const response = await axios.post("http://localhost:8085/comments/post-comment",comment);
-      if(response.status === 200){
+    try {
+      const response = await axios.post("http://localhost:8085/comments/post-comment", comment);
+      if (response.status === 200) {
         isSaved = true;
       }
-      else{
-        throw Error("Error saving comments"+response.status);
+      else {
+        throw Error("Error saving comments" + response.status);
       }
     }
-    catch(err){
-      console.log("Error occurred while saving comments data "+err);
+    catch (err) {
+      console.log("Error occurred while saving comments data " + err);
     }
-    finally{
+    finally {
       return isSaved;
     }
   },
 
-async deleteComment(commentId,loggedInUser){
-  let isDeleted = false;
-  try{
-    const response = await axios.delete(`http://localhost:8085/comments/delete-comment/${commentId}/${loggedInUser}`)
-  if(response.status === 200){
-    isDeleted = true;
-  }
-  }
-  catch{
-      console.log("Error occurred while deleting comment "+commentId);
-  }
-  finally{
-    return isDeleted;
-  }
-},
+  async deleteComment(commentId, userId) {
+    let isDeleted = false;
+    try {
+      const response = await axios.delete(`http://localhost:8085/comments/delete-comment/${commentId}/${userId}`)
+      if (response.status === 200) {
+        isDeleted = true;
+      }
+    }
+    catch {
+      console.log("Error occurred while deleting comment " + commentId);
+    }
+    finally {
+      return isDeleted;
+    }
+  },
 
-async getBalancesOfUser(userId){
-  try{
+  async getBalancesOfUser(userId) {
+    try {
       const response = await axios.get(`http://localhost:8085/balance/getUserAllBalances/${userId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fetching Balance data " + response.status);
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while getting Balance data " + err);
+      throw err;
+    }
+  },
+
+  async getBalanceSummary(userId) {
+    try {
+      const response = await axios.get(`http://localhost:8085/balance/getBalanceSummary/${userId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fetching Balance Summary " + response.status);
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while getting Balance Summary for guest " + err);
+    }
+  },
+
+  async getBalancesOfUserInGroup(groupId, userId) {
+    try {
+      const response = await axios.get(`http://localhost:8085/balance/getGroupBalances/${groupId}/${userId}`)
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fetching User Balance " + response.status);
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while getting user balances in group " + err);
+    }
+  },
+
+  
+  async getGroupBalanceSummary(groupId, userId){
+    try{
+      const response = await axios.get(`http://localhost:8085/balance/getGroupBalanceSummary/${groupId}/${userId}`);
       if(response.status === 200){
         return response.data;
       }
-      else
-      {
-        throw Error("Error fetching Balance data "+response.status);
+      else{
+        throw Error("Error fetching User Balance " + response.status);
       }
-  }
-  catch(err){
-    console.log("Error occurred while getting Balance data "+err);
-    throw err;
-  }
-}
+    }
+    catch( err ){
+      console.log("Error occurred while getting Group Balance Summary for guest " + err);
+    }
+  },
+
+  async getAllGroupBalanceSummary(userId){
+    try{
+      const response = await axios.get(`http://localhost:8085/balance/getGroupBalanceSummary/${userId}`);
+      if(response.status === 200){
+        return response.data;
+      }
+      else{
+        throw Error("Error fetching User Balance " + response.status);
+      }
+    }
+    catch( err ){
+      console.log("Error occurred while getting Group Balance Summary for guest " + err);
+    }
+  },
+
 };
