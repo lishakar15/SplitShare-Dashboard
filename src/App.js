@@ -6,7 +6,6 @@ import Activity from "./Activity";
 import Friends from "./Friends";
 import Groups from "./Group/Groups";
 import Expense from "./Expense/Expenses";
-import PageNotFound from "./PageNotFound";
 import SideNavBar from "./SideNavBar";
 import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
@@ -46,7 +45,7 @@ function App() {
                   <Route path="/groups" element={<Groups />} />
                   <Route path="/expenses/" element={<Expense />} />
                   <Route path="/expenses/group/:groupId" element={<Expense />} />
-                  <Route path="*" element={<PageNotFound />} />
+                  <Route path="*" element={<Home />} />
                 </Routes>
               </Box>
             </Grid>

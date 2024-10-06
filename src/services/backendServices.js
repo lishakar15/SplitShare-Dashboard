@@ -48,6 +48,7 @@ export const backendService = {
     }
     catch (err) {
       console.log(`Error occurred while deleting the expense ${expenseId}` + err);
+      throw err;
     }
     finally {
       return isDeleted;
@@ -65,6 +66,7 @@ export const backendService = {
       }
     } catch (err) {
       console.log("Error occurred while getting groups data in getGroupsDataByUserId(): " + err);
+      throw err;
     }
   },
 
@@ -81,6 +83,7 @@ export const backendService = {
     }
     catch (err) {
       console.log("Error occurred while getting group data in  getGroupDataByGroupId():" + err);
+      throw err;
     }
 
   },
@@ -97,6 +100,7 @@ export const backendService = {
     }
     catch (err) {
       console.log("Error occurred while getting expenses for the group " + err);
+      throw err;
     }
   },
 
@@ -112,6 +116,7 @@ export const backendService = {
     }
     catch (err) {
       console.log("Error occurred while fetching all expenses getAllExpensesByUserId() " + err);
+      throw err;
     }
   },
 
@@ -138,9 +143,13 @@ export const backendService = {
       if (response.status === 200) {
         return response.data;
       }
+      else{
+        throw Error("Error fetching settlements "+response.status);
+      }
     }
     catch (err) {
       console.log("Error occurred while fetching settlements " + err);
+      throw err;
     }
   },
 
@@ -150,9 +159,13 @@ export const backendService = {
       if (response.status === 200) {
         return response.data;
       }
+      else{
+        throw Error("Error fecthing user settlements "+response.status)
+      }
     }
     catch (err) {
       console.log("Error occurred while fetching all settlements for a user " + err);
+      throw err;
     }
   },
 
@@ -179,9 +192,6 @@ export const backendService = {
       const response = await axios.delete(`http://localhost:8085/settlement/deleteSettlement/${settlementId}/${loggedInUser}`)
       if (response.status === 200) {
         isDeleted = true
-      }
-      else {
-        throw Error(response.status);
       }
     }
     catch (err) {
@@ -286,6 +296,7 @@ export const backendService = {
     }
     catch (err) {
       console.log("Error occurred while getting Balance Summary for guest " + err);
+      throw err;
     }
   },
 
@@ -301,6 +312,7 @@ export const backendService = {
     }
     catch (err) {
       console.log("Error occurred while getting user balances in group " + err);
+      throw err;
     }
   },
 
@@ -317,6 +329,7 @@ export const backendService = {
     }
     catch( err ){
       console.log("Error occurred while getting Group Balance Summary for guest " + err);
+      throw err;
     }
   },
 
@@ -332,7 +345,23 @@ export const backendService = {
     }
     catch( err ){
       console.log("Error occurred while getting Group Balance Summary for guest " + err);
+      throw err;
     }
   },
 
+  async loginUser(credentials){
+    try{
+      const response = await axios.post("http://localhost:8085/user//login-user",credentials);
+      if(response.status === 200){
+        return response.data;
+      }
+      else{
+        throw Error("Error validating login credentials "+ response.status);
+      }
+    }
+    catch( err ){
+      console.log("Error occurred while logging in user");
+      throw err;
+    }
+  }
 };

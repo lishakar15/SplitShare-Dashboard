@@ -21,7 +21,8 @@ const SearchBar = () => {
                 flex: 1,
                 display: "flex",
                 border: isSearchFocused ? "3px solid #e7eaf6" : "none",
-                borderRadius: "10px"
+                borderRadius: "10px",
+                
             }} onFocus={handleSearchFocus}
                 onBlur={handleSearchBlur}>
                 <IconButton type="button" sx={{ p: '10px' }} aria-label="search" >

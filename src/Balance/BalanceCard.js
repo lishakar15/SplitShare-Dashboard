@@ -42,7 +42,7 @@ const BalanceCard = () => {
               <CardContent sx={{ flexGrow: 1 }}>
                 {/** First Line in card */}
                 <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                  <AvatarGenerator userName={balance.userName !== loggedInUser.userName ? balance.userName : balance.owesToUserName}/>
+                  <AvatarGenerator userName={balance.userId !== loggedInUser.userId ? balance.userName : balance.owesToUserName}/>
                   <Box sx={{ ml: 1, flexShrink: 0 }}>
                     <Typography
                       sx={{
@@ -52,7 +52,7 @@ const BalanceCard = () => {
                         whiteSpace: 'nowrap',
                       }}
                     >
-                      {balance.userName !== loggedInUser.userName ? balance.userName : balance.owesToUserName}
+                      {balance.userId !== loggedInUser.userId ? balance.userName : balance.owesToUserName}
                     </Typography>
                     <Chip
                       label={balance.isOwed ? `Owes you ₹${balance.balanceAmount.toFixed(2)}` : `You owe ₹${Math.abs(balance.balanceAmount).toFixed(2)}`}

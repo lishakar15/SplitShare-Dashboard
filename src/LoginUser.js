@@ -18,7 +18,7 @@ const LoginUser = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
-    console.log({ email, password, rememberMe });
+    
   };
 
   return (
