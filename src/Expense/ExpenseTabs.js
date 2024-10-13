@@ -12,6 +12,7 @@ import PaymentIcon from '@mui/icons-material/Payment';
 import ExpenseList from "./ExpenseList";
 import SettlementList from "../Payment/SettlementList";
 import GroupMembers from "../GroupMembers";
+import ActivityList from "../ActivityList";
 const ExpenseTabs = ({groupId}) => {
   const [value, setValue] = useState("expenses");
   const handleChange = (event, newValue) => {
@@ -57,7 +58,7 @@ const ExpenseTabs = ({groupId}) => {
       </Box>
       <TabPanel sx ={{p:0,mt:2}} value="expenses"><ExpenseList groupId={groupId}/></TabPanel>
       <TabPanel sx ={{p:0,mt:2}} value="settlements"><SettlementList groupId={groupId}/></TabPanel>
-      <TabPanel sx ={{p:0,mt:2}} value="activity">activity Tab</TabPanel>
+      <TabPanel sx ={{p:0,mt:2}} value="activity"><ActivityList groupId={groupId}/></TabPanel>
       <TabPanel sx ={{p:0,mt:2}} value="members"><GroupMembers/></TabPanel>
     </TabContext>
   );

@@ -29,6 +29,8 @@ import ExpenseDialog from "./Create Expense/ExpenseDialog";
 import { backendService } from "../services/backendServices";
 import { useAtomValue } from "jotai";
 import { loggedInUserAtom } from "../atoms/UserAtom";
+import ActivityList from "../ActivityList";
+import Expense from "./Expenses";
 
 const ExpenseList = ({ groupId }) => {
   const theme = useTheme();
@@ -54,11 +56,10 @@ const ExpenseList = ({ groupId }) => {
     if (groupId) {
       expenses = await backendService.getExpensesByGroupId(groupId);
     }
-    else{
+    else {
       expenses = await backendService.getAllExpensesByUserId(loggedInUser.userId);
     }
-    if(expenses)
-    {
+    if (expenses) {
       setExpenseList(expenses);
     }
 
@@ -100,13 +101,13 @@ const ExpenseList = ({ groupId }) => {
                     variant="outlined"
                     sx={{ ml: 1 }}
                   />
-                  {!groupId && 
-                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1, ml:2}}>
-                    <GroupsOutlinedIcon />
-                    <Link style={{ textDecoration: "none" }} to={`/expenses/group/${expense.groupId}`} onClick={(event)=>event.stopPropagation()}>
-                      <Typography sx={{ color: "gray", "&:hover": { textDecoration:"underline" } }}>{expense.groupName}</Typography>
-                    </Link>
-                  </Box>
+                  {!groupId &&
+                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1, ml: 2 }}>
+                      <GroupsOutlinedIcon />
+                      <Link style={{ textDecoration: "none" }} to={`/expenses/group/${expense.groupId}`} onClick={(event) => event.stopPropagation()}>
+                        <Typography sx={{ color: "gray", "&:hover": { textDecoration: "underline" } }}>{expense.groupName}</Typography>
+                      </Link>
+                    </Box>
                   }
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -215,17 +216,21 @@ const ExpenseList = ({ groupId }) => {
                   <ExpenseSummary expense={expense} />
                 </Grid>
                 <Grid item xs={12} sm={6}>
-                  <Typography
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <TimelineIcon />
-                    Activities
-                  </Typography>
+                  <Box>
+                    <Typography
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <TimelineIcon />
+                      Activities
+                    </Typography>
+                    {expanded === index && <ActivityList isFromAccordian={true} expenseId={expense.expenseId}/>}
+                  </Box>
+
                 </Grid>
               </Grid>
               {expanded === index && <CommentSection expenseId={expense.expenseId} />}

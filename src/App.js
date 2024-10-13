@@ -2,7 +2,7 @@ import "./App.css";
 import React from "react";
 import { Routes, Route, Outlet, Navigate } from "react-router-dom";
 import Home from "./Home";
-import Activity from "./Activity";
+import Activity from "./ActivityList";
 import Friends from "./Friends";
 import Groups from "./Group/Groups";
 import Expense from "./Expense/Expenses";

@@ -19,6 +19,7 @@ import { useAtomValue } from "jotai";
 import { loggedInUserAtom } from "../atoms/UserAtom";
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import { Link } from "react-router-dom";
+import ActivityList from "../ActivityList";
 
 const SettlementList = ({ groupId }) => {
   const theme = useTheme();
@@ -163,6 +164,10 @@ const SettlementList = ({ groupId }) => {
                     <TimelineIcon />
                     Activities
                   </Typography>
+                  {
+                    expanded === index && <ActivityList isFromAccordian={true} settlementId={settlement.settlementId}/>
+                  }
+                  
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   {expanded === index && <CommentSection settlementId={settlement.settlementId} />}
