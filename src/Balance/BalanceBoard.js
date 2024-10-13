@@ -68,7 +68,7 @@ const BalanceBoard = () => {
             component="div"
             sx={{ fontSize: getFontSize() }} // Dynamically adjust font size
           >
-            ₹{Math.abs(oweAmount - owedAmount).toFixed(2)}
+            ₹{(oweAmount && owedAmount && Math.abs(oweAmount - owedAmount).toFixed(2)) ||  Number(0).toFixed(2)}
           </Typography>
         </CardContent>
       </Card>
@@ -87,7 +87,7 @@ const BalanceBoard = () => {
             color="#16a34a"
             sx={{ fontSize: getFontSize() }} // Dynamically adjust font size
           >
-            ₹{owedAmount.toFixed(2)}
+            ₹{owedAmount ? owedAmount.toFixed(2) : Number(0).toFixed(2)}
           </Typography>
         </CardContent>
       </Card>
@@ -106,7 +106,7 @@ const BalanceBoard = () => {
             color="red"
             sx={{ fontSize: getFontSize() }} // Dynamically adjust font size
           >
-            ₹{oweAmount.toFixed(2)}
+            ₹{oweAmount ? oweAmount.toFixed(2) :  Number(0).toFixed(2)}
           </Typography>
         </CardContent>
       </Card>
