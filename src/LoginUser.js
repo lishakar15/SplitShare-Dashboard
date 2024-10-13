@@ -9,26 +9,54 @@ import {
   Link,
   TextField,
   Typography,
+  Alert,
 } from "@mui/material";
+import { backendService } from "./services/backendServices";
+import { useNavigate } from "react-router-dom";
 
 const LoginUser = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleLogin = (e) => {
     e.preventDefault();
-    
+    //validate Mandatory Fields 
+    const loginUser = async () => {
+      const credentials = {
+        userName: email,
+        password: password
+      }
+      try {
+        const userData = await backendService.loginUser(credentials)
+        if (userData !== null) {
+          localStorage.setItem("userData", JSON.stringify({ userId: userData.userId, userName: userData.userName }));
+          localStorage.setItem("jwtToken", userData.jwtToken);
+          navigate("/home");
+          window.location.reload();
+        }
+        else{
+          throw Error("Login Failed");
+        }
+      }
+      catch (err) {
+        console.log("Invalid Login user name and password " + err);
+        setError("Invalid username or password");
+      }
+    }
+    loginUser();
   };
 
   return (
-    <Container maxWidth="xs"  sx={{
-        backgroundColor: "gray.200",
-        borderRadius: "1", 
-        boxShadow: 2,
-        mt:3,
-        pb:3,
-      }}>
+    <Container maxWidth="xs" sx={{
+      backgroundColor: "gray.200",
+      borderRadius: "1",
+      boxShadow: 2,
+      mt: 3,
+      pb: 3,
+    }}>
       <Box
         sx={{
           marginTop: 8,
@@ -40,15 +68,20 @@ const LoginUser = () => {
         <Typography component="h1" variant="h5">
           Sign in to your account
         </Typography>
-        <Box component="form" onSubmit={handleLogin} sx={{ mt: 2 }}>
+        <Box component="form" onSubmit={handleLogin} sx={{ mt: 2, width: '100%' }}>
           <TextField
             margin="normal"
             fullWidth
             id="email"
-            label="Email"
             name="email"
+            label="Email"
             autoComplete="email"
             autoFocus
+            placeholder="example@gmail.com"
+            InputLabelProps={{
+              required: false,
+            }}
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -56,11 +89,16 @@ const LoginUser = () => {
           <TextField
             margin="normal"
             fullWidth
-            name="password"
             label="Password"
+            name="password"
             type="password"
             id="password"
             autoComplete="current-password"
+            placeholder="password"
+            InputLabelProps={{
+              required: false,
+            }}
+            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -83,6 +121,12 @@ const LoginUser = () => {
               </Link>
             </Grid>
           </Grid>
+          
+          {error && (
+            <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
+              {error}
+            </Alert>
+          )}
 
           <Button
             type="submit"

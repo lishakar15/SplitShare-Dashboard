@@ -30,6 +30,7 @@ import {
 
 import { currentGroupDataAtom, groupMembersAtom } from "../../atoms/GroupAtom";
 import { loggedInUserAtom } from "../../atoms/UserAtom";
+import CustomizedSnackbars from "../../utilities/CustomSnackBar";
 
 function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -50,6 +51,10 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }
   const groupData = useAtomValue(currentGroupDataAtom);
   const [groupId, setGroupId] = useState(null);
   const [createdBy, setCreatedBy] = useState(loggedInUser.userId);
+  // Snackbar state
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSuccess, setSnackbarSuccess] = useState(false);
 
   const defaultParticipant = {
     userId: loggedInUser.userId,
@@ -96,13 +101,15 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }
         }
 
         if (isSavedSuccessfully) {
-          console.log("Saved successfully");
-          // Show success message in MUI snackbar
-          console.log(refreshExpenses);
+          setSnackbarMessage("Expense Saved Successfully");
+          setSnackbarSuccess(true);
+          setSnackbarOpen(true);
           refreshExpenses();
         } else {
           console.log("Error occurred while saving data");
-          // Optionally display error snackbar
+          setSnackbarMessage("Error Saving Expense");
+          setSnackbarSuccess(false);
+          setSnackbarOpen(true);
         }
       } catch (error) {
         console.error("Error during save:", error);
@@ -119,16 +126,22 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }
     try {
       const isDeleted = await backendService.deleteExpense(expenseId, loggedInUser.userId)
       if (isDeleted) {
-        //Show Success Snack Bar
-        console.log(refreshExpenses);
+        setSnackbarMessage("Expense Deleted Successfully");
+        setSnackbarSuccess(true);
+        setSnackbarOpen(true);
         refreshExpenses();
       }
       else {
-        //Show Error Snack Bar
-        alert("not deleted")
+        setSnackbarMessage("Error Deleting Expense");
+        setSnackbarSuccess(false);
+        setSnackbarOpen(true);
+        refreshExpenses();
       }
     }
     catch (err) {
+      setSnackbarMessage("Error Deleting Expense");
+      setSnackbarSuccess(false);
+      setSnackbarOpen(true);
       console.log(err);
     }
     finally {
@@ -158,6 +171,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }
       splitType,
       createdBy,
       participantShareList: participantShares,
+      updatedBy: isModReq ? loggedInUser.userId : null
     };
   };
 
@@ -205,70 +219,78 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }
   };
 
   return (
-    <Dialog open={open} onClose={handleClose}>
-      <DialogTitle>{isModRequest ? "Modify Expense" : "New Expense"}</DialogTitle>
-      <DialogContent>
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={8}>
-            <Typography>Description</Typography>
-            <TextField
-              fullWidth
-              type="text"
-              value={expenseDescription}
-              onChange={(e) => setExpenseDescription(e.target.value)}
-            />
+    <>
+      <Dialog open={open} onClose={handleClose}>
+        <DialogTitle>{isModRequest ? "Modify Expense" : "New Expense"}</DialogTitle>
+        <DialogContent>
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={8}>
+              <Typography>Description</Typography>
+              <TextField
+                fullWidth
+                type="text"
+                value={expenseDescription}
+                onChange={(e) => setExpenseDescription(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Typography>Amount</Typography>
+              <TextField
+                fullWidth
+                variant="outlined"
+                value={totalAmount}
+                InputProps={{
+                  startAdornment: <InputAdornment position="start">₹</InputAdornment>,
+                }}
+                onChange={(e) => setTotalAmount(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <Typography>Date</Typography>
+              <TextField
+                fullWidth
+                type="date"
+                value={spentOnDate}
+                onChange={(e) => setSpentOnDate(e.target.value)}
+              />
+            </Grid>
+            <Grid item xs={12} md={8}>
+              <Typography>Category</Typography>
+              <FormControl fullWidth>
+                <Select value={category} onChange={(e) => setCategory(e.target.value)}>
+                  <MenuItem value="Food">🍱 Food</MenuItem>
+                  <MenuItem value="Entertainment">🎞️ Entertainment</MenuItem>
+                  <MenuItem value="Restaurant">🍴 Restaurant</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
+            <PaidUsersSection />
+            <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
+            <SplitAmountSection groupData={groupData} setGroupId={setGroupId} />
           </Grid>
-          <Grid item xs={12} md={4}>
-            <Typography>Amount</Typography>
-            <TextField
-              fullWidth
-              variant="outlined"
-              value={totalAmount}
-              InputProps={{
-                startAdornment: <InputAdornment position="start">₹</InputAdornment>,
-              }}
-              onChange={(e) => setTotalAmount(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} md={4}>
-            <Typography>Date</Typography>
-            <TextField
-              fullWidth
-              type="date"
-              value={spentOnDate}
-              onChange={(e) => setSpentOnDate(e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} md={8}>
-            <Typography>Category</Typography>
-            <FormControl fullWidth>
-              <Select value={category} onChange={(e) => setCategory(e.target.value)}>
-                <MenuItem value="Food">🍱 Food</MenuItem>
-                <MenuItem value="Entertainment">🎞️ Entertainment</MenuItem>
-                <MenuItem value="Restaurant">🍴 Restaurant</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
-          <PaidUsersSection />
-          <Divider sx={{ flexGrow: 1, my: 2, width: "100%" }} />
-          <SplitAmountSection groupData={groupData} setGroupId={setGroupId} />
-        </Grid>
-      </DialogContent>
-      <DialogActions>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', m: 1 }}>
-          <Button onClick={() => handleDeleteExpense(expenseId)} variant="contained" color="error" disabled={isLoading || !isModReq}>
-            Delete
-          </Button>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <Button onClick={handleClose} variant="outlined" disabled={isLoading}>Cancel</Button>
-            <Button onClick={handleSave} variant="contained" color="primary" disabled={isLoading}>
-              {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}
+        </DialogContent>
+        <DialogActions>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', m: 1 }}>
+            <Button onClick={() => handleDeleteExpense(expenseId)} variant="contained" color="error" disabled={isLoading || !isModReq}>
+              Delete
             </Button>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Button onClick={handleClose} variant="outlined" disabled={isLoading}>Cancel</Button>
+              <Button onClick={handleSave} variant="contained" color="primary" disabled={isLoading}>
+                {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </DialogActions>
-    </Dialog>
+        </DialogActions>
+      </Dialog>
+      <CustomizedSnackbars
+        open={snackbarOpen}
+        setOpen={setSnackbarOpen}
+        message={snackbarMessage}
+        isSuccess={snackbarSuccess}
+      />
+    </>
   );
 }
 

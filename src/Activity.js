@@ -1,11 +1,10 @@
 import React from 'react'
+import ActivityList from './ActivityList'
 
 const Activity = () => {
   return (
-    <div>
-        <h1>Activities</h1>
-    </div>
+    <ActivityList showEditButton={true}/>
   )
 }
 
-export default Activity
+export default Activity;

@@ -21,6 +21,7 @@ import UserTransactionAvatar from "./UserTransactionAvatar";
 import { backendService } from "../services/backendServices";
 import { useAtomValue } from "jotai";
 import { loggedInUserAtom } from "../atoms/UserAtom";
+import CustomizedSnackbars from "../utilities/CustomSnackBar";
 
 function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
 
@@ -38,6 +39,10 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
   const [amountPaid, setAmountPaid] = useState(0);
   const [settlementDate, setSettlementDate] = useState(today)
   const [paymentMethod, setPaymentMethod] = useState("cash");
+  // Snackbar state
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSuccess, setSnackbarSuccess] = useState(false);
 
   useEffect(() => {
     if (settlementReq) {
@@ -58,17 +63,21 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
         isSettlementSaved = await backendService.saveSettlement(settlement);
       }
       if (isSettlementSaved) {
-        //show Succcess Snack Bar
+        setSnackbarMessage("Payment Saved Successfully");
+        setSnackbarSuccess(true);
+        setSnackbarOpen(true);
       }
       else {
-        //Error Snack Bar
+        setSnackbarMessage("Error Saving Payment");
+        setSnackbarSuccess(true);
+        setSnackbarOpen(true);
       }
     }
     catch (err) {
       console.log("Error occurred while saving Settlement data" + err);
     }
     finally {
-      setIsLoading(false)
+      setIsLoading(false);
       onClose();
     }
   };
@@ -85,7 +94,7 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
         amountPaid: amountPaid,
         paymentMethod: paymentMethod,
         settlementDate: settlementDate,
-        lastUpdateDate: isModReq ? today : null,
+        lastUpdateDate: today,
       }
       return settlement;
     }
@@ -99,13 +108,11 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
     setPaidByUserName(settlementRequest.paidByUserName);
     setPaidTo(settlementRequest.paidTo);
     setPaidToUserName(settlementRequest.paidToUserName);
-    setAmountPaid(settlementRequest.amountPaid ? settlementRequest.amountPaid.toFixed(2): 0.00);
-    if(settlementRequest.paymentMethod )
-    {
+    setAmountPaid(settlementRequest.amountPaid ? settlementRequest.amountPaid.toFixed(2) : 0.00);
+    if (settlementRequest.paymentMethod) {
       setPaymentMethod(settlementRequest.paymentMethod);
     }
-    if(settlementRequest.settlementDate)
-    {
+    if (settlementRequest.settlementDate) {
       const settleDate = settlementRequest.settlementDate.split('T')[0]
       setSettlementDate(settleDate);
     }
@@ -117,14 +124,20 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
     try {
       const isSettlementDeleted = await backendService.deleteSettlement(settlementId, loggedInUser.userId);
       if (isSettlementDeleted) {
-        //Show success Snack Bar
+        setSnackbarMessage("Payment Deleted Successfully");
+        setSnackbarSuccess(true);
+        setSnackbarOpen(true);
       }
       else {
-        //Show error Snack Bar
+        setSnackbarMessage("Error Deleting Payment");
+        setSnackbarSuccess(false);
+        setSnackbarOpen(true);
       }
     }
     catch (err) {
-      //Show Error Snack Bar
+      setSnackbarMessage("Error Deleting Payment");
+      setSnackbarSuccess(false);
+      setSnackbarOpen(true);
       console.log("Error occurred while deleting Settlement " + settlementId);
     }
     finally {
@@ -161,94 +174,102 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
     return dateStr.split("T")[0];
   }
   return (
-    <Dialog open={open} onClose={onClose}>
-      <DialogTitle>{isModReq ? "Modify Payment" : "New Payment"}</DialogTitle>
-      <DialogContent>
-        <UserTransactionAvatar
-          paidByUserName={paidByUserName}
-          paidToUserName={paidToUserName}
-          handlePayerExchange={handlePayerExchange}
-        />
-        <Grid container spacing={2}>
-          <Grid item xs={12} md={6}>
-            <Typography>Amount</Typography>
-            <TextField
-              fullWidth
-              variant="outlined"
-              value={amountPaid}
-              InputProps={{
-                startAdornment: (
-                  <InputAdornment position="start">₹</InputAdornment>
-                ),
-              }}
-              onChange={handleAmountChange}
-            />
+    <>
+      <Dialog open={open} onClose={onClose}>
+        <DialogTitle>{isModReq ? "Modify Payment" : "New Payment"}</DialogTitle>
+        <DialogContent>
+          <UserTransactionAvatar
+            paidByUserName={paidByUserName}
+            paidToUserName={paidToUserName}
+            handlePayerExchange={handlePayerExchange}
+          />
+          <Grid container spacing={2}>
+            <Grid item xs={12} md={6}>
+              <Typography>Amount</Typography>
+              <TextField
+                fullWidth
+                variant="outlined"
+                value={amountPaid}
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">₹</InputAdornment>
+                  ),
+                }}
+                onChange={handleAmountChange}
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <Typography>Date</Typography>
+              <TextField
+                fullWidth
+                type="date"
+                value={settlementDate}
+                onChange={handleDateChange}
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Typography>Group</Typography>
+              <FormControl fullWidth>
+                <Select
+                  value={groupId}
+                  onChange={(e) => handleGroupChange(e.target.value)}
+                >
+                  <MenuItem key={groupId} value={groupId}>{groupName}</MenuItem>
+                </Select>
+              </FormControl>
+            </Grid>
+            <Grid item xs={12}>
+              <Box sx={{ display: "flex", alignItems: "center" }}>
+                <Grid item xs={6}>
+                  <Typography>Payment Method</Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <FormControl component="fieldset">
+                    <RadioGroup
+                      row
+                      value={paymentMethod}
+                      onChange={handlePaymentMethodChange}
+                    >
+                      <FormControlLabel
+                        value={'cash'}
+                        name={"paymentType"}
+                        control={<Radio />}
+                        label="Cash"
+                      />
+                      <FormControlLabel
+                        value="upi"
+                        name={"paymentType"}
+                        control={<Radio />}
+                        label="UPI"
+                      />
+                    </RadioGroup>
+                  </FormControl>
+                </Grid>
+              </Box>
+            </Grid>
           </Grid>
-          <Grid item xs={12} md={6}>
-            <Typography>Date</Typography>
-            <TextField
-              fullWidth
-              type="date"
-              value={settlementDate}
-              onChange={handleDateChange}
-            />
-          </Grid>
-          <Grid item xs={12}>
-            <Typography>Group</Typography>
-            <FormControl fullWidth>
-              <Select
-                value={groupId}
-                onChange={(e) => handleGroupChange(e.target.value)}
-              >
-                <MenuItem key={groupId} value={groupId}>{groupName}</MenuItem>
-              </Select>
-            </FormControl>
-          </Grid>
-          <Grid item xs={12}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
-              <Grid item xs={6}>
-                <Typography>Payment Method</Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <FormControl component="fieldset">
-                  <RadioGroup
-                    row
-                    value={paymentMethod}
-                    onChange={handlePaymentMethodChange}
-                  >
-                    <FormControlLabel
-                      value={'cash'}
-                      name={"paymentType"}
-                      control={<Radio />}
-                      label="Cash"
-                    />
-                    <FormControlLabel
-                      value="upi"
-                      name={"paymentType"}
-                      control={<Radio />}
-                      label="UPI"
-                    />
-                  </RadioGroup>
-                </FormControl>
-              </Grid>
-            </Box>
-          </Grid>
-        </Grid>
-      </DialogContent>
-      <DialogActions>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', m: 1 }}>
-          <Button onClick={() => handleDeleteSettlement(settlementId)} variant="contained" color="error" disabled={isLoading || !isModReq}>
-            Delete
-          </Button>
-          <Box sx={{ display: "flex", gap: 2 }}>
-            <Button onClick={onClose} variant="outlined" disabled={isLoading}>Cancel</Button>
-            <Button onClick={handleSave} variant="contained" color="primary" disabled={isLoading}>
-              {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}
+        </DialogContent>
+        <DialogActions>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', m: 1 }}>
+            <Button onClick={() => handleDeleteSettlement(settlementId)} variant="contained" color="error" disabled={isLoading || !isModReq}>
+              Delete
             </Button>
+            <Box sx={{ display: "flex", gap: 2 }}>
+              <Button onClick={onClose} variant="outlined" disabled={isLoading}>Cancel</Button>
+              <Button onClick={handleSave} variant="contained" color="primary" disabled={isLoading}>
+                {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}
+              </Button>
+            </Box>
           </Box>
-        </Box>
-      </DialogActions>
-    </Dialog>
+        </DialogActions>
+      </Dialog>
+      <CustomizedSnackbars
+        open={snackbarOpen}
+        setOpen={setSnackbarOpen}
+        message={snackbarMessage}
+        isSuccess={snackbarSuccess}
+      />
+    </>
   );
 }
 

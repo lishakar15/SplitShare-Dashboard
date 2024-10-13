@@ -18,17 +18,16 @@ import { useNavigate } from "react-router-dom";
 
 const UserProfile = () => {
     const isSmallScreen = useMediaQuery("(max-width:1024px)");
-    const [loggedInUser, setLoggedInUser] = useAtom(loggedInUserAtom);
+    const [loggedInUser] = useAtom(loggedInUserAtom);
     const [anchorEl, setAnchorEl] = useState(null);
     const navigate = useNavigate();
-    const setIsUserLoggedIn = useSetAtom(isUserLoggedInAtom);
 
     const open = Boolean(anchorEl);
 
     const handleLogout = () => {
-        setLoggedInUser({});
-        setIsUserLoggedIn(false);
+        localStorage.removeItem("userData");
         navigate("/login");
+        window.location.reload();
     };
 
     const handleClick = (event) => {

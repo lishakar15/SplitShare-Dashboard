@@ -1,9 +1,9 @@
-import axios from "axios";
+import axiosInstance from "../axiosInstance";
 export const backendService = {
   async saveExpenseDetails(expenseRequest) {
     let isExpenseCreated = false;
     try {
-      const response = await axios.post(
+      const response = await axiosInstance.post(
         "http://localhost:8085/expense/add-expense",
         expenseRequest
       );
@@ -22,7 +22,7 @@ export const backendService = {
   async updateExpense(expense) {
     let isUpdated = false;
     try {
-      const response = await axios.put("http://localhost:8085/expense/update-expense", expense);
+      const response = await axiosInstance.put("http://localhost:8085/expense/update-expense", expense);
       if (response.status === 200) {
         isUpdated = true;
       }
@@ -38,7 +38,7 @@ export const backendService = {
   async deleteExpense(expenseId, deletedBy) {
     let isDeleted = false;
     try {
-      const response = await axios.delete(`http://localhost:8085/expense/delete-expense/${expenseId}/${deletedBy}`)
+      const response = await axiosInstance.delete(`http://localhost:8085/expense/delete-expense/${expenseId}/${deletedBy}`)
       if (response.status === 200) {
         isDeleted = true
       }
@@ -57,7 +57,7 @@ export const backendService = {
 
   async getGroupsDataByUserId(userId) {
     try {
-      const response = await axios.get(`http://localhost:8085/group/get-all-groups/${userId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/group/get-all-groups/${userId}`);
 
       if (response.status === 200) {
         return response.data;
@@ -72,7 +72,7 @@ export const backendService = {
 
   async getGroupDataByGroupId(groupId) {
     try {
-      const response = await axios.get(`http://localhost:8085/group/get-group/${groupId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/group/get-group/${groupId}`);
 
       if (response.status === 200) {
         return response.data;
@@ -90,7 +90,7 @@ export const backendService = {
 
   async getExpensesByGroupId(groupId) {
     try {
-      const response = await axios.get(`http://localhost:8085/expense/get-expenses/${groupId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/expense/get-expenses/${groupId}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -106,7 +106,7 @@ export const backendService = {
 
   async getAllExpensesByUserId(userId) {
     try {
-      const response = await axios.get(`http://localhost:8085/expense/get-user-expenses/${userId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/expense/get-user-expenses/${userId}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -123,7 +123,7 @@ export const backendService = {
   async saveSettlement(settlement) {
     let isSaved = false;
     try {
-      const response = await axios.post("http://localhost:8085/settlement/settleAmount", settlement);
+      const response = await axiosInstance.post("http://localhost:8085/settlement/settleAmount", settlement);
       if (response.status === 200) {
         isSaved = true;
       }
@@ -139,7 +139,7 @@ export const backendService = {
 
   async getSettlements(groupId) {
     try {
-      const response = await axios.get(`http://localhost:8085/settlement//getAllSettlements/${groupId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/settlement//getAllSettlements/${groupId}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -155,7 +155,7 @@ export const backendService = {
 
   async getSettlementsByUserId(userId) {
     try {
-      const response = await axios.get(`http://localhost:8085/settlement/getAllUserSettlements/${userId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/settlement/getAllUserSettlements/${userId}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -172,7 +172,7 @@ export const backendService = {
   async updateSettlement(settlement) {
     let isSaved = false;
     try {
-      const response = await axios.put("http://localhost:8085/settlement/updateSettlement", settlement);
+      const response = await axiosInstance.put("http://localhost:8085/settlement/updateSettlement", settlement);
       if (response.status === 200) {
         isSaved = true;
       }
@@ -189,7 +189,7 @@ export const backendService = {
   async deleteSettlement(settlementId, loggedInUser) {
     let isDeleted = false;
     try {
-      const response = await axios.delete(`http://localhost:8085/settlement/deleteSettlement/${settlementId}/${loggedInUser}`)
+      const response = await axiosInstance.delete(`http://localhost:8085/settlement/deleteSettlement/${settlementId}/${loggedInUser}`)
       if (response.status === 200) {
         isDeleted = true
       }
@@ -204,7 +204,7 @@ export const backendService = {
 
   async getExpenseComments(expenseId) {
     try {
-      const response = await axios.get(`http://localhost:8085/comments/get-comments/expense/${expenseId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/comments/get-comments/expense/${expenseId}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -219,7 +219,7 @@ export const backendService = {
   },
   async getSettlementComments(settlementId) {
     try {
-      const response = await axios.get(`http://localhost:8085/comments/get-comments/settlement/${settlementId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/comments/get-comments/settlement/${settlementId}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -236,7 +236,7 @@ export const backendService = {
   async postComments(comment) {
     let isSaved = false;
     try {
-      const response = await axios.post("http://localhost:8085/comments/post-comment", comment);
+      const response = await axiosInstance.post("http://localhost:8085/comments/post-comment", comment);
       if (response.status === 200) {
         isSaved = true;
       }
@@ -255,7 +255,7 @@ export const backendService = {
   async deleteComment(commentId, userId) {
     let isDeleted = false;
     try {
-      const response = await axios.delete(`http://localhost:8085/comments/delete-comment/${commentId}/${userId}`)
+      const response = await axiosInstance.delete(`http://localhost:8085/comments/delete-comment/${commentId}/${userId}`)
       if (response.status === 200) {
         isDeleted = true;
       }
@@ -270,7 +270,7 @@ export const backendService = {
 
   async getBalancesOfUser(userId) {
     try {
-      const response = await axios.get(`http://localhost:8085/balance/getUserAllBalances/${userId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/balance/getUserAllBalances/${userId}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -286,7 +286,7 @@ export const backendService = {
 
   async getBalanceSummary(userId) {
     try {
-      const response = await axios.get(`http://localhost:8085/balance/getBalanceSummary/${userId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/balance/getBalanceSummary/${userId}`);
       if (response.status === 200) {
         return response.data;
       }
@@ -302,7 +302,7 @@ export const backendService = {
 
   async getBalancesOfUserInGroup(groupId, userId) {
     try {
-      const response = await axios.get(`http://localhost:8085/balance/getGroupBalances/${groupId}/${userId}`)
+      const response = await axiosInstance.get(`http://localhost:8085/balance/getGroupBalances/${groupId}/${userId}`)
       if (response.status === 200) {
         return response.data;
       }
@@ -319,7 +319,7 @@ export const backendService = {
   
   async getGroupBalanceSummary(groupId, userId){
     try{
-      const response = await axios.get(`http://localhost:8085/balance/getGroupBalanceSummary/${groupId}/${userId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/balance/getGroupBalanceSummary/${groupId}/${userId}`);
       if(response.status === 200){
         return response.data;
       }
@@ -335,7 +335,7 @@ export const backendService = {
 
   async getAllGroupBalanceSummary(userId){
     try{
-      const response = await axios.get(`http://localhost:8085/balance/getGroupBalanceSummary/${userId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/balance/getGroupBalanceSummary/${userId}`);
       if(response.status === 200){
         return response.data;
       }
@@ -351,7 +351,7 @@ export const backendService = {
 
   async loginUser(credentials){
     try{
-      const response = await axios.post("http://localhost:8085/user//login-user",credentials);
+      const response = await axiosInstance.post("http://localhost:8085/user/login-user",credentials);
       if(response.status === 200){
         return response.data;
       }
@@ -361,6 +361,98 @@ export const backendService = {
     }
     catch( err ){
       console.log("Error occurred while logging in user");
+      throw err;
+    }
+  },
+
+  async getGroupActivitiesByGroupId(groupId){
+    try{
+        const response = await axiosInstance.get(`http://localhost:8085/activity/getGroupActivities/${groupId}`);
+        if(response.status === 200){
+          return response.data;
+        }
+        else{
+          throw Error("Error fecthing Activities"+ response.status);
+        }
+    }
+    catch(err){
+      console.log("Error occurred while retrieving Group Activities "+err);
+      throw err;
+    }
+  },
+  async getAllActivitiesByUserId(userId){
+    try{
+        const response = await axiosInstance.get(`http://localhost:8085/activity/getUserActivities/${userId}`);
+        if(response.status === 200){
+          return response.data;
+        }
+        else{
+          throw Error("Error fecthing Activities"+ response.status);
+        }
+    }
+    catch(err){
+      console.log("Error occurred while retrieving User Activities "+err);
+      throw err;
+    }
+  },
+  async getAllActivitiesByExpenseId(expenseId){
+    try{
+        const response = await axiosInstance.get(`http://localhost:8085/activity/getExpenseActivity/${expenseId}`);
+        if(response.status === 200){
+          return response.data;
+        }
+        else{
+          throw Error("Error fecthing Activities"+ response.status);
+        }
+    }
+    catch(err){
+      console.log("Error occurred while retrieving Expense Activities "+err);
+      throw err;
+    }
+  },
+  async getAllActivitiesBySettlementId(settlementId){
+    try{
+        const response = await axiosInstance.get(`http://localhost:8085/activity/getSettlementActivity/${settlementId}`);
+        if(response.status === 200){
+          return response.data;
+        }
+        else{
+          throw Error("Error fecthing Activities "+ response.status);
+        }
+    }
+    catch(err){
+      console.log("Error occurred while retrieving Settlement Activities "+err);
+      throw err;
+    }
+  },
+  async getExpenseByExpenseId(expenseId, loggedInUserId){
+    try{
+        const response = await axiosInstance.get(`http://localhost:8085/expense/get-expense/${expenseId}/${loggedInUserId}`);
+        if(response.status === 200){
+          return response.data;
+        }
+        else{
+          throw Error("Error fetching Expense "+response.status);
+        }
+    }
+    catch(err){
+      console.log("Error occurred while retrieving expense data "+err);
+      throw err;
+    }
+  },
+  async getSettlementBySettlementId(settlementId, loggedInUserId){
+    try{
+      const response = await axiosInstance.get(`http://localhost:8085/settlement/getSettlementDetails/${settlementId}/${loggedInUserId}`);
+      if(response.status === 200)
+      {
+        return response.data;
+      }
+      else{
+        throw Error("Error fetching Settlement "+response.status);
+      }
+    }
+    catch(err){
+      console.log("Error occureed while retrieving Settlement data "+err);
       throw err;
     }
   }
