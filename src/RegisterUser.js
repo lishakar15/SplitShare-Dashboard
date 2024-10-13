@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import {
+  Alert,
   Box,
   Button,
   Container,
@@ -8,6 +9,9 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
+import { backendService } from "./services/backendServices";
+import { useNavigate } from "react-router-dom";
+import CustomizedSnackbars from "./utilities/CustomSnackBar";
 
 const RegisterUser = () => {
   const [firstName, setFirstName] = useState("");
@@ -16,27 +20,91 @@ const RegisterUser = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const today = new Date().toISOString().split('T')[0];
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
+  // Snackbar state
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSuccess, setSnackbarSuccess] = useState(false);
 
   const handleRegister = (e) => {
     e.preventDefault();
-    // Handle registration logic here
-    console.log({
-      firstName,
-      lastName,
-      email,
-      phoneNumber,
-      password,
-      confirmPassword,
-    });
-  };
+
+    const user = {
+      firstName: firstName,
+      lastName: lastName,
+      emailId: email,
+      phoneNumber: phoneNumber,
+      password: password,
+      createDate: today,
+      lastUpdateDate: today
+    }
+
+
+    const registerUser = async () => {
+      try {
+        const result = validateUserData(user);
+        if (result.isValid) {
+          const isRegistered = await backendService.registerUser(user);
+          if (isRegistered) {
+            setSnackbarMessage("Registration Successfull");
+            setSnackbarSuccess(true);
+            setSnackbarOpen(true);
+            setTimeout(() => {
+              navigate("/login")
+            }, 1000)
+              ;
+          }
+        }
+        else{
+          setError(result.message);
+        }
+      }
+      catch (err) {
+        setSnackbarMessage("Registration Failed");
+        setSnackbarSuccess(false);
+        setSnackbarOpen(true);
+        console.log("Error occurred while registering user");
+      }
+    }
+    registerUser();
+
+  }
+
+  const validateUserData = (user) => {
+    const { firstName, lastName, emailId, phoneNumber, password} = user;
+
+    const phoneRegex = /^[0-9]{10}$/;
+
+    if (!firstName || !lastName || !emailId || !password) {
+      return { isValid: false, message: "All fields are required." };
+    }
+
+    if (phoneNumber !== "" && !phoneRegex.test(phoneNumber)) {
+      return { isValid: false, message: "Phone number must be 10 digits." };
+    }
+
+    if (password.length < 6) {
+      return { isValid: false, message: "Password must be at least 6 characters long." };
+    }
+
+    if(password !== confirmPassword){
+      return {isValid : false, message: "Re-entered password doesn't match with Password"};
+    }
+
+    return { isValid: true, message: "User data is valid." };
+  }
+
+
 
   return (
-    <Container maxWidth="sm"  sx={{
-        backgroundColor: "gray.200",
-        pb:2,
-        borderRadius: "1", 
-        boxShadow: 2,
-      }}>
+    <Container maxWidth="sm" sx={{
+      backgroundColor: "gray.200",
+      pb: 2,
+      borderRadius: "1",
+      boxShadow: 2,
+    }}>
       <Box
         sx={{
           marginTop: 8,
@@ -56,7 +124,12 @@ const RegisterUser = () => {
                 id="firstName"
                 label="First Name"
                 name="firstName"
+                placeholder="John"
                 autoComplete="given-name"
+                InputLabelProps={{
+                  required: false,
+                }}
+                required
                 value={firstName}
                 onChange={(e) => setFirstName(e.target.value)}
               />
@@ -68,7 +141,12 @@ const RegisterUser = () => {
                 id="lastName"
                 label="Last Name"
                 name="lastName"
+                placeholder="Cena"
                 autoComplete="family-name"
+                InputLabelProps={{
+                  required: false,
+                }}
+                required
                 value={lastName}
                 onChange={(e) => setLastName(e.target.value)}
               />
@@ -79,9 +157,15 @@ const RegisterUser = () => {
             margin="normal"
             fullWidth
             id="email"
+            type="email"
             label="Email"
             name="email"
+            placeholder="example@gmail.com"
             autoComplete="email"
+            InputLabelProps={{
+              required: false,
+            }}
+            required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
@@ -103,7 +187,12 @@ const RegisterUser = () => {
             label="Password"
             type="password"
             id="password"
+            placeholder="Password"
             autoComplete="new-password"
+            InputLabelProps={{
+              required: false,
+            }}
+            required
             value={password}
             onChange={(e) => setPassword(e.target.value)}
           />
@@ -115,10 +204,20 @@ const RegisterUser = () => {
             label="Confirm Password"
             type="password"
             id="confirmPassword"
+            placeholder="Re-enter password"
             autoComplete="new-password"
+            InputLabelProps={{
+              required: false,
+            }}
+            required
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
           />
+          {error && (
+            <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
+              {error}
+            </Alert>
+          )}
           <Button
             type="submit"
             fullWidth
@@ -145,6 +244,12 @@ const RegisterUser = () => {
           </Grid>
         </Box>
       </Box>
+      <CustomizedSnackbars
+        open={snackbarOpen}
+        setOpen={setSnackbarOpen}
+        message={snackbarMessage}
+        isSuccess={snackbarSuccess}
+      />
     </Container>
   );
 };

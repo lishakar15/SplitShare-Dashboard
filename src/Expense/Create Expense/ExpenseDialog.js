@@ -229,6 +229,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }
               <TextField
                 fullWidth
                 type="text"
+                placeholder="Joe's Pizza Party"
                 value={expenseDescription}
                 onChange={(e) => setExpenseDescription(e.target.value)}
               />
@@ -238,7 +239,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }
               <TextField
                 fullWidth
                 variant="outlined"
-                value={totalAmount}
+                value={totalAmount.toFixed(2)}
                 InputProps={{
                   startAdornment: <InputAdornment position="start">₹</InputAdornment>,
                 }}

@@ -143,8 +143,8 @@ export const backendService = {
       if (response.status === 200) {
         return response.data;
       }
-      else{
-        throw Error("Error fetching settlements "+response.status);
+      else {
+        throw Error("Error fetching settlements " + response.status);
       }
     }
     catch (err) {
@@ -159,8 +159,8 @@ export const backendService = {
       if (response.status === 200) {
         return response.data;
       }
-      else{
-        throw Error("Error fecthing user settlements "+response.status)
+      else {
+        throw Error("Error fecthing user settlements " + response.status)
       }
     }
     catch (err) {
@@ -316,143 +316,161 @@ export const backendService = {
     }
   },
 
-  
-  async getGroupBalanceSummary(groupId, userId){
-    try{
+
+  async getGroupBalanceSummary(groupId, userId) {
+    try {
       const response = await axiosInstance.get(`http://localhost:8085/balance/getGroupBalanceSummary/${groupId}/${userId}`);
-      if(response.status === 200){
+      if (response.status === 200) {
         return response.data;
       }
-      else{
+      else {
         throw Error("Error fetching User Balance " + response.status);
       }
     }
-    catch( err ){
+    catch (err) {
       console.log("Error occurred while getting Group Balance Summary for guest " + err);
       throw err;
     }
   },
 
-  async getAllGroupBalanceSummary(userId){
-    try{
+  async getAllGroupBalanceSummary(userId) {
+    try {
       const response = await axiosInstance.get(`http://localhost:8085/balance/getGroupBalanceSummary/${userId}`);
-      if(response.status === 200){
+      if (response.status === 200) {
         return response.data;
       }
-      else{
+      else {
         throw Error("Error fetching User Balance " + response.status);
       }
     }
-    catch( err ){
+    catch (err) {
       console.log("Error occurred while getting Group Balance Summary for guest " + err);
       throw err;
     }
   },
 
-  async loginUser(credentials){
-    try{
-      const response = await axiosInstance.post("http://localhost:8085/user/login-user",credentials);
-      if(response.status === 200){
+  async loginUser(credentials) {
+    try {
+      const response = await axiosInstance.post("http://localhost:8085/user/login-user", credentials);
+      if (response.status === 200) {
         return response.data;
       }
-      else{
-        throw Error("Error validating login credentials "+ response.status);
+      else {
+        throw Error("Error validating login credentials " + response.status);
       }
     }
-    catch( err ){
+    catch (err) {
       console.log("Error occurred while logging in user");
       throw err;
     }
   },
 
-  async getGroupActivitiesByGroupId(groupId){
-    try{
-        const response = await axiosInstance.get(`http://localhost:8085/activity/getGroupActivities/${groupId}`);
-        if(response.status === 200){
-          return response.data;
-        }
-        else{
-          throw Error("Error fecthing Activities"+ response.status);
-        }
-    }
-    catch(err){
-      console.log("Error occurred while retrieving Group Activities "+err);
-      throw err;
-    }
-  },
-  async getAllActivitiesByUserId(userId){
-    try{
-        const response = await axiosInstance.get(`http://localhost:8085/activity/getUserActivities/${userId}`);
-        if(response.status === 200){
-          return response.data;
-        }
-        else{
-          throw Error("Error fecthing Activities"+ response.status);
-        }
-    }
-    catch(err){
-      console.log("Error occurred while retrieving User Activities "+err);
-      throw err;
-    }
-  },
-  async getAllActivitiesByExpenseId(expenseId){
-    try{
-        const response = await axiosInstance.get(`http://localhost:8085/activity/getExpenseActivity/${expenseId}`);
-        if(response.status === 200){
-          return response.data;
-        }
-        else{
-          throw Error("Error fecthing Activities"+ response.status);
-        }
-    }
-    catch(err){
-      console.log("Error occurred while retrieving Expense Activities "+err);
-      throw err;
-    }
-  },
-  async getAllActivitiesBySettlementId(settlementId){
-    try{
-        const response = await axiosInstance.get(`http://localhost:8085/activity/getSettlementActivity/${settlementId}`);
-        if(response.status === 200){
-          return response.data;
-        }
-        else{
-          throw Error("Error fecthing Activities "+ response.status);
-        }
-    }
-    catch(err){
-      console.log("Error occurred while retrieving Settlement Activities "+err);
-      throw err;
-    }
-  },
-  async getExpenseByExpenseId(expenseId, loggedInUserId){
-    try{
-        const response = await axiosInstance.get(`http://localhost:8085/expense/get-expense/${expenseId}/${loggedInUserId}`);
-        if(response.status === 200){
-          return response.data;
-        }
-        else{
-          throw Error("Error fetching Expense "+response.status);
-        }
-    }
-    catch(err){
-      console.log("Error occurred while retrieving expense data "+err);
-      throw err;
-    }
-  },
-  async getSettlementBySettlementId(settlementId, loggedInUserId){
-    try{
-      const response = await axiosInstance.get(`http://localhost:8085/settlement/getSettlementDetails/${settlementId}/${loggedInUserId}`);
+  async registerUser(user) {
+    let isRegistered = false;
+    try {
+      const response = await axiosInstance.post("http://localhost:8085/user/register-user", user);
       if(response.status === 200)
       {
-        return response.data;
+        isRegistered = true;
       }
       else{
-        throw Error("Error fetching Settlement "+response.status);
+        throw Error("Error registering user "+response.status);
       }
     }
-    catch(err){
-      console.log("Error occureed while retrieving Settlement data "+err);
+    catch (err) {
+      console.log("Error occured while registering user "+err);
+      throw err;
+    }
+    return isRegistered;
+  },
+
+  async getGroupActivitiesByGroupId(groupId) {
+    try {
+      const response = await axiosInstance.get(`http://localhost:8085/activity/getGroupActivities/${groupId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fecthing Activities" + response.status);
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while retrieving Group Activities " + err);
+      throw err;
+    }
+  },
+  async getAllActivitiesByUserId(userId) {
+    try {
+      const response = await axiosInstance.get(`http://localhost:8085/activity/getUserActivities/${userId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fecthing Activities" + response.status);
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while retrieving User Activities " + err);
+      throw err;
+    }
+  },
+  async getAllActivitiesByExpenseId(expenseId) {
+    try {
+      const response = await axiosInstance.get(`http://localhost:8085/activity/getExpenseActivity/${expenseId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fecthing Activities" + response.status);
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while retrieving Expense Activities " + err);
+      throw err;
+    }
+  },
+  async getAllActivitiesBySettlementId(settlementId) {
+    try {
+      const response = await axiosInstance.get(`http://localhost:8085/activity/getSettlementActivity/${settlementId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fecthing Activities " + response.status);
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while retrieving Settlement Activities " + err);
+      throw err;
+    }
+  },
+  async getExpenseByExpenseId(expenseId, loggedInUserId) {
+    try {
+      const response = await axiosInstance.get(`http://localhost:8085/expense/get-expense/${expenseId}/${loggedInUserId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fetching Expense " + response.status);
+      }
+    }
+    catch (err) {
+      console.log("Error occurred while retrieving expense data " + err);
+      throw err;
+    }
+  },
+  async getSettlementBySettlementId(settlementId, loggedInUserId) {
+    try {
+      const response = await axiosInstance.get(`http://localhost:8085/settlement/getSettlementDetails/${settlementId}/${loggedInUserId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fetching Settlement " + response.status);
+      }
+    }
+    catch (err) {
+      console.log("Error occureed while retrieving Settlement data " + err);
       throw err;
     }
   }
