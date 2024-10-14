@@ -14,14 +14,14 @@ import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
 import { Link } from 'react-router-dom';
 
 
-const SideNavBar = () => {
+const SideNavBar = ({onClose}) => {
       return (
         <>
             <Box sx={{ mx:"10px", width: '100%', maxWidth: 360}}>
               <nav aria-label="main mailbox folders">
-                <List>
+                <List >
                   <ListItem disablePadding>
-                    <ListItemButton component={Link} to ="/">
+                    <ListItemButton component={Link} to ="/" onClick={onClose}>
                       <ListItemIcon>
                         <HomeOutlinedIcon />
                       </ListItemIcon>
@@ -29,7 +29,7 @@ const SideNavBar = () => {
                     </ListItemButton>
                   </ListItem>
                   <ListItem disablePadding>
-                    <ListItemButton component={Link} to ="/activities">
+                    <ListItemButton component={Link} to ="/activities" onClick={onClose}>
                       <ListItemIcon>
                         <TimelineIcon />
                       </ListItemIcon>
@@ -37,7 +37,7 @@ const SideNavBar = () => {
                     </ListItemButton>
                   </ListItem>
                   <ListItem disablePadding>
-                    <ListItemButton component={Link} to ="/friends">
+                    <ListItemButton component={Link} to ="/friends" onClick={onClose}>
                       <ListItemIcon>
                         <PersonOutlinedIcon />
                       </ListItemIcon>
@@ -45,7 +45,7 @@ const SideNavBar = () => {
                     </ListItemButton>
                   </ListItem>
                   <ListItem disablePadding>
-                    <ListItemButton component={Link} to ="/groups">
+                    <ListItemButton component={Link} to ="/groups" onClick={onClose}>
                       <ListItemIcon>
                         <GroupsOutlinedIcon />
                       </ListItemIcon>
@@ -53,7 +53,7 @@ const SideNavBar = () => {
                     </ListItemButton>
                   </ListItem>
                   <ListItem disablePadding>
-                    <ListItemButton component={Link} to ="/expenses">
+                    <ListItemButton component={Link} to ="/expenses" onClick={onClose}>
                       <ListItemIcon>
                         <PaymentOutlinedIcon />
                       </ListItemIcon>
