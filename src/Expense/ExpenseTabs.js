@@ -59,7 +59,7 @@ const ExpenseTabs = ({groupId}) => {
       <TabPanel sx ={{p:0,mt:2}} value="expenses"><ExpenseList groupId={groupId}/></TabPanel>
       <TabPanel sx ={{p:0,mt:2}} value="settlements"><SettlementList groupId={groupId}/></TabPanel>
       <TabPanel sx ={{p:0,mt:2}} value="activity"><ActivityList groupId={groupId}/></TabPanel>
-      <TabPanel sx ={{p:0,mt:2}} value="members"><GroupMembers/></TabPanel>
+      <TabPanel sx ={{p:0,mt:2}} value="members"><GroupMembers  groupId={groupId}/></TabPanel>
     </TabContext>
   );
 };

@@ -1,10 +1,13 @@
 import React from 'react'
+import GroupMembers from './GroupMembers'
+import FriendsBar from './FriendsBar'
 
 const Friends = () => {
   return (
-    <div>
-      <h1>Friends</h1>
-    </div>
+    <>
+      <FriendsBar/>
+      <GroupMembers/>
+    </>
   )
 }
 
