@@ -239,7 +239,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }
               <TextField
                 fullWidth
                 variant="outlined"
-                value={totalAmount.toFixed(2)}
+                value={totalAmount}
                 InputProps={{
                   startAdornment: <InputAdornment position="start">₹</InputAdornment>,
                 }}

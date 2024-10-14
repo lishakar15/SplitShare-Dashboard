@@ -11,7 +11,8 @@ import { loggedInUserAtom } from './atoms/UserAtom';
 import ExpenseDialog from './Expense/Create Expense/ExpenseDialog';
 import PaymentDialog from './Payment/PaymentDialog';
 import CustomizedSnackbars from './utilities/CustomSnackBar';
-
+import PersonAddIcon from '@mui/icons-material/PersonAdd';
+import PersonRemoveIcon from '@mui/icons-material/PersonRemove';
 const ActivityList = ({ groupId, expenseId, settlementId, isFromAccordian = false }) => {
 
   const [activities, setActivities] = useState([]);
@@ -122,9 +123,11 @@ const ActivityList = ({ groupId, expenseId, settlementId, isFromAccordian = fals
           {activities && activities.length > 0 ? activities.map((activity, index) => (
             <TimelineItem key={index}>
               <TimelineSeparator>
-                <TimelineDot color={activity.activityType.startsWith('PAYMENT') ? 'success' : 'primary'}>
+                <TimelineDot color={activity.activityType.startsWith('PAYMENT') ? 'success' : activity.activityType.startsWith('USER') ? 'grey' :'primary'}>
                   {activity.activityType.startsWith('EXPENSE') && <PaymentIcon />}
                   {activity.activityType.startsWith('PAYMENT') && <PaidOutlinedIcon />}
+                  {activity.activityType === 'USER_ADDED' && <PersonAddIcon />}
+                  {activity.activityType === 'USER_REMOVED' && <PersonRemoveIcon/>}
                 </TimelineDot>
                 {index < activities.length - 1 && <TimelineConnector />}
               </TimelineSeparator>

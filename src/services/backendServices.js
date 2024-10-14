@@ -470,5 +470,35 @@ export const backendService = {
       console.log("Error occureed while retrieving Settlement data " + err);
       throw err;
     }
+  },
+  async getAllGroupMembersByUserId(loggedInUserId){
+    try{
+      const response = await axiosInstance.get(`http://localhost:8085/group/get-group-members-info/user/${loggedInUserId}`);
+      if(response.status === 200){
+        return response.data;
+      }
+      else{
+        throw Error("Error fetching group members data "+ response.status)
+      }
+    }
+    catch(err){
+      console.log("Error occured while fetching Group Members list getAllGroupMembersByUserId() "+err);
+      throw err;
+    }
+  },
+  async getAllGroupMembersByGroupId(groupId){
+    try{
+      const response = await axiosInstance.get(`http://localhost:8085/group/get-group-members-info/group/${groupId}`);
+      if(response.status === 200){
+        return response.data;
+      }
+      else{
+        throw Error("Error fetching group members data "+ response.status)
+      }
+    }
+    catch(err){
+      console.log("Error occured while fetching Group Members list getAllGroupMembersByGroupId() "+err);
+      throw err;
+    }
   }
 };
