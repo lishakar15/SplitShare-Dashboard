@@ -70,15 +70,12 @@ export const backendService = {
     }
   },
 
-  async getGroupDataByGroupId(groupId) {
+  async getGroupDataByGroupId(groupId, loggedInUserId) {
     try {
-      const response = await axiosInstance.get(`http://localhost:8085/group/get-group/${groupId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/group/get-group/${groupId}/${loggedInUserId}`);
 
       if (response.status === 200) {
         return response.data;
-      }
-      else {
-        throw new Error("Service error " + response.status);
       }
     }
     catch (err) {

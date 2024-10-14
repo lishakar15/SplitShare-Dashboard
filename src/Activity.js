@@ -1,9 +1,14 @@
 import React from 'react'
 import ActivityList from './ActivityList'
+import ActivityBar from './ActivityBar';
 
 const Activity = () => {
   return (
-    <ActivityList showEditButton={true}/>
+    <>
+      <ActivityBar />
+      <ActivityList showEditButton={true} />
+    </>
+
   )
 }
 
