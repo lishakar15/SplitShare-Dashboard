@@ -1,3 +1,4 @@
+import { isInaccessible } from "@testing-library/react";
 import axiosInstance from "../axiosInstance";
 export const backendService = {
   async saveExpenseDetails(expenseRequest) {
@@ -366,16 +367,15 @@ export const backendService = {
     let isRegistered = false;
     try {
       const response = await axiosInstance.post("http://localhost:8085/user/register-user", user);
-      if(response.status === 200)
-      {
+      if (response.status === 200) {
         isRegistered = true;
       }
-      else{
-        throw Error("Error registering user "+response.status);
+      else {
+        throw Error("Error registering user " + response.status);
       }
     }
     catch (err) {
-      console.log("Error occured while registering user "+err);
+      console.log("Error occured while registering user " + err);
       throw err;
     }
     return isRegistered;
@@ -471,34 +471,47 @@ export const backendService = {
       throw err;
     }
   },
-  async getAllGroupMembersByUserId(loggedInUserId){
-    try{
+  async getAllGroupMembersByUserId(loggedInUserId) {
+    try {
       const response = await axiosInstance.get(`http://localhost:8085/group/get-group-members-info/user/${loggedInUserId}`);
-      if(response.status === 200){
+      if (response.status === 200) {
         return response.data;
       }
-      else{
-        throw Error("Error fetching group members data "+ response.status)
+      else {
+        throw Error("Error fetching group members data " + response.status)
       }
     }
-    catch(err){
-      console.log("Error occured while fetching Group Members list getAllGroupMembersByUserId() "+err);
+    catch (err) {
+      console.log("Error occured while fetching Group Members list getAllGroupMembersByUserId() " + err);
       throw err;
     }
   },
-  async getAllGroupMembersByGroupId(groupId){
-    try{
+  async getAllGroupMembersByGroupId(groupId) {
+    try {
       const response = await axiosInstance.get(`http://localhost:8085/group/get-group-members-info/group/${groupId}`);
-      if(response.status === 200){
+      if (response.status === 200) {
         return response.data;
       }
-      else{
-        throw Error("Error fetching group members data "+ response.status)
+      else {
+        throw Error("Error fetching group members data " + response.status)
       }
     }
-    catch(err){
-      console.log("Error occured while fetching Group Members list getAllGroupMembersByGroupId() "+err);
+    catch (err) {
+      console.log("Error occured while fetching Group Members list getAllGroupMembersByGroupId() " + err);
       throw err;
     }
+  },
+  async sentInvitation(userInvite) {
+    let isInvitationSent = false;
+    try {
+      const response = await axiosInstance.post("http://localhost:8085/invite", userInvite);
+      if (response.status === 200) {
+        isInvitationSent = true;
+      }
+    }
+    catch (err) {
+      console.log("Error occured while sending invite to user " + err);
+    }
+    return isInvitationSent;
   }
 };
