@@ -513,5 +513,31 @@ export const backendService = {
       console.log("Error occured while sending invite to user " + err);
     }
     return isInvitationSent;
+  },
+  async createGroupWithMembers(groupRequest)
+  {
+    let isGroupCreated = false;
+    try{
+      const response = await axiosInstance.post("http://localhost:8085/group/create-group", groupRequest)
+      if(response.status === 200){
+        isGroupCreated = true;
+      }
+    }
+    catch(err){
+      console.log("Error occured while creating Group "+err)
+    }
+    return isGroupCreated;
+  },
+  async getGroupDetailsForModify(groupId){
+    try{
+        const response = await axiosInstance.get(`http://localhost:8085/group/get-group-details/${groupId}`)
+        if(response === 200){
+          return response.data;
+        }
+    }
+    catch(err){
+      console.log("Error occured while fecthing Group Details "+err);
+      throw err;
+    }
   }
 };
