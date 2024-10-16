@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   AvatarGroup,
   Box,
+  Button,
   Card,
   CardContent,
   Typography,
@@ -16,6 +17,9 @@ import { useAtomValue, useSetAtom } from "jotai";
 import { currentGroupDataAtom } from "../atoms/GroupAtom";
 import { backendService } from "../services/backendServices";
 import { loggedInUserAtom } from "../atoms/UserAtom";
+import SettingsIcon from '@mui/icons-material/Settings';
+import { Settings } from "@mui/icons-material";
+import CreateGroupDialog from "../CreateGroupDialog";
 
 const ExpenseGroupInfoCard = ({ groupData }) => {
   const theme = useTheme();
@@ -23,6 +27,14 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
   const setGroupData = useSetAtom(currentGroupDataAtom);
   const loggedInUser = useAtomValue(loggedInUserAtom);
   const [balanceSummaryList, setBalanceSummaryList] = useState(null);
+  const [open, setOpen] = React.useState(false);
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClose = () => {
+    setOpen(false);
+  };
 
   useEffect(() => {
     setGroupData(groupData);
@@ -43,6 +55,7 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
 
   return groupData &&
     (
+      <>
       <Card sx={{ my: 2, border: "1px solid #e5e7eb" }} >
         <CardContent
           sx={{
@@ -62,8 +75,17 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
           >
             <AvatarGenerator userName={groupData.groupName} size={"xl"} />
             <Box sx={{ ml: 1 }}>
-              <Typography sx={{ fontWeight: "bold", color: "#512DA8" }}>
+              <Typography sx={{ fontWeight: "bold", color: "#512DA8", display: "flex", alignItems: "center", gap: 1 }}>
                 {groupData.groupName}
+                <Button
+                  variant="outlined"
+                  size="small" 
+                  sx={{ borderRadius: 4, fontSize: '0.875rem' }}
+                  onClick={handleClickOpen}
+                >
+                  Edit
+                </Button>
+
               </Typography>
               <Typography>
                 {groupData.groupMembers.map((member, index) => (
@@ -84,13 +106,13 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
                   ))}
                 </AvatarGroup>
               </Box>
-              {balanceSummaryList && 
+              {balanceSummaryList &&
                 <GroupOweSummaryChip
-                currentGroupId={groupData.groupId}
-                groupOweList={balanceSummaryList}
-              />
+                  currentGroupId={groupData.groupId}
+                  groupOweList={balanceSummaryList}
+                />
               }
-              
+
             </Box>
           </Box>
           <Box
@@ -104,6 +126,8 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
           </Box>
         </CardContent>
       </Card >
+      <CreateGroupDialog open={open} onClose={handleClose} groupId={groupData.groupId}/>
+      </>
     )
 }
 

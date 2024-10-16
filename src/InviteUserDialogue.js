@@ -76,7 +76,7 @@ const InviteUserPopover = ({ anchorEl, onClose }) => {
                 >
                     <Box p={2} sx={{ width: 300 }}>
                         <Box display="flex" justifyContent="space-between" alignItems="center">
-                            <Typography variant="h6">Invite or add friends</Typography>
+                            <Typography variant="h6" sx={{fontWeight:"bold"}}>Invite or add friends</Typography>
                             <IconButton onClick={onClose}>
                                 <CloseIcon />
                             </IconButton>
