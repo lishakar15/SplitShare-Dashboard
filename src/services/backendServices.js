@@ -1,4 +1,3 @@
-import { isInaccessible } from "@testing-library/react";
 import axiosInstance from "../axiosInstance";
 export const backendService = {
   async saveExpenseDetails(expenseRequest) {
@@ -531,13 +530,47 @@ export const backendService = {
   async getGroupDetailsForModify(groupId){
     try{
         const response = await axiosInstance.get(`http://localhost:8085/group/get-group-details/${groupId}`)
-        if(response === 200){
+        if(response.status === 200){
           return response.data;
         }
     }
     catch(err){
       console.log("Error occured while fecthing Group Details "+err);
       throw err;
+    }
+  },
+  async getGroupMembersByUserId(loggedInUserId){
+    try{
+        const response = await axiosInstance.get(`http://localhost:8085/group/get-all-members/${loggedInUserId}`);
+        if(response.status === 200){
+          return response.data;
+        }
+    }
+    catch(err){
+      console.log("Error occurred while fetching Group Members "+err);
+    }
+  },
+  async acceptInvite(invite){
+    try{
+      const response = await axiosInstance.post("http://localhost:8085/user/accept-invite",invite);
+      if(response.status === 200){
+        return response.data;
+      }
+    }
+    catch(err){
+      console.log("Error occurred while accepting invite "+err);
+    }
+  },
+
+  async joinUserInGroup(groupInvite){
+    try{
+      const response = await axiosInstance.post("http://localhost:8085/group/join-group",groupInvite);
+      if(response.status === 200){
+        return response.data;
+      }
+    }
+    catch(err){
+      console.log("Error occureed while joining group "+err);
     }
   }
 };

@@ -53,15 +53,21 @@ const ExpenseList = ({ groupId }) => {
 
   const fetchExpenses = async () => {
     let expenses = [];
-    if (groupId) {
-      expenses = await backendService.getExpensesByGroupId(groupId);
+    try{
+      if (groupId) {
+        expenses = await backendService.getExpensesByGroupId(groupId);
+      }
+      else {
+        expenses = await backendService.getAllExpensesByUserId(loggedInUser.userId);
+      }
+      if (expenses) {
+        setExpenseList(expenses);
+      }
     }
-    else {
-      expenses = await backendService.getAllExpensesByUserId(loggedInUser.userId);
+    catch (err){
+      console.log("Error occurred while fetching Expense "+err)
     }
-    if (expenses) {
-      setExpenseList(expenses);
-    }
+   
 
   };
 

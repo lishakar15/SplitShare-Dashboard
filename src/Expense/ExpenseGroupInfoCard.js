@@ -126,7 +126,7 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
           </Box>
         </CardContent>
       </Card >
-      <CreateGroupDialog open={open} onClose={handleClose} groupId={groupData.groupId}/>
+      {open && <CreateGroupDialog open={open} onClose={handleClose} groupId={groupData.groupId}/>}
       </>
     )
 }

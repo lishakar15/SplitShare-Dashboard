@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Button,
@@ -13,17 +13,37 @@ import {
 } from "@mui/material";
 import { backendService } from "./services/backendServices";
 import { useNavigate } from "react-router-dom";
+import CustomizedSnackbars from "./utilities/CustomSnackBar";
 
 const LoginUser = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [rememberMe, setRememberMe] = useState(false);
   const [error, setError] = useState("");
+  const [invitedBy, setInvitedBy] = useState(null);
+  const [groupId, setGroupId] = useState(null);
+  const [inviteToken, setInviteToken] = useState(null);
   const navigate = useNavigate();
+    // Snackbar state
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [snackbarSuccess, setSnackbarSuccess] = useState(false);
+
+  useEffect(()=>{
+    //Check if there are any invite parameters in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams)
+    {
+      console.log("invtedbY== " +urlParams.get('invitedBy'));
+      setInvitedBy(urlParams.get('invitedBy'));
+      setGroupId(urlParams.get('groupId'));
+      setInviteToken(urlParams.get('token')); 
+    }
+  },[]);
 
   const handleLogin = (e) => {
     e.preventDefault();
-    //validate Mandatory Fields 
+
     const loginUser = async () => {
       const credentials = {
         userName: email,
@@ -34,10 +54,14 @@ const LoginUser = () => {
         if (userData !== null) {
           localStorage.setItem("userData", JSON.stringify({ userId: userData.userId, userName: userData.userName }));
           localStorage.setItem("jwtToken", userData.jwtToken);
+          acceptUserGroupInvite(userData.userId);
           navigate("/home");
-          window.location.reload();
+          setTimeout(()=>{
+            window.location.reload()
+          },1000);
+          ;
         }
-        else{
+        else {
           throw Error("Login Failed");
         }
       }
@@ -48,6 +72,38 @@ const LoginUser = () => {
     }
     loginUser();
   };
+
+  const acceptUserGroupInvite = async(loggedInUserId) => {
+    if (loggedInUserId) {
+      let message = null;
+      if (groupId) {
+        const groupInvite = {
+          groupId: groupId,
+          userId: loggedInUserId
+        }
+        message = await backendService.joinUserInGroup(groupInvite);
+      }
+      else if(invitedBy){
+        const userInvite = {
+          userId1 : loggedInUserId,
+          userId2 : invitedBy,
+          createdBy: invitedBy
+        }
+        message = await backendService.acceptInvite(userInvite);
+      }
+      if(message){
+        setSnackbarMessage(message);
+        if(message.includes("expired") || (message.includes("fail")))
+        {
+          setSnackbarSuccess(false);
+        }
+        else{
+          setSnackbarSuccess(true);
+        }
+        setSnackbarOpen(true);
+      }
+    }
+  }
 
   return (
     <Container maxWidth="xs" sx={{
@@ -121,7 +177,7 @@ const LoginUser = () => {
               </Link>
             </Grid>
           </Grid>
-          
+
           {error && (
             <Alert severity="error" sx={{ mt: 2, mb: 2 }}>
               {error}
@@ -149,6 +205,14 @@ const LoginUser = () => {
           </Grid>
         </Box>
       </Box>
+      <CustomizedSnackbars
+        open={snackbarOpen}
+        setOpen={setSnackbarOpen}
+        message={snackbarMessage}
+        isSuccess={snackbarSuccess}
+        verticalPos={"top"}
+        horizontalPos={"right"}
+      />
     </Container>
   );
 };

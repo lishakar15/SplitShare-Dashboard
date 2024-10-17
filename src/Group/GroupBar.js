@@ -2,7 +2,7 @@ import { Card, CardContent, Typography, Button } from "@mui/material";
 import React from "react";
 import CreateGroupDialog from "../CreateGroupDialog";
 
-const GroupBar = () => {
+const GroupBar = ({}) => {
   const [open, setOpen] = React.useState(false);
   const handleClickOpen = () => {
     setOpen(true);
@@ -39,7 +39,7 @@ const GroupBar = () => {
           </Button>
         </CardContent>
       </Card>
-      <CreateGroupDialog open={open} onClose={handleClose}/>
+      {open && <CreateGroupDialog open={open} onClose={handleClose} />}
     </>
   );
 };
