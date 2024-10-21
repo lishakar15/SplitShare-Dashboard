@@ -470,18 +470,19 @@ export const backendService = {
       throw err;
     }
   },
-  async getAllGroupMembersByUserId(loggedInUserId) {
+  async getAllFriendsByUserId(loggedInUserId) {
     try {
-      const response = await axiosInstance.get(`http://localhost:8085/group/get-group-members-info/user/${loggedInUserId}`);
+
+      const response = await axiosInstance.get(`http://localhost:8085/user/get-all-friends/${loggedInUserId}`);
       if (response.status === 200) {
         return response.data;
       }
       else {
-        throw Error("Error fetching group members data " + response.status)
+        throw Error("Error fetching friends data " + response.status)
       }
     }
     catch (err) {
-      console.log("Error occured while fetching Group Members list getAllGroupMembersByUserId() " + err);
+      console.log("Error occured while fetching friends list getAllFriendsByUserId() " + err);
       throw err;
     }
   },
@@ -513,64 +514,103 @@ export const backendService = {
     }
     return isInvitationSent;
   },
-  async createGroupWithMembers(groupRequest)
-  {
+  async createGroupWithMembers(groupRequest) {
     let isGroupCreated = false;
-    try{
+    try {
       const response = await axiosInstance.post("http://localhost:8085/group/create-group", groupRequest)
-      if(response.status === 200){
+      if (response.status === 200) {
         isGroupCreated = true;
       }
     }
-    catch(err){
-      console.log("Error occured while creating Group "+err)
+    catch (err) {
+      console.log("Error occured while creating Group " + err)
     }
     return isGroupCreated;
   },
-  async getGroupDetailsForModify(groupId){
-    try{
-        const response = await axiosInstance.get(`http://localhost:8085/group/get-group-details/${groupId}`)
-        if(response.status === 200){
-          return response.data;
-        }
+  async updateGroupWithMembers(groupUpdateRequest)
+  {
+    let isGroupUpdated = false;
+    try {
+      const response = await axiosInstance.put("http://localhost:8085/group/update-group", groupUpdateRequest)
+      if (response.status === 200) {
+        isGroupUpdated = true;
+      }
     }
-    catch(err){
-      console.log("Error occured while fecthing Group Details "+err);
+    catch (err) {
+      console.log("Error occured while updating Group " + err)
+    }
+    return isGroupUpdated;
+
+  },
+  async getGroupDetailsForModify(groupId) {
+    try {
+      const response = await axiosInstance.get(`http://localhost:8085/group/get-group-details/${groupId}`)
+      if (response.status === 200) {
+        return response.data;
+      }
+    }
+    catch (err) {
+      console.log("Error occured while fecthing Group Details " + err);
       throw err;
     }
   },
-  async getGroupMembersByUserId(loggedInUserId){
-    try{
-        const response = await axiosInstance.get(`http://localhost:8085/group/get-all-members/${loggedInUserId}`);
-        if(response.status === 200){
-          return response.data;
-        }
-    }
-    catch(err){
-      console.log("Error occurred while fetching Group Members "+err);
-    }
-  },
-  async acceptInvite(invite){
-    try{
-      const response = await axiosInstance.post("http://localhost:8085/user/accept-invite",invite);
-      if(response.status === 200){
+  async getGroupMembersByUserId(loggedInUserId) {
+    try {
+      const response = await axiosInstance.get(`http://localhost:8085/group/get-all-members/${loggedInUserId}`);
+      if (response.status === 200) {
         return response.data;
       }
     }
-    catch(err){
-      console.log("Error occurred while accepting invite "+err);
+    catch (err) {
+      console.log("Error occurred while fetching Group Members " + err);
+    }
+  },
+  async acceptInvite(invite, token) {
+    try {
+      const header = {
+        headers: {
+          AUTHORIZATION: `Bearer ${token}`
+        }
+      };
+  
+      const response = await axiosInstance.post("http://localhost:8085/user/accept-invite", invite, header);
+  
+      if (response.status === 200) {
+        return response.data;
+      }
+    } catch (error) {
+        console.log("Error occurred while accepting invite " + error);
+        return "Invalid or expired invite";
     }
   },
 
-  async joinUserInGroup(groupInvite){
+  async joinUserInGroup(groupInvite, token) {
+    try {
+      const header = {
+        headers: {
+          AUTHORIZATION: `Bearer ${token}`
+        }
+      }
+      const response = await axiosInstance.post("http://localhost:8085/group/join-group", groupInvite, header);
+      if (response.status === 200) {
+        return response.data;
+      }
+    }
+    catch (error) {
+        console.log("Error occureed while joining group " + error);
+        return "Invalid or expired invite";
+    }
+  },
+
+  async createInviteLink(inviteParams){
     try{
-      const response = await axiosInstance.post("http://localhost:8085/group/join-group",groupInvite);
+      const response = await axiosInstance.post("http://localhost:8085/user/invite-link",inviteParams);
       if(response.status === 200){
         return response.data;
       }
     }
     catch(err){
-      console.log("Error occureed while joining group "+err);
+      console.log("Error occured while creating Invite Link "+err);
     }
   }
 };

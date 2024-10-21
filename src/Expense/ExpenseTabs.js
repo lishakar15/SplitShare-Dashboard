@@ -13,7 +13,7 @@ import ExpenseList from "./ExpenseList";
 import SettlementList from "../Payment/SettlementList";
 import GroupMembers from "../GroupMembers";
 import ActivityList from "../ActivityList";
-const ExpenseTabs = ({groupId}) => {
+const ExpenseTabs = ({groupId, refreshTrigger}) => {
   const [value, setValue] = useState("expenses");
   const handleChange = (event, newValue) => {
     setValue(newValue);

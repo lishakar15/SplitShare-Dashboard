@@ -10,8 +10,9 @@ import AvatarGenerator from "../AvatarGenerator";
 import GroupOweSummaryChip from "./GroupOweSummaryChip";
 import { useNavigate } from "react-router-dom";
 import { backendService } from "../services/backendServices";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { loggedInUserAtom } from "../atoms/UserAtom";
+import { refetchTriggerAtom } from "../atoms/Atoms";
 
 const GroupList = () => {
 
@@ -19,6 +20,7 @@ const GroupList = () => {
   const [groupsOweSummaryList, setGroupsOweSummaryList] = useState(null);
   const navigate = useNavigate();
   const loggedInUser = useAtomValue(loggedInUserAtom);
+  const [refreshTrigger,setRefreshTrigger] = useAtom(refetchTriggerAtom);
 
   const handleGroupClick = (groupId) => {
     navigate(`/expenses/group/${groupId}`)
@@ -30,7 +32,7 @@ const GroupList = () => {
       try {
         const response = await backendService.getGroupsDataByUserId(loggedInUser.userId);
         if (response) {
-          setGroupsData(response);
+          setGroupsData([...response]);
         }
       } catch (error) {
         console.error("Error fetching groups data: ", error);
@@ -38,20 +40,20 @@ const GroupList = () => {
     };
 
     fetchGroupsData();
-  }, []);
+  }, [refreshTrigger]);
 
   useEffect(() => {
     const fetchoGroupSummaryData = async () => {
       try {
         const response = await backendService.getAllGroupBalanceSummary(loggedInUser.userId);
-        setGroupsOweSummaryList(response)
+        setGroupsOweSummaryList([...response])
       }
       catch (err) {
         console.log("Error fecthing groups balance summary data");
       }
     }
     fetchoGroupSummaryData();
-  }, []);
+  }, [refreshTrigger]);
 
 
   return (

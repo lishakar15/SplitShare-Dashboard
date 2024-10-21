@@ -19,9 +19,10 @@ import {
 } from "@mui/material";
 import UserTransactionAvatar from "./UserTransactionAvatar";
 import { backendService } from "../services/backendServices";
-import { useAtomValue } from "jotai";
+import { useAtom, useAtomValue } from "jotai";
 import { loggedInUserAtom } from "../atoms/UserAtom";
 import CustomizedSnackbars from "../utilities/CustomSnackBar";
+import { refetchTriggerAtom } from "../atoms/Atoms";
 
 function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
 
@@ -39,6 +40,7 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
   const [amountPaid, setAmountPaid] = useState(0);
   const [settlementDate, setSettlementDate] = useState(today)
   const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [refreshTrigger,setRefreshTrigger] = useAtom(refetchTriggerAtom);
   // Snackbar state
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -66,6 +68,7 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
         setSnackbarMessage("Payment Saved Successfully");
         setSnackbarSuccess(true);
         setSnackbarOpen(true);
+        setTimeout(()=>{setRefreshTrigger((prevVal)=> !prevVal)},1000)
       }
       else {
         setSnackbarMessage("Error Saving Payment");
@@ -127,6 +130,7 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
         setSnackbarMessage("Payment Deleted Successfully");
         setSnackbarSuccess(true);
         setSnackbarOpen(true);
+        setTimeout(()=>{setRefreshTrigger((prevVal)=> !prevVal)},1000)
       }
       else {
         setSnackbarMessage("Error Deleting Payment");

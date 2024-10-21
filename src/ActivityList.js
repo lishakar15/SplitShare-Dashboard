@@ -86,7 +86,6 @@ const ActivityList = ({ groupId, expenseId, settlementId, isFromAccordian = fals
     if(selectedSettlementId){
       try{
         const response = await backendService.getSettlementBySettlementId(selectedSettlementId, loggedInUser.userId);
-        console.log("Settlement status");
         if(response !== null && response !==""){
           setSelectedSettlement(response);
           setIsOpenSettlementDialog(true);
@@ -108,6 +107,11 @@ const ActivityList = ({ groupId, expenseId, settlementId, isFromAccordian = fals
     setSelectedSettlement(null);
     setIsOpenSettlementDialog(false);
   };
+
+  const isShowEditButton = (activityType) => {
+    const excludeEditShowList = ["USER_ADDED", "USER_REMOVED", "EXPENSE_DELETED","PAYMENT_DELETED","COMMENT_DELETED"];
+    return !excludeEditShowList.find((type) => type === activityType);
+  }
 
   return (
     <>
@@ -171,7 +175,7 @@ const ActivityList = ({ groupId, expenseId, settlementId, isFromAccordian = fals
                   </Box>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
                     {
-                      isFromAccordian === false && !activity.activityType.includes('DELETE') &&
+                      isFromAccordian === false && isShowEditButton(activity.activityType) &&
                       <Button
                         size="small"
                         variant="outlined"

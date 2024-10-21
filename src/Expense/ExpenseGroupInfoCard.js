@@ -13,13 +13,14 @@ import AvatarGenerator from "../AvatarGenerator";
 import GroupOweSummaryChip from "../Group/GroupOweSummaryChip";
 import SettleUpButton from "../SettleUpButton";
 import AddExpenseButton from "./Create Expense/AddExpenseButton";
-import { useAtomValue, useSetAtom } from "jotai";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
 import { currentGroupDataAtom } from "../atoms/GroupAtom";
 import { backendService } from "../services/backendServices";
 import { loggedInUserAtom } from "../atoms/UserAtom";
 import SettingsIcon from '@mui/icons-material/Settings';
 import { Settings } from "@mui/icons-material";
 import CreateGroupDialog from "../CreateGroupDialog";
+import { refetchTriggerAtom } from "../atoms/Atoms";
 
 const ExpenseGroupInfoCard = ({ groupData }) => {
   const theme = useTheme();
@@ -28,6 +29,7 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
   const loggedInUser = useAtomValue(loggedInUserAtom);
   const [balanceSummaryList, setBalanceSummaryList] = useState(null);
   const [open, setOpen] = React.useState(false);
+
   const handleClickOpen = () => {
     setOpen(true);
   };
@@ -126,7 +128,7 @@ const ExpenseGroupInfoCard = ({ groupData }) => {
           </Box>
         </CardContent>
       </Card >
-      {open && <CreateGroupDialog open={open} onClose={handleClose} groupId={groupData.groupId}/>}
+      {open && <CreateGroupDialog open={open} onClose={handleClose} groupId={groupData.groupId} isModifyReq={true}/>}
       </>
     )
 }

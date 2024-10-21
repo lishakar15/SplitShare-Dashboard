@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Alert,
   Box,
@@ -23,10 +23,20 @@ const RegisterUser = () => {
   const today = new Date().toISOString().split('T')[0];
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const [urlParam,setUrlParam] = useState(""); 
   // Snackbar state
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
   const [snackbarSuccess, setSnackbarSuccess] = useState(false);
+
+  useEffect(()=>{
+    //Check if there are any invite parameters in the URL
+    const urlParams = new URLSearchParams(window.location.search);
+    if(urlParams)
+    {
+      setUrlParam(urlParams);
+    }
+  },[]);
 
   const handleRegister = (e) => {
     e.preventDefault();
@@ -52,7 +62,7 @@ const RegisterUser = () => {
             setSnackbarSuccess(true);
             setSnackbarOpen(true);
             setTimeout(() => {
-              navigate("/login")
+              navigate(`/login?${urlParam}`)
             }, 1000)
               ;
           }
@@ -236,7 +246,7 @@ const RegisterUser = () => {
             <Grid item>
               <Typography>
                 Already have an account?{" "}
-                <Link href="/login" variant="body2">
+                <Link href={`/login?${urlParam}`} variant="body2">
                   Login to your account
                 </Link>
               </Typography>
