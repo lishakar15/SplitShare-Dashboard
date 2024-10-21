@@ -1,16 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, forwardRef } from 'react';
 import { Box, Button } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
 import PaymentDialog from './PaymentDialog';
 import { loggedInUserAtom } from '../atoms/UserAtom';
-import { useAtom, useAtomValue } from 'jotai';
-import { refetchTriggerAtom } from '../atoms/Atoms';
+import { useAtomValue } from 'jotai';
 
-const CustomSettleUpButton = ({ balance, isForBalance }) => {
-
-  const [open, setOpen] = React.useState(false);
-  const [settlementRequset, setSettlementRequest] = useState(null);
+const CustomSettleUpButton = forwardRef(({ balance }, ref) => {
+  const [open, setOpen] = useState(false);
+  const [settlementRequest, setSettlementRequest] = useState(null);
   const loggedInUser = useAtomValue(loggedInUserAtom);
+
   const handleClickOpen = () => {
     const settlementReq = createSettlementRequest();
     if (settlementReq) {
@@ -30,33 +29,22 @@ const CustomSettleUpButton = ({ balance, isForBalance }) => {
         paidToUserName: balance.owesToUserName,
         createdBy: loggedInUser.userId,
         amountPaid: balance.balanceAmount,
-      }
+      };
       return settlementReq;
-    }
-    else {
+    } else {
       return null;
     }
-  }
+  };
 
   const handleClose = () => {
     setOpen(false);
   };
+
   return (
     <Box>
-
-      {isForBalance ? (
-        <Button variant="outlined"
-          sx={{
-            color: "black",
-            textTransform: "none",
-            borderColor : "lightgray"
-          }}
+        <Button
+          ref={ref} // Forwarding the ref here
           onClick={handleClickOpen}
-        >
-          Settle
-        </Button>
-      ) : (
-        <Button onClick={handleClickOpen}
           variant="outlined"
           sx={{
             width: '100%',
@@ -70,14 +58,9 @@ const CustomSettleUpButton = ({ balance, isForBalance }) => {
           Settle up
           <EastIcon sx={{ fontSize: '15px', ml: '5px' }} />
         </Button>
-      )}
-      <PaymentDialog
-        open={open}
-        onClose={handleClose}
-        settlementReq={settlementRequset}
-      />
+      <PaymentDialog open={open} onClose={handleClose} settlementReq={settlementRequest} />
     </Box>
-  )
-}
+  );
+});
 
 export default CustomSettleUpButton;

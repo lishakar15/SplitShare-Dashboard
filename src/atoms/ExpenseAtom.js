@@ -1,4 +1,5 @@
 import { atom } from "jotai";
+import { useRef } from "react";
 
 const currentGroupMembers = [];
 
@@ -11,6 +12,7 @@ export const participantShareListAtom = atom(participantShareList);
 export const defaultPaidUserAtom = atom(defaultPaidUser);
 export const totalExpenseAmountAtom = atom(0);
 export const splitTypeAtom = atom("EQUAL");
+export const settleButtonRefAtom = atom(null);
 
 
 
