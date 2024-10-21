@@ -3,7 +3,8 @@ import { Box, Button } from '@mui/material';
 import EastIcon from '@mui/icons-material/East';
 import PaymentDialog from './PaymentDialog';
 import { loggedInUserAtom } from '../atoms/UserAtom';
-import { useAtomValue } from 'jotai';
+import { useAtom, useAtomValue } from 'jotai';
+import { refetchTriggerAtom } from '../atoms/Atoms';
 
 const CustomSettleUpButton = ({ balance, isForBalance }) => {
 

@@ -1,3 +1,3 @@
 import { atom } from "jotai";
 
-export const refetchBalanceSummaryAtom = atom(false); 
+export const refetchTriggerAtom = atom(false);

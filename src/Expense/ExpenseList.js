@@ -259,7 +259,6 @@ const ExpenseList = ({ groupId }) => {
         onClose={handleExpenseDialogClose}
         isModReq={true}
         expenseData={selectedExpense}
-        refreshExpenses={fetchExpenses}
       />
     </>
   );

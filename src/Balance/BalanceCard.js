@@ -11,11 +11,13 @@ import { useAtom, useAtomValue } from 'jotai';
 import { loggedInUserAtom } from '../atoms/UserAtom';
 import { backendService } from '../services/backendServices';
 import { Link } from 'react-router-dom';
+import { refetchTriggerAtom } from '../atoms/Atoms';
 
 const BalanceCard = () => {
 
   const loggedInUser = useAtomValue(loggedInUserAtom);
   const [balanceList, setBalanceList] = useState(null);
+  const [refreshTrigger,setRefreshTrigger] = useAtom(refetchTriggerAtom);
 
   useEffect(()=>{
 
@@ -30,7 +32,7 @@ const BalanceCard = () => {
     }
     getBalances();
     
-  },[]);
+  },[refreshTrigger]);
 
 
   return (

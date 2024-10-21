@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
@@ -7,106 +7,97 @@ import Typography from '@mui/material/Typography';
 import { useMediaQuery } from '@mui/material';
 import { useAtom, useAtomValue } from 'jotai';
 import { loggedInUserAtom } from '../atoms/UserAtom';
-import { refetchBalanceSummaryAtom } from '../atoms/Atoms';
 import { backendService } from '../services/backendServices';
+import { refetchTriggerAtom } from '../atoms/Atoms';
 
 const BalanceBoard = () => {
-
   const isSmallScreen = useMediaQuery('(max-width:600px)');
   const isMediumScreen = useMediaQuery('(min-width:601px) and (max-width:900px)');
   const loggedInUser = useAtomValue(loggedInUserAtom);
-  const [refetchBalance, setRefetchBalance] = useAtom(refetchBalanceSummaryAtom);
-  const [oweAmount, setOweAmount] = useState(0.00);
-  const [owedAmount, setOwedAmount] = useState(0.00);
+  const [oweAmount, setOweAmount] = useState(0);
+  const [owedAmount, setOwedAmount] = useState(0);
+  const [totalBalance, setTotalBalance] = useState(0);
+  const [refreshTrigger] = useAtom(refetchTriggerAtom);
 
-  // Set font size based on screen size
   const getFontSize = () => {
     if (isSmallScreen) return '1.5rem';
     if (isMediumScreen) return '2rem';
-    return '2rem'; // Default to large screen font size
+    return '2rem';
   };
-  const getBalancesSummary = async () => {
+
+  const getBalancesSummary = useCallback(async () => {
+    try {
       const balanceInfo = await backendService.getBalanceSummary(loggedInUser.userId);
       if (balanceInfo) {
-        setOweAmount(balanceInfo.oweAmount);
-        setOwedAmount(balanceInfo.owedAmount);
+        setOweAmount(Number(balanceInfo.oweAmount) || 0);
+        setOwedAmount(Number(balanceInfo.owedAmount) || 0);
       }
+    } catch (error) {
+      console.error("Error fetching balance summary:", error);
     }
+  }, [loggedInUser.userId]);
 
   useEffect(() => {
     getBalancesSummary();
-  }, []);
+  }, [getBalancesSummary, refreshTrigger]);
 
   useEffect(() => {
-    if(refetchBalance)
-    {
-      getBalancesSummary();
-    }
-    setRefetchBalance(false);
+    const calculatedTotalBalance = (owedAmount - oweAmount).toFixed(2);
+    setTotalBalance(calculatedTotalBalance);
+  }, [owedAmount, oweAmount]);
 
-  }, [refetchBalance]);
+  const formatCurrency = (amount) => {
+    return `₹${Number(amount).toFixed(2)}`;
+  };
 
   return (
-    <Box
-      sx={{
-        display: 'flex',
-        justifyContent: 'center',
-        mt: 2,
-        gap: 0.5,
-      }}
-    >
+    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, gap: 0.5 }}>
       <Card sx={{ flex: 1, border: '1px solid #e5e7eb' }}>
         <CardContent>
-          <Typography
-            gutterBottom
-            sx={{ color: 'text.secondary', fontSize: 16 }}
-          >
+          <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 16 }}>
             Your Balance
           </Typography>
           <Typography
             variant="h4"
             component="div"
-            sx={{ fontSize: getFontSize() }} // Dynamically adjust font size
+            sx={{ 
+              fontSize: getFontSize(),
+              color: totalBalance >= 0 ? "green" : "red"
+            }}
           >
-            ₹{(oweAmount && owedAmount && Math.abs(oweAmount - owedAmount).toFixed(2)) ||  Number(0).toFixed(2)}
+            {formatCurrency(Math.abs(totalBalance))}
           </Typography>
         </CardContent>
       </Card>
 
       <Card sx={{ flex: 1, border: '1px solid lightgray' }}>
         <CardContent>
-          <Typography
-            gutterBottom
-            sx={{ color: 'text.secondary', fontSize: 16 }}
-          >
+          <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 16 }}>
             Your Get
           </Typography>
           <Typography
             variant="h4"
             component="div"
             color="#16a34a"
-            sx={{ fontSize: getFontSize() }} // Dynamically adjust font size
+            sx={{ fontSize: getFontSize() }}
           >
-            ₹{owedAmount ? owedAmount.toFixed(2) : Number(0).toFixed(2)}
+            {formatCurrency(owedAmount)}
           </Typography>
         </CardContent>
       </Card>
 
       <Card sx={{ flex: 1, border: '1px solid lightgray' }}>
         <CardContent>
-          <Typography
-            gutterBottom
-            sx={{ color: 'text.secondary', fontSize: 16 }}
-          >
+          <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 16 }}>
             Your Owe
           </Typography>
           <Typography
             variant="h4"
             component="div"
             color="red"
-            sx={{ fontSize: getFontSize() }} // Dynamically adjust font size
+            sx={{ fontSize: getFontSize() }}
           >
-            ₹{oweAmount ? oweAmount.toFixed(2) :  Number(0).toFixed(2)}
+            {formatCurrency(oweAmount)}
           </Typography>
         </CardContent>
       </Card>

@@ -31,8 +31,9 @@ import {
 import { currentGroupDataAtom, groupMembersAtom } from "../../atoms/GroupAtom";
 import { loggedInUserAtom } from "../../atoms/UserAtom";
 import CustomizedSnackbars from "../../utilities/CustomSnackBar";
+import { refetchTriggerAtom } from "../../atoms/Atoms";
 
-function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }) {
+function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
   const [isLoading, setIsLoading] = useState(false);
   const [expenseId, setExpenseId] = useState(null);
   const [totalAmount, setTotalAmount] = useAtom(totalExpenseAmountAtom);
@@ -51,6 +52,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }
   const groupData = useAtomValue(currentGroupDataAtom);
   const [groupId, setGroupId] = useState(null);
   const [createdBy, setCreatedBy] = useState(loggedInUser.userId);
+  const [refreshTrigger,setRefreshTrigger] = useAtom(refetchTriggerAtom);
   // Snackbar state
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -104,9 +106,8 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }
           setSnackbarMessage("Expense Saved Successfully");
           setSnackbarSuccess(true);
           setSnackbarOpen(true);
-          refreshExpenses();
+          setTimeout(()=>{setRefreshTrigger((prevVal)=> !prevVal)},1000)
         } else {
-          console.log("Error occurred while saving data");
           setSnackbarMessage("Error Saving Expense");
           setSnackbarSuccess(false);
           setSnackbarOpen(true);
@@ -129,13 +130,12 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData, refreshExpenses }
         setSnackbarMessage("Expense Deleted Successfully");
         setSnackbarSuccess(true);
         setSnackbarOpen(true);
-        refreshExpenses();
+        setTimeout(()=>{setRefreshTrigger((prevVal)=> !prevVal)},1000)
       }
       else {
         setSnackbarMessage("Error Deleting Expense");
         setSnackbarSuccess(false);
         setSnackbarOpen(true);
-        refreshExpenses();
       }
     }
     catch (err) {

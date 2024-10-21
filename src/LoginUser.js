@@ -12,7 +12,7 @@ import {
   Alert,
 } from "@mui/material";
 import { backendService } from "./services/backendServices";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import CustomizedSnackbars from "./utilities/CustomSnackBar";
 
 const LoginUser = () => {
@@ -24,6 +24,8 @@ const LoginUser = () => {
   const [groupId, setGroupId] = useState(null);
   const [inviteToken, setInviteToken] = useState(null);
   const navigate = useNavigate();
+  const location = useLocation();
+  const [urlParam,setUrlParam] = useState(""); 
     // Snackbar state
     const [snackbarOpen, setSnackbarOpen] = useState(false);
     const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -31,15 +33,14 @@ const LoginUser = () => {
 
   useEffect(()=>{
     //Check if there are any invite parameters in the URL
-    const urlParams = new URLSearchParams(window.location.search);
-    if(urlParams)
-    {
-      console.log("invtedbY== " +urlParams.get('invitedBy'));
+    const urlParams = new URLSearchParams(location.search);
+    if (urlParams) {
+      setUrlParam(urlParams);
       setInvitedBy(urlParams.get('invitedBy'));
       setGroupId(urlParams.get('groupId'));
       setInviteToken(urlParams.get('token')); 
     }
-  },[]);
+  },[location.search]);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -52,14 +53,13 @@ const LoginUser = () => {
       try {
         const userData = await backendService.loginUser(credentials)
         if (userData !== null) {
-          localStorage.setItem("userData", JSON.stringify({ userId: userData.userId, userName: userData.userName }));
+          localStorage.setItem("userData", JSON.stringify({ userId: userData.userId, userName: userData.userName, fullUserName : userData.fullUserName}));
           localStorage.setItem("jwtToken", userData.jwtToken);
           acceptUserGroupInvite(userData.userId);
-          navigate("/home");
           setTimeout(()=>{
+            navigate("/home");
             window.location.reload()
-          },1000);
-          ;
+          },500);
         }
         else {
           throw Error("Login Failed");
@@ -74,26 +74,26 @@ const LoginUser = () => {
   };
 
   const acceptUserGroupInvite = async(loggedInUserId) => {
-    if (loggedInUserId) {
+    if (loggedInUserId && inviteToken) {
       let message = null;
       if (groupId) {
         const groupInvite = {
           groupId: groupId,
           userId: loggedInUserId
         }
-        message = await backendService.joinUserInGroup(groupInvite);
+        message = await backendService.joinUserInGroup(groupInvite,inviteToken);
       }
       else if(invitedBy){
-        const userInvite = {
+        const userInvite = {  
           userId1 : loggedInUserId,
           userId2 : invitedBy,
           createdBy: invitedBy
         }
-        message = await backendService.acceptInvite(userInvite);
+        message = await backendService.acceptInvite(userInvite,inviteToken);
       }
       if(message){
         setSnackbarMessage(message);
-        if(message.includes("expired") || (message.includes("fail")))
+        if((message.includes("fail") || (message.includes("Invalid"))))
         {
           setSnackbarSuccess(false);
         }
@@ -197,7 +197,7 @@ const LoginUser = () => {
             <Grid item>
               <Typography>
                 Don't have an account?{" "}
-                <Link href="/register" variant="body2">
+                <Link href={`/register?${urlParam.toString()}`} variant="body2">
                   Sign up for an account
                 </Link>
               </Typography>
