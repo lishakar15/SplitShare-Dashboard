@@ -21,7 +21,7 @@ const GroupMembers = ({ groupId }) => {
           response = await backendService.getAllGroupMembersByGroupId(groupId);
         }
         else {
-          response = await backendService.getAllFriendsByUserId(loggedInUser.userId);
+          response = await backendService.getAllFriendsInfoByUserId(loggedInUser.userId);
         }
         if (response !== null) {
           setGroupMembers(response);

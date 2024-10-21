@@ -26,14 +26,14 @@ const CreateGroupDialog = ({ open, onClose, groupId, isModifyReq }) => {
   const [copyButtonText, setCopyButtonText] = useState('Copy invite link');
 
   useEffect(() => {
-    const getAllGroupMembers = async () => {
+    const getAllFriends = async () => {
       if (loggedInUser) {
         try {
           setIsLoading(true);
-          const response = await backendService.getGroupMembersByUserId(loggedInUser.userId);
+          const response = await backendService.getAllFriendsListByUserId(loggedInUser.userId);
           if (response) {
-            const membersList = response.filter((member) => member.userId !== loggedInUser.userId);
-            setUserOptionList(membersList);
+            const friendsList = response.filter((user) => user.userId !== loggedInUser.userId);
+            setUserOptionList(friendsList);
             if (!isModify) {
               const defaultMember = {
                 userId: loggedInUser.userId,
@@ -52,7 +52,7 @@ const CreateGroupDialog = ({ open, onClose, groupId, isModifyReq }) => {
         }
       }
     };
-    getAllGroupMembers();
+    getAllFriends();
   }, [loggedInUser]);
 
   useEffect(() => {

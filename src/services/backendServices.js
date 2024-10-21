@@ -470,7 +470,23 @@ export const backendService = {
       throw err;
     }
   },
-  async getAllFriendsByUserId(loggedInUserId) {
+  async getAllFriendsInfoByUserId(loggedInUserId) {
+    try {
+
+      const response = await axiosInstance.get(`http://localhost:8085/user/get-all-friends-info/${loggedInUserId}`);
+      if (response.status === 200) {
+        return response.data;
+      }
+      else {
+        throw Error("Error fetching friends info " + response.status)
+      }
+    }
+    catch (err) {
+      console.log("Error occured while fetching friends list getAllFriendsByUserId() " + err);
+      throw err;
+    }
+  },
+  async getAllFriendsListByUserId(loggedInUserId) {
     try {
 
       const response = await axiosInstance.get(`http://localhost:8085/user/get-all-friends/${loggedInUserId}`);
@@ -478,11 +494,11 @@ export const backendService = {
         return response.data;
       }
       else {
-        throw Error("Error fetching friends data " + response.status)
+        throw Error("Error fetching friends list " + response.status)
       }
     }
     catch (err) {
-      console.log("Error occured while fetching friends list getAllFriendsByUserId() " + err);
+      console.log("Error occured while fetching friends list getAllFriendsListByUserId() " + err);
       throw err;
     }
   },

@@ -12,6 +12,7 @@ import {
 import { backendService } from "./services/backendServices";
 import { useNavigate } from "react-router-dom";
 import CustomizedSnackbars from "./utilities/CustomSnackBar";
+import { FaHeartPulse } from "react-icons/fa6";
 
 const RegisterUser = () => {
   const [firstName, setFirstName] = useState("");
@@ -23,7 +24,8 @@ const RegisterUser = () => {
   const today = new Date().toISOString().split('T')[0];
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const [urlParam,setUrlParam] = useState(""); 
+  const [urlParam,setUrlParam] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
   // Snackbar state
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -55,6 +57,7 @@ const RegisterUser = () => {
     const registerUser = async () => {
       try {
         const result = validateUserData(user);
+        setIsLoading(true);
         if (result.isValid) {
           const isRegistered = await backendService.registerUser(user);
           if (isRegistered) {
@@ -77,6 +80,10 @@ const RegisterUser = () => {
         setSnackbarOpen(true);
         console.log("Error occurred while registering user");
       }
+      finally{
+        setIsLoading(false);
+      }
+      
     }
     registerUser();
 
@@ -232,6 +239,7 @@ const RegisterUser = () => {
             type="submit"
             fullWidth
             variant="contained"
+            disabled={isLoading}
             sx={{
               mt: 3,
               mb: 2,
@@ -239,7 +247,7 @@ const RegisterUser = () => {
               color: "#fff",
             }}
           >
-            Register
+            {isLoading ? "Registering" : "Register"}
           </Button>
 
           <Grid container justifyContent="center">
