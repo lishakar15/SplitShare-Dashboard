@@ -1,28 +1,50 @@
-import React from 'react';
-import PaymentDialog from './Payment/PaymentDialog';
+import React, { useState } from 'react';
 import { Box, Button } from '@mui/material';
-import { SETTLEMENT_DATA } from './data/SettlementData';
+import { useSetAtom } from 'jotai';
+import { useRef, useEffect } from 'react';
+import { settleButtonRefAtom } from './atoms/ExpenseAtom';
+import CustomizedSnackbars from './utilities/CustomSnackBar';
 const SettleUpButton = () => {
-   
-  const [open, setOpen] = React.useState(false);
-  const handleClickOpen = () => {
-    setOpen(true);
+
+  const settleButtonRef = useRef(null);
+  const setSettleButtonReference = useSetAtom(settleButtonRefAtom);
+    // Snackbar state
+    const [snackbarOpen, setSnackbarOpen] = useState(false);
+    const [snackbarMessage, setSnackbarMessage] = useState("");
+    const [snackbarSuccess, setSnackbarSuccess] = useState(false);
+
+  useEffect(() => {
+    setSettleButtonReference(settleButtonRef);
+  }, [setSettleButtonReference]);
+  const handleClick = () => {
+    if (settleButtonRef.current) {
+      settleButtonRef.current.click();
+    }
+    else {
+      //No more Balances. All Balances Settled
+      setSnackbarMessage("You are fully Settled up");
+      setSnackbarSuccess(true);
+      setSnackbarOpen(true);
+    }
   };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
   return (
-    <Box>
-    <Button variant="contained" onClick={handleClickOpen} 
-    sx={{ textTransform: 'none',bgcolor:"#e0e7ff", color :"#4338ca",ml:2 }}>Settle Up</Button>
-    
-    <PaymentDialog
-      open={open}
-      onClose={handleClose}
-      settlementReq={SETTLEMENT_DATA[0]}
-    />
-  </Box>
+    <>
+      <Box>
+        <Button variant="contained" onClick={handleClick}
+          sx={{ textTransform: 'none', bgcolor: "#e0e7ff", color: "#4338ca", ml: 2 }}>
+          Settle Up
+        </Button>
+      </Box>
+      <CustomizedSnackbars
+        open={snackbarOpen}
+        setOpen={setSnackbarOpen}
+        message={snackbarMessage}
+        isSuccess={snackbarSuccess}
+      />
+
+    </>
+
   )
 }
 
