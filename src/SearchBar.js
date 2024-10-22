@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Box, Paper, IconButton, Divider, useMediaQuery, Autocomplete, TextField, Button } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import MenuIcon from '@mui/icons-material/Menu';
@@ -6,25 +6,35 @@ import UserProfile from './UserProfile';
 import SideNavDrawer from './SideNavDrawer';
 import UserAvatarLabel from './UserAvatarLabel';
 import { Link } from 'react-router-dom';
+import { useAtomValue } from 'jotai';
+import { loggedInUserAtom } from './atoms/UserAtom';
+import { backendService } from './services/backendServices';
 
 const SearchBar = () => {
     const isSmallScreen = useMediaQuery("(max-width:1200px)");
-    const [isSearchFocused, setIsSearchFocused] = useState(false);
     const [isSideNavOpen, setIsSideNavOpen] = useState(false);
-    const [searchOptions, setSearchOptions] = useState([
-        { groupId: 1, groupName: "Awesome Group" },
-        { groupId: 4, groupName: "Cognizant Group" },
-        { groupId: 5, groupName: "Test Group" },
-    ]);
+    const loggedInUser = useAtomValue(loggedInUserAtom);
+    const [searchOptions, setSearchOptions] = useState([]);
+    const [inputValue, setInputValue] = useState('');
 
+    useEffect(() => {
 
-    const handleSearchFocus = () => {
-        setIsSearchFocused(true);
-    };
-
-    const handleSearchBlur = () => {
-        setIsSearchFocused(false);
-    };
+        const getGroupsList = async () => {
+            try {
+                const response = await backendService.getAllGroupsOfUser(loggedInUser.userId);
+                if (response) {
+                    setSearchOptions(response);
+                }
+                else{
+                    setSearchOptions([]);
+                }
+            }
+            catch (err) {
+                console.log("Error constructing Group options in SearchBar " + err);
+            }
+        }
+        getGroupsList();
+    }, [loggedInUser]);
 
     const handleMenuClick = () => {
         setIsSideNavOpen(true);
@@ -35,13 +45,12 @@ const SearchBar = () => {
     };
 
     const handleOptionSelect = (event, newValue) => {
-        //
+        //Do nothing
     };
 
     return (
         <Box sx={{ display: "flex", alignItems: "center", borderRadius: "20px" }}>
-
-            {isSmallScreen && (
+             {isSmallScreen && (
                 <IconButton
                     onClick={handleMenuClick}
                     sx={{ mr: 1 }}
@@ -55,23 +64,22 @@ const SearchBar = () => {
                 sx={{
                     flex: 1,
                     display: "flex",
-                    border: isSearchFocused ? "3px solid #e7eaf6" : "none",
                     borderRadius: "20px",
                     overflow: 'hidden',
                 }}
-                onFocus={handleSearchFocus}
-                onBlur={handleSearchBlur}
             >
                 <Autocomplete
                     freeSolo
                     disableClearable
+                    inputValue={inputValue}
+                    onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
                     onChange={handleOptionSelect}
                     getOptionLabel={(option) => option.groupName || ''}
                     options={searchOptions}
                     renderInput={(params) => (
                         <TextField
                             {...params}
-                            placeholder="Search for a friend or a group"
+                            placeholder="Search for a group"
                             InputProps={{
                                 ...params.InputProps,
                                 startAdornment: (
@@ -89,17 +97,19 @@ const SearchBar = () => {
                         />
                     )}
                     renderOption={(props, option) => (
-                        <li {...props}>
-                            <Button >
+                        <li {...props} style={{ padding: 0 }}>
                             <Link
-                                style={{ textDecoration: "none" }}
                                 to={`/expenses/group/${option.groupId}`}
-                                onClick={(event) => event.stopPropagation()}
+                                style={{
+                                    display: 'flex',
+                                    textDecoration: 'none',
+                                    width: '100%',
+                                    padding: '10px',
+                                    alignItems: 'center',
+                                }}
                             >
                                 <UserAvatarLabel userName={option.groupName} />
                             </Link>
-
-                            </Button>                            
                         </li>
                     )}
                     sx={{ flex: 1 }}
