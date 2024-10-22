@@ -54,10 +54,22 @@ export const backendService = {
       return isDeleted;
     }
   },
+  
+  async getAllGroupsOfUser(userId){
+    try{
+      const response = await axiosInstance.get(`http://localhost:8085/group/get-all-group/${userId}`)
+      if(response.status === 200){
+        return response.data;
+      }
+    }
+    catch(err){
+      console.log("Error occured while getting groups of user "+err);
+    }
+  },
 
   async getGroupsDataByUserId(userId) {
     try {
-      const response = await axiosInstance.get(`http://localhost:8085/group/get-all-groups/${userId}`);
+      const response = await axiosInstance.get(`http://localhost:8085/group/get-all-groups-info/${userId}`);
 
       if (response.status === 200) {
         return response.data;
