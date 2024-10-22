@@ -13,9 +13,8 @@ const SettleUpButton = () => {
     const [snackbarMessage, setSnackbarMessage] = useState("");
     const [snackbarSuccess, setSnackbarSuccess] = useState(false);
 
-  useEffect(() => {
     setSettleButtonReference(settleButtonRef);
-  }, [setSettleButtonReference]);
+
   const handleClick = () => {
     if (settleButtonRef.current) {
       settleButtonRef.current.click();

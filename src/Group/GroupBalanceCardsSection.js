@@ -5,12 +5,13 @@ import { useAtomValue } from 'jotai'
 import { loggedInUserAtom } from '../atoms/UserAtom'
 import CustomSettleUpButton from '../Payment/CustomSettleUpButton'
 import { backendService } from '../services/backendServices'
+import { settleButtonRefAtom } from '../atoms/ExpenseAtom'
 
 const GroupBalanceCardsSection = ({ groupId }) => {
 
     const loggedInUser = useAtomValue(loggedInUserAtom);
     const [balanceList, setBalanceList] = useState(null);
-    const containerRef = useRef();
+    const settleButtonRef = useAtomValue(settleButtonRefAtom);
 
     useEffect(() => {
         const getBalancesOfUser = async () => {
@@ -31,7 +32,6 @@ const GroupBalanceCardsSection = ({ groupId }) => {
     return (
         <Box sx={{ width: '100%', overflowX: 'auto', whiteSpace: 'nowrap' }}>
             <Box
-                ref={containerRef}
                 sx={{
                     display: 'inline-flex',
                     overflowX: 'auto',
@@ -70,7 +70,7 @@ const GroupBalanceCardsSection = ({ groupId }) => {
                                             />
                                         </Box>
                                     </Box>
-                                    <CustomSettleUpButton balance={balance} isForBalance={true} />
+                                    <CustomSettleUpButton balance={balance} ref ={settleButtonRef} />
                                 </Box>
                             </CardContent>
                         </Card>
