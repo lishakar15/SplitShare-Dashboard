@@ -1,7 +1,5 @@
 import { atom } from "jotai";
-import { useRef } from "react";
 
-const currentGroupMembers = [];
 
 const paidUsers = [];
 const participantShareList = [];

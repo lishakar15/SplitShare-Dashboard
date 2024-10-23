@@ -49,7 +49,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
   const [splitType, setSplitType] = useAtom(splitTypeAtom);
   const loggedInUser = useAtomValue(loggedInUserAtom);
   const setGroupMembers = useSetAtom(groupMembersAtom);
-  const groupData = useAtomValue(currentGroupDataAtom);
+  const [groupData, setGroupData] = useAtom(currentGroupDataAtom);
   const [groupId, setGroupId] = useState(null);
   const [createdBy, setCreatedBy] = useState(loggedInUser.userId);
   const [refreshTrigger,setRefreshTrigger] = useAtom(refetchTriggerAtom);
@@ -193,6 +193,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
     setParticipantShareList([defaultParticipant]);
     setPaidUsers([defaultPayer]);
     setSplitType("EQUAL"); // Default Split Type
+
   };
 
   const handleClose = () => {

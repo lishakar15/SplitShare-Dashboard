@@ -31,7 +31,7 @@ function App() {
           <Route path="*"  element={<LoginUser/>}/>
         </Routes>
       ) : (
-        <Box sx={{ m: 1 }}>
+        <Box sx={{ m: 1}}>
           <Grid container sx={{ height: "100vh" }}>
             {isSmallScreen ? null : (
               <Grid size={2}>
