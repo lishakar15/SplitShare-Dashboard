@@ -1,6 +1,8 @@
 import { Box, Drawer } from '@mui/material';
 import React from 'react';
 import SideNavBar from './SideNavBar';
+import FriendsNavBar from './FriendsNavBar';
+import GroupNavBar from './GroupNavBar';
 
 const SideNavDrawer = ({ isOpen, onClose }) => {
     return (
@@ -12,7 +14,9 @@ const SideNavDrawer = ({ isOpen, onClose }) => {
         >
             <Box sx={{ width: 250 }} role="presentation">
                 <SideNavBar onClose={onClose} />
-            </Box>
+                <GroupNavBar onClose={onClose}/>
+                <FriendsNavBar onClose={onClose}/>
+            </Box> 
         </Drawer>
     );
 };

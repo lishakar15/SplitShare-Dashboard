@@ -211,13 +211,17 @@ const CreateGroupDialog = ({ open, onClose, groupId, isModifyReq }) => {
             />
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", my: 2 }}>
               <Typography sx={{ fontWeight: "bold" }}>Members</Typography>
-              <Button
-                variant="contained"
-                onClick={handleCopyLink}
-                sx={{ textTransform: 'none', bgcolor: "#e0e7ff", color: "#4338ca", borderRadius: 2 }}
-              >
-                {copyButtonText}
-              </Button>
+              {
+                isModify &&
+                <Button
+                  variant="contained"
+                  onClick={handleCopyLink}
+                  sx={{ textTransform: 'none', bgcolor: "#e0e7ff", color: "#4338ca", borderRadius: 2 }}
+                >
+                  {copyButtonText}
+                </Button>
+              }
+
             </Box>
             <Box sx={{ display: 'flex', alignItems: 'center', my: 2 }}>
               <Divider orientation="vertical" flexItem sx={{ mr: 2 }} />
