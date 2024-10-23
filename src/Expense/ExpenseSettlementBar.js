@@ -11,10 +11,7 @@ const ExpenseSettlementBar = () => {
                     <Typography variant='h5' sx={{ml:2}}>
                         Expenses
                     </Typography>
-                    <Box sx={{ display: "flex"}}>
                         <AddExpenseButton />
-                        <SettleUpButton />
-                    </Box>
                 </Box>
             </CardContent>
         </Card >

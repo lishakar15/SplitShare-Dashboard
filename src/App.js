@@ -11,14 +11,17 @@ import Box from "@mui/material/Box";
 import Grid from "@mui/material/Grid2";
 import { useMediaQuery } from "@mui/material";
 import SearchBar from "./SearchBar";
-import { isUserLoggedInAtom, loggedInUserAtom } from "./atoms/UserAtom";
+import { isUserLoggedInAtom } from "./atoms/UserAtom";
 import LoginUser from "./LoginUser";
 import RegisterUser from "./RegisterUser";
-import { useAtom } from "jotai";
+import { useAtomValue } from "jotai";
+import FriendsNavBar from "./FriendsNavBar";
+import GroupNavBar from "./GroupNavBar";
 
 function App() {
   const isSmallScreen = useMediaQuery("(max-width:1200px)");
-  const [isUserLoggedIn,setIsUserLoggedIn] = useAtom(isUserLoggedInAtom)
+  const isUserLoggedIn = useAtomValue(isUserLoggedInAtom)
+  
   return (
     <>
       {!isUserLoggedIn ? (
@@ -33,9 +36,11 @@ function App() {
             {isSmallScreen ? null : (
               <Grid size={2}>
                 <SideNavBar />
+                <GroupNavBar/>
+                <FriendsNavBar/>
               </Grid>
             )}
-            <Grid size={{ xs: 12, lg: 10 }}>
+            <Grid size={{ xs: 12, lg: 10}}>
               <Box container sx={{ ml: "15px" }}>
                 <SearchBar />
                 <Routes>

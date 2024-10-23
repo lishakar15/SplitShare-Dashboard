@@ -21,18 +21,21 @@ function stringToColor(string) {
   return color;
 }
 
-function stringAvatar(name) {
-  if(name===undefined || name === null)
-  {
+function stringAvatar(name, showSingleChar) {
+  if (name === undefined || name === null) {
     return false;
   }
   const nameParts = name.split(' ');
   let initials;
 
-  if (nameParts.length === 1) {
+  if (showSingleChar) {
     initials = `${nameParts[0][0]}`;
-  } else if (nameParts.length > 1) {
-    initials = `${nameParts[0][0]}${nameParts[1][0]}`;
+  } else {
+    if (nameParts.length === 1) {
+      initials = `${nameParts[0][0]}`;
+    } else if (nameParts.length > 1) {
+      initials = `${nameParts[0][0]}${nameParts[1][0]}`;
+    }
   }
 
   return {
@@ -43,13 +46,13 @@ function stringAvatar(name) {
   };
 }
 
-export default function AvatarGenerator({ userName,size }) {
+export default function AvatarGenerator({ userName, size, showSingleChar }) {
   return (
     <>
       <Avatar
-        {...stringAvatar(userName)}
+        {...stringAvatar(userName, showSingleChar)}
         sx={{
-          ...stringAvatar(userName).sx,
+          ...stringAvatar(userName, showSingleChar).sx,
           ...(size === "xs" && { width: 28, height: 28 }),
           ...(size === "md" && { width: 56, height: 56 }),
           ...(size === "lg" && { width: 84, height: 84 }),

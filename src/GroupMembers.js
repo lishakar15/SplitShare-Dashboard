@@ -7,7 +7,7 @@ import { useAtomValue } from "jotai";
 import { loggedInUserAtom } from "./atoms/UserAtom";
 
 const GroupMembers = ({ groupId }) => {
-  const [groupMembers, setGroupMembers] = useState(null);
+  const [members, setMembers] = useState(null);
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const loggedInUser = useAtomValue(loggedInUserAtom);
@@ -24,7 +24,7 @@ const GroupMembers = ({ groupId }) => {
           response = await backendService.getAllFriendsInfoByUserId(loggedInUser.userId);
         }
         if (response !== null) {
-          setGroupMembers(response);
+          setMembers(response);
         }
       } catch (err) {
         console.log("Error fetching Group Members data");
@@ -35,7 +35,7 @@ const GroupMembers = ({ groupId }) => {
 
   return (
     <Grid container spacing={2}>
-      {groupMembers && groupMembers.map((member) => (
+      {members && members.map((member) => (
         <Grid item xs={12} sm={12} md={6} xl={4} key={member.emailId}>
           <Box
             sx={{
