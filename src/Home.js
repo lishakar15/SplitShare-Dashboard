@@ -8,6 +8,7 @@ import { backendService } from "./services/backendServices";
 import { loggedInUserAtom } from './atoms/UserAtom';
 import { useAtomValue } from 'jotai';
 import CustomizedSnackbars from "./utilities/CustomSnackBar";
+import SpendingInsights from "./SpentInsights";
 
 const Home = () => {
   const location = useLocation();
@@ -79,6 +80,7 @@ const Home = () => {
       <BalanceBoard />
       <BalanceAppBar />
       <BalanceCard />
+      <SpendingInsights/>
       <CustomizedSnackbars
         open={snackbarOpen}
         setOpen={setSnackbarOpen}
