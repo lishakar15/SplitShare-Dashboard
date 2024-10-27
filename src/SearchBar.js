@@ -53,12 +53,18 @@ const SearchBar = () => {
     return (
         <Box
             sx={{
+                position: 'sticky', 
+                top: 0,
+                left: 0,
                 display: 'flex',
                 alignItems: 'center',
-                justifyContent:"space-between",
+                justifyContent: "space-between",
                 borderRadius: '20px',
-                width: '100%',
                 gap: isSmallScreen ? '5px' : '10px',
+                zIndex: 1000,
+                backgroundColor: 'white',
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
+                padding: isSmallScreen ? '5px' : '10px', 
             }}
         >
             {isMediumScreen && (

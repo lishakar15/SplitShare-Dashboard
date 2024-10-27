@@ -197,7 +197,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
     setParticipantShareList([defaultParticipant]);
     setPaidUsers([defaultPayer]);
     setSplitType("EQUAL"); // Default Split Type
-
+    setGroupData([]);
   };
 
   const handleClose = () => {

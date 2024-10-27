@@ -195,7 +195,16 @@ const CreateGroupDialog = ({ open, onClose, groupId, isModifyReq }) => {
 
   return (
     <>
-      <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <Dialog open={open} onClose={onClose} 
+        PaperProps={{
+          sx: {
+            width: '100vw',
+            height: 'auto',
+            maxHeight: '90vh',
+            margin: 0,
+          },
+        }}
+      >
         <DialogTitle sx={{ fontWeight: "bold" }}>{isModifyReq ? "Modify Group" : "New Group"}</DialogTitle>
         <Divider />
         <DialogContent>

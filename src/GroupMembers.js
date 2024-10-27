@@ -34,7 +34,7 @@ const GroupMembers = ({ groupId }) => {
   }, [groupId,loggedInUser]);
 
   return (
-    <Grid container spacing={2}>
+    <Grid container spacing={2} mb ={2}>
       {members && members.map((member) => (
         <Grid item xs={12} sm={12} md={6} xl={4} key={member.emailId}>
           <Box

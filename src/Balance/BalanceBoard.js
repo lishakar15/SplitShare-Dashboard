@@ -77,6 +77,7 @@ const BalanceBoard = () => {
             sx={{
               fontSize: getFontSize(),
               color: totalBalance >= 0 ? 'green' : 'red',
+              textAlign: isSmallScreen ? "center" : "left"
             }}
           >
             {formatCurrency(Math.abs(totalBalance))}
@@ -100,7 +101,7 @@ const BalanceBoard = () => {
             variant="h4"
             component="div"
             color="#16a34a"
-            sx={{ fontSize: getFontSize() }}
+            sx={{ fontSize: getFontSize(), textAlign: isSmallScreen ? "center" : "left"}}
           >
             {formatCurrency(owedAmount)}
           </Typography>
@@ -123,7 +124,7 @@ const BalanceBoard = () => {
             variant="h4"
             component="div"
             color="red"
-            sx={{ fontSize: getFontSize() }}
+            sx={{ fontSize: getFontSize(), textAlign: isSmallScreen ? "center" : "left"}}
           >
             {formatCurrency(oweAmount)}
           </Typography>

@@ -1,6 +1,6 @@
 import "./App.css";
 import React from "react";
-import { Routes, Route, Outlet, Navigate } from "react-router-dom";
+import { Routes, Route } from "react-router-dom";
 import Home from "./Home";
 import Activity from "./Activity";
 import Friends from "./Friends";
@@ -20,28 +20,48 @@ import GroupNavBar from "./GroupNavBar";
 
 function App() {
   const isSmallScreen = useMediaQuery("(max-width:1200px)");
-  const isUserLoggedIn = useAtomValue(isUserLoggedInAtom)
-  
+  const isUserLoggedIn = useAtomValue(isUserLoggedInAtom);
+
   return (
     <>
       {!isUserLoggedIn ? (
         <Routes>
           <Route path="/login" element={<LoginUser />} />
           <Route path="/register" element={<RegisterUser />} />
-          <Route path="*"  element={<LoginUser/>}/>
+          <Route path="*" element={<LoginUser />} />
         </Routes>
       ) : (
-        <Box sx={{ m: 1 }}>
-          <Grid container sx={{ height: "100vh" }}>
+        <Box sx={{ m: 1, maxHeight: "100vh" }} >
+          <Grid container sx={{ height: "100vh", overflow: "hidden" }}>
+            {/* Side Navigation */}
             {isSmallScreen ? null : (
-              <Grid size={2}>
+              <Grid
+                item
+                size={2}
+                sx={{
+                  height: "100vh",
+                  overflowY: "auto",
+                  overflowX:"hidden",
+                  display: "flex",
+                  flexDirection: "column",
+                }}
+                className="side-nav"
+              >
                 <SideNavBar />
-                <GroupNavBar/>
-                <FriendsNavBar/>
+                <GroupNavBar />
+                <FriendsNavBar />
               </Grid>
             )}
-            <Grid size={{ xs: 12, lg: 10}}>
-            <Box container sx={{ ml: { md: "15px" } }}>
+            {/* Main Content */}
+            <Grid
+              item
+              size={{ xs: 12, lg: 10 }}
+              sx={{
+                height: "100vh",
+                overflowY: "auto",
+              }}
+            >
+              <Box sx={{ ml: { md: "15px" }, height: "100%" }}>
                 <SearchBar />
                 <Routes>
                   <Route path="/" element={<Home />} />
@@ -59,7 +79,6 @@ function App() {
       )}
     </>
   );
-  
 }
 
 export default App;
