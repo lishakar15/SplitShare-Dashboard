@@ -31,7 +31,7 @@ function App() {
           <Route path="*"  element={<LoginUser/>}/>
         </Routes>
       ) : (
-        <Box sx={{ m: 1}}>
+        <Box sx={{ m: 1 }}>
           <Grid container sx={{ height: "100vh" }}>
             {isSmallScreen ? null : (
               <Grid size={2}>
@@ -41,7 +41,7 @@ function App() {
               </Grid>
             )}
             <Grid size={{ xs: 12, lg: 10}}>
-              <Box container sx={{ ml: "15px" }}>
+            <Box container sx={{ ml: { md: "15px" } }}>
                 <SearchBar />
                 <Routes>
                   <Route path="/" element={<Home />} />

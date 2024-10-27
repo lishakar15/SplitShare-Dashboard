@@ -20,8 +20,8 @@ const BalanceBoard = () => {
   const [refreshTrigger] = useAtom(refetchTriggerAtom);
 
   const getFontSize = () => {
-    if (isSmallScreen) return '1.5rem';
-    if (isMediumScreen) return '2rem';
+    if (isSmallScreen) return '1rem';
+    if (isMediumScreen) return '1.5rem';
     return '2rem';
   };
 
@@ -51,18 +51,32 @@ const BalanceBoard = () => {
   };
 
   return (
-    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 2, gap: 0.5 }}>
-      <Card sx={{ flex: 1, border: '1px solid #e5e7eb' }}>
+    <Box
+      sx={{
+        display: 'flex',
+        justifyContent: 'center',
+        mt: 2,
+        gap: isSmallScreen ? 0.3 : 1,
+      }}
+    >
+      <Card
+        sx={{
+          flex: 1,
+          border: '1px solid #e5e7eb',
+          minWidth: isSmallScreen ? '80px' : 'auto',
+          padding: isSmallScreen ? '8px' : '16px',
+        }}
+      >
         <CardContent>
-          <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 16 }}>
+          <Typography gutterBottom sx={{ color: 'text.secondary', textAlign: isSmallScreen ? "center" : "left"}}>
             Your Balance
           </Typography>
           <Typography
             variant="h4"
             component="div"
-            sx={{ 
+            sx={{
               fontSize: getFontSize(),
-              color: totalBalance >= 0 ? "green" : "red"
+              color: totalBalance >= 0 ? 'green' : 'red',
             }}
           >
             {formatCurrency(Math.abs(totalBalance))}
@@ -70,10 +84,17 @@ const BalanceBoard = () => {
         </CardContent>
       </Card>
 
-      <Card sx={{ flex: 1, border: '1px solid lightgray' }}>
+      <Card
+        sx={{
+          flex: 1,
+          border: '1px solid lightgray',
+          minWidth: isSmallScreen ? '80px' : 'auto',
+          padding: isSmallScreen ? '8px' : '16px',
+        }}
+      >
         <CardContent>
-          <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 16 }}>
-            Your Get
+          <Typography gutterBottom sx={{ color: 'text.secondary', textAlign: isSmallScreen ? "center" : "left"}}>
+            You Get
           </Typography>
           <Typography
             variant="h4"
@@ -86,10 +107,17 @@ const BalanceBoard = () => {
         </CardContent>
       </Card>
 
-      <Card sx={{ flex: 1, border: '1px solid lightgray' }}>
+      <Card
+        sx={{
+          flex: 1,
+          border: '1px solid lightgray',
+          minWidth: isSmallScreen ? '80px' : 'auto',
+          padding: isSmallScreen ? '8px' : '16px',
+        }}
+      >
         <CardContent>
-          <Typography gutterBottom sx={{ color: 'text.secondary', fontSize: 16 }}>
-            Your Owe
+          <Typography gutterBottom sx={{ color: 'text.secondary', textAlign: isSmallScreen ? "center" : "left"}}>
+            You Owe
           </Typography>
           <Typography
             variant="h4"

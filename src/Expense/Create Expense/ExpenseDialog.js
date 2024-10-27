@@ -15,6 +15,8 @@ import {
   Typography,
   Divider,
   Box,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import PaidUsersSection from "./PaidUsersSection";
 import SplitAmountSection from "./SplitAmountSection";
@@ -53,6 +55,8 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
   const [groupId, setGroupId] = useState(null);
   const [createdBy, setCreatedBy] = useState(loggedInUser.userId);
   const [refreshTrigger,setRefreshTrigger] = useAtom(refetchTriggerAtom);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   // Snackbar state
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -221,7 +225,16 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
 
   return (
     <>
-      <Dialog open={open} onClose={handleClose}>
+      <Dialog open={open} onClose={handleClose}
+       PaperProps={{
+        sx: {
+          width: '100vw',
+          height: 'auto',
+          maxHeight: '90vh',
+          margin: 0,
+        },
+      }}
+      >
         <DialogTitle>{isModRequest ? "Modify Expense" : "New Expense"}</DialogTitle>
         <DialogContent>
           <Grid container spacing={2}>
@@ -273,11 +286,11 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', m: 1 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: 2}}>
             <Button onClick={() => handleDeleteExpense(expenseId)} variant="contained" color="error" disabled={isLoading || !isModReq}>
               Delete
             </Button>
-            <Box sx={{ display: "flex", gap: 2 }}>
+            <Box sx={{ display: "flex",  gap: 2}}>
               <Button onClick={handleClose} variant="outlined" disabled={isLoading}>Cancel</Button>
               <Button onClick={handleSave} variant="contained" color="primary" disabled={isLoading}>
                 {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}

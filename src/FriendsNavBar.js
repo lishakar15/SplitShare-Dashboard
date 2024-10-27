@@ -86,7 +86,7 @@ const FriendsNavBar = ({ onClose }) => {
                         :
                         (
                             <Box sx={{display: "flex", justifyContent: "center", alignItems: "center", height: 150 }}>
-                                <Typography>You have no Friends</Typography>
+                                <Typography>You have no Friends😏</Typography>
                             </Box>
                             
                         )

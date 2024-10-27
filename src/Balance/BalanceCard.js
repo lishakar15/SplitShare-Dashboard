@@ -42,7 +42,7 @@ const BalanceCard = () => {
         sx={{
           minWidth: { xs: '300px', sm: '350px' },
           maxWidth: { xs: '350px', sm: '400px' },
-          mr: 2,
+          mr:2,
           '&:last-child': { mr: 0 }
         }}
       >
@@ -185,7 +185,6 @@ const BalanceCard = () => {
         sx={{
           display: 'flex',
           overflowX: 'auto',
-          px: 2,
           py: 1,
           scrollBehavior: 'smooth',
           '&::-webkit-scrollbar': { 

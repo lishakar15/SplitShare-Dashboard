@@ -16,6 +16,8 @@ import {
   Typography,
   InputAdornment,
   Box,
+  useTheme,
+  useMediaQuery,
 } from "@mui/material";
 import UserTransactionAvatar from "./UserTransactionAvatar";
 import { backendService } from "../services/backendServices";
@@ -40,7 +42,9 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
   const [amountPaid, setAmountPaid] = useState(0);
   const [settlementDate, setSettlementDate] = useState(today)
   const [paymentMethod, setPaymentMethod] = useState("cash");
-  const [refreshTrigger,setRefreshTrigger] = useAtom(refetchTriggerAtom);
+  const [refreshTrigger, setRefreshTrigger] = useAtom(refetchTriggerAtom);
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   // Snackbar state
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -68,7 +72,7 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
         setSnackbarMessage("Payment Saved Successfully");
         setSnackbarSuccess(true);
         setSnackbarOpen(true);
-        setTimeout(()=>{setRefreshTrigger((prevVal)=> !prevVal)},1000)
+        setTimeout(() => { setRefreshTrigger((prevVal) => !prevVal) }, 1000)
       }
       else {
         setSnackbarMessage("Error Saving Payment");
@@ -130,7 +134,7 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
         setSnackbarMessage("Payment Deleted Successfully");
         setSnackbarSuccess(true);
         setSnackbarOpen(true);
-        setTimeout(()=>{setRefreshTrigger((prevVal)=> !prevVal)},1000)
+        setTimeout(() => { setRefreshTrigger((prevVal) => !prevVal) }, 1000)
       }
       else {
         setSnackbarMessage("Error Deleting Payment");
@@ -179,7 +183,16 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
   }
   return (
     <>
-      <Dialog open={open} onClose={onClose}>
+      <Dialog open={open} onClose={onClose} 
+        PaperProps={{
+          sx: {
+            width: '100vw',
+            height: 'auto',
+            maxHeight: '90vh',
+            margin: 0,
+          },
+        }}
+      >
         <DialogTitle>{isModReq ? "Modify Payment" : "New Payment"}</DialogTitle>
         <DialogContent>
           <UserTransactionAvatar
@@ -254,11 +267,11 @@ function PaymentDialog({ open, onClose, settlementReq, isModReq }) {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', m: 1 }}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', m: 1, gap: isMobile ? 1 :2  }}>
             <Button onClick={() => handleDeleteSettlement(settlementId)} variant="contained" color="error" disabled={isLoading || !isModReq}>
               Delete
             </Button>
-            <Box sx={{ display: "flex", gap: 2 }}>
+            <Box sx={{ display: "flex", gap: isMobile ? 1 :2 }}>
               <Button onClick={onClose} variant="outlined" disabled={isLoading}>Cancel</Button>
               <Button onClick={handleSave} variant="contained" color="primary" disabled={isLoading}>
                 {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}

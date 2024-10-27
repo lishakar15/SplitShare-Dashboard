@@ -9,7 +9,7 @@ import { loggedInUserAtom } from "./atoms/UserAtom";
 const GroupMembers = ({ groupId }) => {
   const [members, setMembers] = useState(null);
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+  const isMobileScreen = useMediaQuery(theme.breakpoints.down('sm'));
   const loggedInUser = useAtomValue(loggedInUserAtom);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ const GroupMembers = ({ groupId }) => {
               flexGrow: 1
             }}
           >
-            <AvatarGenerator userName={member.firstName + " " + member.lastName} size={isSmallScreen ? "sm" : "md"} />
+            <AvatarGenerator userName={member.firstName + " " + member.lastName} size={isMobileScreen ? "sm" : "md"} />
             <Box sx={{
               display: "flex",
               flex: 1,
@@ -73,7 +73,7 @@ const GroupMembers = ({ groupId }) => {
                       sx={{ color: '#4A3AFF', '&.Mui-checked': { color: '#4A3AFF' } }}
                     />
                   }
-                  label="Active"
+                  label= {!isMobileScreen ? "Active" : ""}
                   sx={{ margin: 0, color: '#424242' }}
                 />
               </Box>
