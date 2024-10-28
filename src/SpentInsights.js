@@ -40,7 +40,7 @@ const SpendingInsights = () => {
                   <Typography variant="h6">Spending Distribution</Typography>
                 </Box>
               }
-            />
+            />  
             <CardContent>
               <Box sx={{ height: 200 }}>
                 <ResponsiveContainer width="100%" height="100%">

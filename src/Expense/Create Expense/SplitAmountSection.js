@@ -13,32 +13,80 @@ import {
 } from "@mui/material";
 import UserAvatarLabel from "../../UserAvatarLabel";
 import CreateUserSplits from "../SplitCards/CreateUserSplits";
-import { useAtom } from "jotai";
-import { participantShareListAtom, splitTypeAtom } from "../../atoms/ExpenseAtom";
+import { useAtom, useAtomValue, useSetAtom } from "jotai";
+import { paidUsersAtom, participantShareListAtom, splitTypeAtom, totalExpenseAmountAtom } from "../../atoms/ExpenseAtom";
+import { backendService } from "../../services/backendServices";
+import { loggedInUserAtom } from "../../atoms/UserAtom";
+import { currentGroupDataAtom } from "../../atoms/GroupAtom";
 
 const SplitAmountSection = ({ groupData, setGroupId }) => {
 
   const [splitType, setSplitType] = useAtom(splitTypeAtom);
   const [splitList, setSplitList] = useAtom(participantShareListAtom);
-  const [group, setGroup] = useState(null);
+  const [seletedGroupId, setSeletedGroupId] = useState(null);
   const [groupList, setGroupList] = useState([]);
+  const setGroupData = useSetAtom(currentGroupDataAtom);
+  const loggedInUser = useAtomValue(loggedInUserAtom);
+  const totalAmount = useAtomValue(totalExpenseAmountAtom);
+  const setParticipantShareList = useSetAtom(participantShareListAtom);
+  const setPaidUsers = useSetAtom(paidUsersAtom);
+
+  const defaultParticipant = {
+    userId: loggedInUser.userId,
+    userName: loggedInUser.userName,
+    shareAmount: totalAmount,
+  };
+
+  const defaultPayer = {
+    userId: loggedInUser.userId,
+    userName: loggedInUser.userName,
+    paidAmount: totalAmount,
+  };
+
 
   useEffect(() => {
-    if(groupData)
-    {
-      setGroupId(groupData.groupId)
-      const groupObj = { groupId: groupData.groupId, groupName: groupData.groupName };
-      setGroup(groupObj)
-      setGroupList([groupObj])
+    const getAllGroups = async () => {
+      try {
+        const response = await backendService.getAllGroupsOfUser(loggedInUser.userId);
+        if (response) {
+          setGroupList(response);
+          if (groupData) {
+            setSeletedGroupId(groupData.groupId);
+          }
+        }
+      } catch (err) {
+        console.log("Error fetching Friends List");
+      }
     }
-    else{
-      //Make API call to get all groups that user part of
-    }
+    getAllGroups();
+  }, [])
 
-  }, [groupData])
 
-  const handleGroupChange = (selectedGroup) =>{
-    setGroup(selectedGroup);
+  const getGroupData = (groupId) => {
+
+    const getGroupData = async () => {
+      if (groupId && loggedInUser) {
+        try {
+          const response = await backendService.getGroupDataByGroupId(groupId, loggedInUser.userId);
+          if (response) {
+            setGroupData(response);
+          }
+        } catch (err) {
+          console.log("Error occurred while fetching group data: " + err);
+        }
+      }
+    };
+
+    getGroupData();
+
+  }
+
+  const handleGroupChange = (newGroupId) => {
+    setSeletedGroupId(newGroupId);
+    setGroupId(newGroupId);
+    setParticipantShareList([defaultParticipant]);
+    setPaidUsers([defaultPayer]);
+    getGroupData(newGroupId);
   }
 
   const isSmallScreen = useMediaQuery("(max-width:1200px)");
@@ -104,12 +152,12 @@ const SplitAmountSection = ({ groupData, setGroupId }) => {
       <Grid item md={6} xs={12}>
         <Typography>Group</Typography>
         <FormControl fullWidth>
-          <Select 
-           value={group}
-           onChange={(e) => handleGroupChange(e.target.value)}
-           >
-            {groupList && groupList.map((group)=> (
-               <MenuItem key ={group.groupId} value={group}>{groupData.groupName}</MenuItem>
+          <Select
+            value={seletedGroupId}
+            onChange={(e) => handleGroupChange(e.target.value)}
+          >
+            {groupList && groupList.map((group) => (
+              <MenuItem key={group.groupId} value={group.groupId}>{group.groupName}</MenuItem>
             )
             )}
             {/* Add other groups */}
