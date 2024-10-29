@@ -60,6 +60,7 @@ function App() {
                 height: "100vh",
                 overflowY: "auto",
               }}
+              className="main-scroll-bar"
             >
               <Box sx={{ ml: { md: "15px" }, height: "100%" }}>
                 <SearchBar />

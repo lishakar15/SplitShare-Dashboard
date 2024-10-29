@@ -24,8 +24,8 @@ const SpendingInsights = () => {
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
   return (
-    <Box sx={{ py: 2 }}>
-      <Typography variant="h5" sx={{ mb: 3, fontWeight: 600 }}>
+    <Box sx={{ py: 1 }}>
+      <Typography variant="h5" sx={{ mb: 1, fontWeight: 300 }}>
         Spending Insights
       </Typography>
       

@@ -46,14 +46,14 @@ const SearchBar = () => {
         setIsSideNavOpen(false);
     };
 
-    const handleOptionSelect = (event, newValue) => {
-        // Do nothing
+    const handleOptionSelect = (event) => {
+        setInputValue('');
     };
 
     return (
         <Box
             sx={{
-                position: 'sticky', 
+                position: 'sticky',
                 top: 0,
                 left: 0,
                 display: 'flex',
@@ -63,8 +63,7 @@ const SearchBar = () => {
                 gap: isSmallScreen ? '5px' : '10px',
                 zIndex: 1000,
                 backgroundColor: 'white',
-                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)', 
-                padding: isSmallScreen ? '5px' : '10px', 
+                boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
             }}
         >
             {isMediumScreen && (
@@ -88,7 +87,7 @@ const SearchBar = () => {
                     disableClearable
                     inputValue={inputValue}
                     onInputChange={(event, newInputValue) => setInputValue(newInputValue)}
-                    onChange={handleOptionSelect}
+                    onChange={(e)=>handleOptionSelect(e)}
                     getOptionLabel={(option) => option.groupName || ''}
                     options={searchOptions}
                     renderInput={(params) => (
@@ -98,7 +97,7 @@ const SearchBar = () => {
                             InputProps={{
                                 ...params.InputProps,
                                 startAdornment: (
-                                    <IconButton type="button" sx={{ p: '10px' }} aria-label="search">
+                                    <IconButton type="button" aria-label="search">
                                         <SearchIcon />
                                     </IconButton>
                                 ),
@@ -108,20 +107,18 @@ const SearchBar = () => {
                                 '& .MuiOutlinedInput-root': {
                                     borderRadius: '20px',
                                     fontSize: isSmallScreen ? '0.9rem' : '1rem',
-                                    padding: isSmallScreen ? '8px' : '16px',
                                 },
                             }}
                         />
                     )}
                     renderOption={(props, option) => (
-                        <li {...props} style={{ padding: 0 }}>
+                        <li {...props} style={{ px: 3 }}>
                             <Link
                                 to={`/expenses/group/${option.groupId}`}
                                 style={{
                                     display: 'flex',
                                     textDecoration: 'none',
                                     width: '100%',
-                                    padding: '10px',
                                     alignItems: 'center',
                                 }}
                             >

@@ -67,7 +67,7 @@ const SettlementList = ({ groupId }) => {
 
   return (
     <>
-      {settlementList && settlementList.length>0 ? (
+      {settlementList && settlementList.length > 0 ? (
         settlementList.map((settlement, index) => (
           <Accordion key={settlement.settlementId} expanded={expanded === index} onChange={handleChange(index)}>
             <AccordionSummary aria-controls="panel2-content" id="panel2-header">
@@ -82,20 +82,23 @@ const SettlementList = ({ groupId }) => {
                   gap: isSmallScreen ? 2 : "",
                 }}
               >
-                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                  <PaidOutlinedIcon sx={{ color: "green" }} />
-                  <Typography sx={{ whiteSpace: "nowrap" }}>
-                    Payment from <b>{settlement.paidByUserName}</b> to{" "}
-                    <b>{settlement.paidToUserName}</b>
-                  </Typography>
-                  <KeyboardArrowDownIcon />
-                  {!groupId && 
-                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1 }}>
-                    <GroupsOutlinedIcon />
-                    <Link style={{ textDecoration: "none" }} to={`/expenses/group/${settlement.groupId}`} onClick={(event)=>event.stopPropagation()}>
-                      <Typography sx={{ color: "gray", "&:hover": { textDecoration:"underline" } }}>{settlement.groupName}</Typography>
-                    </Link>
+                <Box sx={{ display: "flex", alignItems: "flex-start", gap: 1, flexDirection: isSmallScreen ? "column" : "row", }}>
+                  <Box sx={{display:"flex", alignItems:"center",  gap :1}}>
+                    <PaidOutlinedIcon sx={{ color: "green" }} />
+                    <Typography sx={{ whiteSpace: "nowrap" }}>
+                      Payment from <b>{settlement.paidByUserName}</b> to{" "}
+                      <b>{settlement.paidToUserName}</b>
+                    </Typography>
+                    <KeyboardArrowDownIcon />
                   </Box>
+
+                  {!groupId &&
+                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1 }}>
+                      <GroupsOutlinedIcon />
+                      <Link style={{ textDecoration: "none" }} to={`/expenses/group/${settlement.groupId}`} onClick={(event) => event.stopPropagation()}>
+                        <Typography sx={{ color: "gray", "&:hover": { textDecoration: "underline" } }}>{settlement.groupName}</Typography>
+                      </Link>
+                    </Box>
                   }
                 </Box>
                 <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
@@ -165,9 +168,9 @@ const SettlementList = ({ groupId }) => {
                     Activities
                   </Typography>
                   {
-                    expanded === index && <ActivityList isFromAccordian={true} settlementId={settlement.settlementId}/>
+                    expanded === index && <ActivityList isFromAccordian={true} settlementId={settlement.settlementId} />
                   }
-                  
+
                 </Grid>
                 <Grid item xs={12} sm={6}>
                   {expanded === index && <CommentSection settlementId={settlement.settlementId} />}
