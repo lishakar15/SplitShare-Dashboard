@@ -46,7 +46,7 @@ export default function ExpenseSummary({ expense }) {
       return <Typography sx={{color:"#4caf50"}}>₹{balance.toFixed(2)}</Typography>
      }
 
-     return <Typography sx={{color:"red"}}>- ₹{balance.toFixed(2)}</Typography>
+     return <Typography sx={{color:"red", whiteSpace:"nowrap"}}>- ₹{Math.abs(balance).toFixed(2)}</Typography>
   };
   return (
     <TableContainer component={Paper} >
@@ -73,7 +73,7 @@ export default function ExpenseSummary({ expense }) {
             <TableCell align="right" colSpan={2}>
               Total
             </TableCell>
-            <TableCell align="right">₹{expense.totalAmount.toFixed(2)}</TableCell>
+            <TableCell align="right" sx={{fontWeight:"bold"}}>₹{expense.totalAmount.toFixed(2)}</TableCell>
           </TableRow>
         </TableBody>
       </Table>

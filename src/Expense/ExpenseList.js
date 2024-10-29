@@ -1,46 +1,51 @@
 import React, { useEffect, useState } from "react";
-import Accordion from "@mui/material/Accordion";
-import AccordionSummary from "@mui/material/AccordionSummary";
-import AccordionDetails from "@mui/material/AccordionDetails";
-import Typography from "@mui/material/Typography";
-import ArrowDropDownIcon from "@mui/icons-material/ArrowDropDown";
-import { getSplitTypeIcon, getSplitTypeText } from "./SplitTypeService";
-import InsertChartOutlinedIcon from "@mui/icons-material/InsertChartOutlined";
-import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
-import { Link } from "react-router-dom";
 import {
-  AvatarGroup,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Typography,
   Box,
   Chip,
   Divider,
   Grid,
   useMediaQuery,
+  AvatarGroup,
+  Stack,
+  Paper,
+  useTheme
 } from "@mui/material";
-import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
-import AvatarGenerator from "../AvatarGenerator";
-import ModeEditOutlineOutlinedIcon from "@mui/icons-material/ModeEditOutlineOutlined";
-import { useTheme } from "@mui/material/styles";
-import ExpenseOweSummaryChip from "./ExpenseOweSummaryChip";
-import ExpenseSummary from "./ExpenseSummary";
-import TimelineIcon from "@mui/icons-material/Timeline";
-import SwapHorizIcon from "@mui/icons-material/SwapHoriz";
-import CommentSection from "./CommentSection";
-import ExpenseDialog from "./Create Expense/ExpenseDialog";
-import { backendService } from "../services/backendServices";
+import {
+  KeyboardArrowDown as KeyboardArrowDownIcon,
+  KeyboardArrowUp as KeyboardArrowUpIcon,
+  ModeEditOutlineOutlined as ModeEditOutlineOutlinedIcon,
+  InsertChartOutlined as InsertChartOutlinedIcon,
+  Timeline as TimelineIcon,
+  SwapHoriz as SwapHorizIcon,
+  Groups as GroupsOutlinedIcon
+} from "@mui/icons-material";
+import SellOutlinedIcon from '@mui/icons-material/SellOutlined';
+import { Link } from "react-router-dom";
 import { useAtomValue } from "jotai";
 import { loggedInUserAtom } from "../atoms/UserAtom";
+import { getSplitTypeIcon, getSplitTypeText } from "./SplitTypeService";
+import AvatarGenerator from "../AvatarGenerator";
+import ExpenseOweSummaryChip from "./ExpenseOweSummaryChip";
+import ExpenseSummary from "./ExpenseSummary";
+import CommentSection from "./CommentSection";
+import ExpenseDialog from "./Create Expense/ExpenseDialog";
 import ActivityList from "../ActivityList";
-import Expense from "./Expenses";
+import { backendService } from "../services/backendServices";
 
 const ExpenseList = ({ groupId }) => {
   const theme = useTheme();
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
+  const isMobile = useMediaQuery(theme.breakpoints.down("sm"));
   const [isOpenExpenseDialog, setIsOpenExpenseDialog] = useState(false);
   const [selectedExpense, setSelectedExpense] = useState(null);
   const [expenseList, setExpenseList] = useState([]);
   const loggedInUser = useAtomValue(loggedInUserAtom);
   const [expanded, setExpanded] = useState(false);
 
+  // Existing handlers remain the same
   const handleModifyExpense = (event, selectedExpenseId) => {
     event.stopPropagation();
     setSelectedExpense(expenseList.find((expense) => expense.expenseId === selectedExpenseId));
@@ -51,179 +56,153 @@ const ExpenseList = ({ groupId }) => {
     setIsOpenExpenseDialog(false);
   };
 
+  const handleAccordionChange = (index) => {
+    setExpanded(prev => (prev === index ? false : index));
+  };
+
   const fetchExpenses = async () => {
-    let expenses = [];
-    try{
-      if (groupId) {
-        expenses = await backendService.getExpensesByGroupId(groupId);
-      }
-      else {
-        expenses = await backendService.getAllExpensesByUserId(loggedInUser.userId);
-      }
+    try {
+      const expenses = groupId
+        ? await backendService.getExpensesByGroupId(groupId)
+        : await backendService.getAllExpensesByUserId(loggedInUser.userId);
       if (expenses) {
         setExpenseList(expenses);
       }
+    } catch (err) {
+      console.log("Error occurred while fetching Expense " + err);
     }
-    catch (err){
-      console.log("Error occurred while fetching Expense "+err)
-    }
-   
-
   };
 
   useEffect(() => {
     fetchExpenses();
   }, [groupId]);
 
-  const handleAccordionChange = (index) => {
-    setExpanded(prev => (prev === index ? false : index));
-  };
+  const ExpenseHeader = ({ expense, index }) => (
+    <Stack
+      direction={isMobile ? "column" : "row"}
+      spacing={2}
+      width="100%"
+      alignItems={isMobile ? "flex-start" : "center"}
+      justifyContent="space-between"
+    >
+      <Stack spacing={1}>
+        <Stack direction="row" alignItems="center" spacing={1}>
+          <SellOutlinedIcon sx={{ color: "green" }}/>
+          <Typography variant={isMobile ? "body2" : "body1"} sx={{ fontWeight: "medium" }}>
+            {expense.expenseDescription}
+          </Typography>
+          {expanded === index ? <KeyboardArrowUpIcon fontSize={isMobile ? "small" : "medium"} /> :
+            <KeyboardArrowDownIcon fontSize={isMobile ? "small" : "medium"} />
+          }
+          <Chip
+            label={"🎬 " + expense.category}
+            size="small"
+            variant="outlined"
+          />
+        </Stack>
+
+        <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+          {!groupId && (
+            <Stack direction="row" spacing={1} alignItems="center">
+              <GroupsOutlinedIcon fontSize="small" />
+              <Link
+                style={{ textDecoration: "none" }}
+                to={`/expenses/group/${expense.groupId}`}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <Typography
+                  variant="body2"
+                  sx={{
+                    color: "text.secondary",
+                    "&:hover": { textDecoration: "underline" }
+                  }}
+                >
+                  {expense.groupName}
+                </Typography>
+              </Link>
+            </Stack>
+          )}
+        </Stack>
+      </Stack>
+
+      <Stack spacing={1} width={isMobile ? "100%" : "auto"}>
+        <Stack direction="row" spacing={2} alignItems="center" justifyContent={isMobile ? "space-between" : "flex-end"}>
+          <Stack direction="row" spacing={1} alignItems="center">
+            <AvatarGroup
+              total={expense.paidUsers.length}
+              max={isMobile ? 2 : 4}
+              sx={{ '& .MuiAvatar-root': { width: 24, height: 24 } }}
+            >
+              {expense.paidUsers.map((user) => (
+                <AvatarGenerator
+                  key={user.userId}
+                  userName={user.userName}
+                  size="xs"
+                />
+              ))}
+            </AvatarGroup>
+            <Typography variant={isMobile ? "body2" : "body1"}>
+              {expense.paidUsers.map((user, index) => (
+                <React.Fragment key={user.userId}>
+                  {user.userName}
+                  {index < expense.paidUsers.length - 1 ? ", " : ""}
+                </React.Fragment>
+              ))}
+              {" "}paid
+            </Typography>
+          </Stack>
+          <Typography variant={isMobile ? "body2" : "body1"} fontWeight="bold">
+            ₹{expense.totalAmount.toFixed(2)}
+          </Typography>
+        </Stack>
+
+        <Stack direction="row" spacing={2} justifyContent="space-between" alignItems="center">
+          <ExpenseOweSummaryChip
+            expense={expense}
+            loggedInUserId={loggedInUser?.userId || 0}
+          />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+            {getSplitTypeIcon(expense.splitType)}
+            <Typography variant={isMobile ? "body2" : "body1"}>
+              {expense.participantShareList.length}
+            </Typography>
+            <ModeEditOutlineOutlinedIcon
+              fontSize={isMobile ? "small" : "medium"}
+              onClick={(e) => handleModifyExpense(e, expense.expenseId)}
+            />
+          </Box>
+        </Stack>
+      </Stack>
+    </Stack>
+  );
+
+  if (expenseList.length === 0) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", p: 4 }}>
+        <Typography>You are all Settled up!!!</Typography>
+      </Box>
+    );
+  }
 
   return (
-    <>
-      {expenseList.length > 0 ? (
-        expenseList.map((expense, index) => (
-          <Accordion key={expense.expenseId} onChange={() => handleAccordionChange(index)}>
-            <AccordionSummary aria-controls="panel2-content" id="panel2-header">
-              <Box
-                container
-                sx={{
-                  display: "flex",
-                  justifyContent: "space-between",
-                  alignItems: isSmallScreen ? "flex-start" : "center",
-                  width: "100%",
-                  flexDirection: isSmallScreen ? "column" : "row",
-                  gap: isSmallScreen ? 2 : "",
-                }}
-              >
-                <Box sx={{ display: "flex", alignItems: "center" }}>
-                  <Typography sx={{ whiteSpace: "nowrap" }}>
-                    {expense.expenseDescription}
-                  </Typography>
-                  <KeyboardArrowDownIcon />
-                  <Chip
-                    label={"🎬 " + expense.category}
-                    size="small"
-                    variant="outlined"
-                    sx={{ ml: 1 }}
-                  />
-                  {!groupId &&
-                    <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", gap: 1, ml: 2 }}>
-                      <GroupsOutlinedIcon />
-                      <Link style={{ textDecoration: "none" }} to={`/expenses/group/${expense.groupId}`} onClick={(event) => event.stopPropagation()}>
-                        <Typography sx={{ color: "gray", "&:hover": { textDecoration: "underline" } }}>{expense.groupName}</Typography>
-                      </Link>
-                    </Box>
-                  }
-                </Box>
-                <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                  <Box sx={{ display: "flex", flexDirection: "column" }}>
-                    <Box sx={{ display: "flex", gap: 1 }}>
-                      <AvatarGroup total={expense.paidUsers.length} max={4}>
-                        {expense.paidUsers.map((user) => (
-                          <AvatarGenerator
-                            key={user.userId}
-                            userName={user.userName}
-                            size={"xs"}
-                          />
-                        ))}
-                      </AvatarGroup>
-                      <Typography
-                        sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}
-                      >
-                        {expense.paidUsers.map((user, index) => (
-                          <React.Fragment key={user.userId}>
-                            {user.userName}
-                            {index < expense.paidUsers.length - 1 ? ", " : ""}
-                          </React.Fragment>
-                        ))}
-                      </Typography>
-                      paid
-                      <Typography
-                        sx={{ whiteSpace: "nowrap", fontWeight: "bold" }}
-                      >
-                        ₹{expense.totalAmount.toFixed(2)}
-                      </Typography>
-                    </Box>
-                    <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
-                      <ExpenseOweSummaryChip
-                        expense={expense}
-                        loggedInUserId={loggedInUser ? loggedInUser.userId : 0}
-                      />
-                    </Box>
-                  </Box>
-
-                  <Typography
-                    sx={{
-                      whiteSpace: "nowrap",
-                      display: "flex",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    {getSplitTypeIcon(expense.splitType)}
-                    {expense.participantShareList.length}
-                  </Typography>
-                </Box>
-              </Box>
-              <Box
-                sx={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  alignItems: "center",
-                  ml: 4,
-                }}
-              >
-                <ModeEditOutlineOutlinedIcon
-                  onClick={(event) => handleModifyExpense(event, expense.expenseId)}
-                />
-              </Box>
+    <Stack spacing={2}>
+      {expenseList.map((expense, index) => (
+        <Paper elevation={1} key={expense.expenseId}>
+          <Accordion
+            onChange={() => handleAccordionChange(index)}
+            sx={{ boxShadow: 'none' }}
+          >
+            <AccordionSummary>
+              <ExpenseHeader expense={expense} index ={index}/>
             </AccordionSummary>
+
             <AccordionDetails>
               <Divider sx={{ mb: 2 }} />
               <Grid container spacing={2}>
-                <Grid item xs={12} sm={6}>
-                  <Typography
-                    sx={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      gap: 1,
-                    }}
-                  >
-                    <InsertChartOutlinedIcon />
-                    Summary
-                  </Typography>
-                  <Box
-                    sx={{
-                      p: 1,
-                      border: "1px solid lightgray",
-                      borderRadius: 1,
-                      bgcolor: "#f9fafb",
-                      my: 1,
-                    }}
-                  >
+                <Grid item xs={12} md={6}>
+                  <Stack spacing={2}>
                     <Typography
-                      sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                    >
-                      <SwapHorizIcon />
-                      Split
-                      <Typography sx={{ fontWeight: "bold" }}>
-                        ₹{expense.totalAmount.toFixed(2)}{" "}
-                        {getSplitTypeText(expense.splitType)}{" "}
-                      </Typography>
-                      between
-                      <Typography sx={{ fontWeight: "bold" }}>
-                        {expense.participantShareList.length} people
-                      </Typography>
-                    </Typography>
-                  </Box>
-
-                  <ExpenseSummary expense={expense} />
-                </Grid>
-                <Grid item xs={12} sm={6}>
-                  <Box>
-                    <Typography
+                      variant={isMobile ? "body2" : "body1"}
                       sx={{
                         display: "flex",
                         justifyContent: "center",
@@ -231,36 +210,64 @@ const ExpenseList = ({ groupId }) => {
                         gap: 1,
                       }}
                     >
-                      <TimelineIcon />
+                      <InsertChartOutlinedIcon fontSize={isMobile ? "small" : "medium"} />
+                      Summary
+                    </Typography>
+
+                    <Paper variant="outlined" sx={{ p: 2, bgcolor: "grey.50" }}>
+                      <Stack direction="row" spacing={1} alignItems="center" flexWrap="wrap">
+                        <SwapHorizIcon fontSize={isMobile ? "small" : "medium"} />
+                        <Typography variant={isMobile ? "body2" : "body1"}>
+                          Split
+                          <Box component="span" sx={{ fontWeight: "bold", mx: 0.5 }}>
+                            ₹{expense.totalAmount.toFixed(2)}
+                          </Box>
+                          {getSplitTypeText(expense.splitType)} between
+                          <Box component="span" sx={{ fontWeight: "bold", ml: 0.5 }}>
+                            {expense.participantShareList.length} people
+                          </Box>
+                        </Typography>
+                      </Stack>
+                    </Paper>
+
+                    <ExpenseSummary expense={expense} />
+                  </Stack>
+                </Grid>
+
+                <Grid item xs={12} md={6}>
+                  <Stack spacing={2}>
+                    <Typography
+                      variant={isMobile ? "body2" : "body1"}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "center",
+                        alignItems: "center",
+                        gap: 1,
+                      }}
+                    >
+                      <TimelineIcon fontSize={isMobile ? "small" : "medium"} />
                       Activities
                     </Typography>
-                    {expanded === index && <ActivityList isFromAccordian={true} expenseId={expense.expenseId}/>}
-                  </Box>
-
+                    {expanded === index && (
+                      <ActivityList isFromAccordian={true} expenseId={expense.expenseId} />
+                    )}
+                  </Stack>
                 </Grid>
               </Grid>
+
               {expanded === index && <CommentSection expenseId={expense.expenseId} />}
             </AccordionDetails>
           </Accordion>
-        ))
-      ) : (
-        <Box
-          sx={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Typography>You are all Settled up!!!</Typography>
-        </Box>
-      )}
+        </Paper>
+      ))}
+
       <ExpenseDialog
         open={isOpenExpenseDialog}
         onClose={handleExpenseDialogClose}
         isModReq={true}
         expenseData={selectedExpense}
       />
-    </>
+    </Stack>
   );
 };
 
