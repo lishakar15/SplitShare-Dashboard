@@ -34,6 +34,7 @@ import { currentGroupDataAtom, groupMembersAtom } from "../../atoms/GroupAtom";
 import { loggedInUserAtom } from "../../atoms/UserAtom";
 import CustomizedSnackbars from "../../utilities/CustomSnackBar";
 import { refetchTriggerAtom } from "../../atoms/Atoms";
+import { CATEGORY_DATA_MAP } from "../../data/CategoryData";
 
 function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -54,7 +55,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
   const [groupData, setGroupData] = useAtom(currentGroupDataAtom);
   const [groupId, setGroupId] = useState(null);
   const [createdBy, setCreatedBy] = useState(loggedInUser.userId);
-  const [refreshTrigger,setRefreshTrigger] = useAtom(refetchTriggerAtom);
+  const [refreshTrigger, setRefreshTrigger] = useAtom(refetchTriggerAtom);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   // Snackbar state
@@ -110,7 +111,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
           setSnackbarMessage("Expense Saved Successfully");
           setSnackbarSuccess(true);
           setSnackbarOpen(true);
-          setTimeout(()=>{setRefreshTrigger((prevVal)=> !prevVal)},1000)
+          setTimeout(() => { setRefreshTrigger((prevVal) => !prevVal) }, 1000)
         } else {
           setSnackbarMessage("Error Saving Expense");
           setSnackbarSuccess(false);
@@ -134,7 +135,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
         setSnackbarMessage("Expense Deleted Successfully");
         setSnackbarSuccess(true);
         setSnackbarOpen(true);
-        setTimeout(()=>{setRefreshTrigger((prevVal)=> !prevVal)},1000)
+        setTimeout(() => { setRefreshTrigger((prevVal) => !prevVal) }, 1000)
       }
       else {
         setSnackbarMessage("Error Deleting Expense");
@@ -171,7 +172,7 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
       spentOnDate,
       createDate: createDate ? createDate : new Date().toISOString(),
       lastUpdateDate: new Date().toISOString(),
-      category,
+      category : !category ? "Others" : category,
       splitType,
       createdBy,
       participantShareList: participantShares,
@@ -226,14 +227,14 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
   return (
     <>
       <Dialog open={open} onClose={handleClose}
-       PaperProps={{
-        sx: {
-          width: '100vw',
-          height: 'auto',
-          maxHeight: '90vh',
-          margin: 0,
-        },
-      }}
+        PaperProps={{
+          sx: {
+            width: '100vw',
+            height: 'auto',
+            maxHeight: '90vh',
+            margin: 0,
+          },
+        }}
       >
         <DialogTitle>{isModRequest ? "Modify Expense" : "New Expense"}</DialogTitle>
         <DialogContent>
@@ -273,9 +274,11 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
               <Typography>Category</Typography>
               <FormControl fullWidth>
                 <Select value={category} onChange={(e) => setCategory(e.target.value)}>
-                  <MenuItem value="Food">🍱 Food</MenuItem>
-                  <MenuItem value="Entertainment">🎞️ Entertainment</MenuItem>
-                  <MenuItem value="Restaurant">🍴 Restaurant</MenuItem>
+                  {Array.from(CATEGORY_DATA_MAP).map(([key, value]) => (
+                    <MenuItem key={key} value={key}>
+                      {value}  {key}
+                    </MenuItem>
+                  ))}
                 </Select>
               </FormControl>
             </Grid>
@@ -286,11 +289,11 @@ function ExpenseDialog({ open, onClose, isModReq, expenseData }) {
           </Grid>
         </DialogContent>
         <DialogActions>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: 2}}>
+          <Box sx={{ display: 'flex', justifyContent: 'space-between', width: '100%', gap: 2 }}>
             <Button onClick={() => handleDeleteExpense(expenseId)} variant="contained" color="error" disabled={isLoading || !isModReq}>
               Delete
             </Button>
-            <Box sx={{ display: "flex",  gap: 2}}>
+            <Box sx={{ display: "flex", gap: 2 }}>
               <Button onClick={handleClose} variant="outlined" disabled={isLoading}>Cancel</Button>
               <Button onClick={handleSave} variant="contained" color="primary" disabled={isLoading}>
                 {isLoading ? "Saving..." : isModRequest ? "Update" : "Create"}

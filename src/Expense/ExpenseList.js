@@ -33,6 +33,7 @@ import ExpenseOweSummaryChip from "./ExpenseOweSummaryChip";
 import ExpenseSummary from "./ExpenseSummary";
 import CommentSection from "./CommentSection";
 import ExpenseDialog from "./Create Expense/ExpenseDialog";
+import { CATEGORY_DATA_MAP } from "../data/CategoryData";
 import ActivityList from "../ActivityList";
 import { backendService } from "../services/backendServices";
 
@@ -95,7 +96,7 @@ const ExpenseList = ({ groupId }) => {
             <KeyboardArrowDownIcon fontSize={isMobile ? "small" : "medium"} />
           }
           <Chip
-            label={"🎬 " + expense.category}
+            label={`${CATEGORY_DATA_MAP.get(expense.category)} `+ expense.category}
             size="small"
             variant="outlined"
           />
