@@ -64,7 +64,6 @@ const BalanceBoard = () => {
           flex: 1,
           border: '1px solid #e5e7eb',
           minWidth: isSmallScreen ? '80px' : 'auto',
-          padding: isSmallScreen ? '8px' : '16px',
         }}
       >
         <CardContent>
@@ -90,7 +89,6 @@ const BalanceBoard = () => {
           flex: 1,
           border: '1px solid lightgray',
           minWidth: isSmallScreen ? '80px' : 'auto',
-          padding: isSmallScreen ? '8px' : '16px',
         }}
       >
         <CardContent>
@@ -101,7 +99,8 @@ const BalanceBoard = () => {
             variant="h4"
             component="div"
             color="#16a34a"
-            sx={{ fontSize: getFontSize(), textAlign: isSmallScreen ? "center" : "left"}}
+            sx={{ fontSize: getFontSize(), textAlign: isSmallScreen ? "center" : "left"
+             }}
           >
             {formatCurrency(owedAmount)}
           </Typography>
@@ -113,7 +112,6 @@ const BalanceBoard = () => {
           flex: 1,
           border: '1px solid lightgray',
           minWidth: isSmallScreen ? '80px' : 'auto',
-          padding: isSmallScreen ? '8px' : '16px',
         }}
       >
         <CardContent>

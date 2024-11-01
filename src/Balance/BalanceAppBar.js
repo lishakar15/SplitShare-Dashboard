@@ -9,7 +9,7 @@ const BalanceAppBar = () => {
   const theme = useTheme();
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm"));
   return (
-    <Box container sx={{my:4,display:"flex", alignItems:"center",justifyContent:"space-between"}}>
+    <Box container sx={{my:2,display:"flex", alignItems:"center",justifyContent:"space-between"}}>
       <Typography variant='div'sx={{fontSize: 20}} >Balances</Typography >
       <Box sx={{display:"flex",justifyContent:"space-around"}}> 
       <AddExpenseDialog/>
