@@ -8,6 +8,8 @@ import {
   Grid,
   Link,
   TextField,
+  useTheme,
+  useMediaQuery,
   Typography,
   Alert,
 } from "@mui/material";
@@ -26,22 +28,24 @@ const LoginUser = () => {
   const [inviteToken, setInviteToken] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const [urlParam,setUrlParam] = useState(""); 
-    // Snackbar state
-    const [snackbarOpen, setSnackbarOpen] = useState(false);
-    const [snackbarMessage, setSnackbarMessage] = useState("");
-    const [snackbarSuccess, setSnackbarSuccess] = useState(false);
+  const [urlParam, setUrlParam] = useState("");
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  // Snackbar state
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [snackbarSuccess, setSnackbarSuccess] = useState(false);
 
-  useEffect(()=>{
+  useEffect(() => {
     //Check if there are any invite parameters in the URL
     const urlParams = new URLSearchParams(location.search);
     if (urlParams) {
       setUrlParam(urlParams);
       setInvitedBy(urlParams.get('invitedBy'));
       setGroupId(urlParams.get('groupId'));
-      setInviteToken(urlParams.get('token')); 
+      setInviteToken(urlParams.get('token'));
     }
-  },[location.search]);
+  }, [location.search]);
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -54,13 +58,13 @@ const LoginUser = () => {
       try {
         const userData = await backendService.loginUser(credentials)
         if (userData !== null) {
-          localStorage.setItem("userData", JSON.stringify({ userId: userData.userId, userName: userData.userName, fullUserName : userData.fullUserName}));
+          localStorage.setItem("userData", JSON.stringify({ userId: userData.userId, userName: userData.userName, fullUserName: userData.fullUserName }));
           localStorage.setItem("jwtToken", userData.jwtToken);
           acceptUserGroupInvite(userData.userId);
-          setTimeout(()=>{
+          setTimeout(() => {
             navigate("/home");
             window.location.reload()
-          },500);
+          }, 500);
         }
         else {
           throw Error("Login Failed");
@@ -74,7 +78,7 @@ const LoginUser = () => {
     loginUser();
   };
 
-  const acceptUserGroupInvite = async(loggedInUserId) => {
+  const acceptUserGroupInvite = async (loggedInUserId) => {
     if (loggedInUserId && inviteToken) {
       let message = null;
       if (groupId) {
@@ -82,23 +86,22 @@ const LoginUser = () => {
           groupId: groupId,
           userId: loggedInUserId
         }
-        message = await backendService.joinUserInGroup(groupInvite,inviteToken);
+        message = await backendService.joinUserInGroup(groupInvite, inviteToken);
       }
-      else if(invitedBy){
-        const userInvite = {  
-          userId1 : loggedInUserId,
-          userId2 : invitedBy,
+      else if (invitedBy) {
+        const userInvite = {
+          userId1: loggedInUserId,
+          userId2: invitedBy,
           createdBy: invitedBy
         }
-        message = await backendService.acceptInvite(userInvite,inviteToken);
+        message = await backendService.acceptInvite(userInvite, inviteToken);
       }
-      if(message){
+      if (message) {
         setSnackbarMessage(message);
-        if((message.includes("fail") || (message.includes("Invalid"))))
-        {
+        if ((message.includes("fail") || (message.includes("Invalid")))) {
           setSnackbarSuccess(false);
         }
-        else{
+        else {
           setSnackbarSuccess(true);
         }
         setSnackbarOpen(true);
@@ -111,20 +114,20 @@ const LoginUser = () => {
       backgroundColor: "gray.200",
       borderRadius: "1",
       boxShadow: 2,
-      mt: 8,
-      pb: 3,
+      mt: !isMobile ? 8 : 2,
+      py: 3,
     }}>
-      <Box
-        component="img"
-        src={appLogo}
-        alt="Description of image"
-        sx={{
-          display:"flex",
-          justifyContent:"center",
-          width: '100%',
-          borderRadius: '8px',
-        }}
-      />
+      <Box sx={{display:"flex", justifyContent:"center"}} >
+        <Box
+          component="img"
+          src={appLogo}
+          alt="Description of image"
+          sx={{
+            width: '75%',
+            borderRadius: '8px',
+          }}
+        />
+      </Box>
       <Box
         sx={{
           marginTop: 2,

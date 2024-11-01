@@ -8,11 +8,13 @@ import {
   Link,
   TextField,
   Typography,
+  useTheme,
+  useMediaQuery
 } from "@mui/material";
 import { backendService } from "./services/backendServices";
 import { useNavigate } from "react-router-dom";
 import CustomizedSnackbars from "./utilities/CustomSnackBar";
-import { FaHeartPulse } from "react-icons/fa6";
+import appLogo from './assets/SplitShare Logo image.png'
 
 const RegisterUser = () => {
   const [firstName, setFirstName] = useState("");
@@ -26,6 +28,8 @@ const RegisterUser = () => {
   const navigate = useNavigate();
   const [urlParam,setUrlParam] = useState("");
     const [isLoading, setIsLoading] = useState(false);
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
   // Snackbar state
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -118,13 +122,32 @@ const RegisterUser = () => {
   return (
     <Container maxWidth="sm" sx={{
       backgroundColor: "gray.200",
-      pb: 2,
       borderRadius: "1",
       boxShadow: 2,
+      mt: !isMobile ? 8 : 2,
+      py: 3,
     }}>
+      <Box sx={{display:"flex", justifyContent:"center"}} >
+        <Box
+          component="img"
+          src={appLogo}
+          alt="Description of image"
+          sx={{
+            width: '60%',
+            borderRadius: '8px',
+          }}
+        />
+      </Box>
       <Box
         sx={{
-          marginTop: 8,
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      ></Box>
+      <Box
+        sx={{
+          marginTop: 2,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",
