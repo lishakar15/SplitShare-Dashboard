@@ -63,9 +63,8 @@ const BalanceCard = () => {
             <Box sx={{ 
               display: 'flex', 
               alignItems: 'center', 
-              mb: 2,
               borderBottom: '1px solid #f0f0f0',
-              pb: 2
+              pb:1
             }}>
               <AvatarGenerator userName={otherUserName} />
               <Box sx={{ ml: 2, flex: 1 }}>
@@ -73,7 +72,6 @@ const BalanceCard = () => {
                   variant="subtitle1"
                   sx={{
                     fontWeight: 500,
-                    mb: 0.5,
                     maxWidth: '200px',
                     overflow: 'hidden',
                     textOverflow: 'ellipsis',
@@ -105,7 +103,6 @@ const BalanceCard = () => {
               display: 'flex', 
               justifyContent: 'space-between', 
               alignItems: 'center', 
-              mb: 2,
               backgroundColor: '#f8f9fa',
               p: 1,
               borderRadius: 1
