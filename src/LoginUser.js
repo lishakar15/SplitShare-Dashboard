@@ -14,6 +14,7 @@ import {
 import { backendService } from "./services/backendServices";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import CustomizedSnackbars from "./utilities/CustomSnackBar";
+import appLogo from './assets/SplitShare Logo image.png'
 
 const LoginUser = () => {
   const [email, setEmail] = useState("");
@@ -110,12 +111,23 @@ const LoginUser = () => {
       backgroundColor: "gray.200",
       borderRadius: "1",
       boxShadow: 2,
-      mt: 3,
+      mt: 8,
       pb: 3,
     }}>
       <Box
+        component="img"
+        src={appLogo}
+        alt="Description of image"
         sx={{
-          marginTop: 8,
+          display:"flex",
+          justifyContent:"center",
+          width: '100%',
+          borderRadius: '8px',
+        }}
+      />
+      <Box
+        sx={{
+          marginTop: 2,
           display: "flex",
           flexDirection: "column",
           alignItems: "center",

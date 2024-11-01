@@ -12,7 +12,7 @@ import PersonOutlinedIcon from '@mui/icons-material/PersonOutlined';
 import GroupsOutlinedIcon from '@mui/icons-material/GroupsOutlined';
 import PaymentOutlinedIcon from '@mui/icons-material/PaymentOutlined';
 import { Link, useNavigate } from 'react-router-dom';
-import appLog from './assets/SplitShare Logo image.png'
+import appLogo from './assets/SplitShare Logo image.png'
 
 
 const SideNavBar = ({ onClose }) => {
@@ -28,13 +28,17 @@ const SideNavBar = ({ onClose }) => {
     <>
       <Box
         component="img"
-        src={appLog}
+        src={appLogo}
         alt="Description of image"
         sx={{
           width: '75%',
           borderRadius: '8px',
-          m:1.5
+          m:1.5,
+          "&:hover":{
+            cursor: "pointer"
+          }
         }}
+
         onClick={handleClickOnLogo}
       />
       <Box sx={{ mx: "10px", width: '100%', maxWidth: 360 }}>
