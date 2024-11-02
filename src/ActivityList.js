@@ -115,7 +115,7 @@ const ActivityList = ({ groupId, expenseId, settlementId, isFromAccordian = fals
 
   return (
     <>
-      <Box sx={{ display: "flex" }}>
+      <Box sx={{ display: "flex", mt:-2}}>
         <Timeline
           sx={{
             [`& .${timelineItemClasses.root}:before`]: {
