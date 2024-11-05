@@ -640,5 +640,17 @@ export const backendService = {
     catch(err){
       console.log("Error occured while creating Invite Link "+err);
     }
+  },
+
+  async getSpendingDistribution(userId){
+    try{
+        const response = await axiosInstance.get(`http://localhost:8085/expense/spending-distribution/${userId}`);
+        if(response.status === 200){
+          return response.data;
+        }
+    }
+    catch(err){
+      console.log("Error occured while fetching spending distribution "+err);
+    }
   }
 };
