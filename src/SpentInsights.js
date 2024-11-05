@@ -13,24 +13,27 @@ import {
 } from '@mui/material';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 import TimelineIcon from '@mui/icons-material/Timeline';
-import { backendService } from './services/backendServices';
-import { loggedInUserAtom } from './atoms/UserAtom';
-import { useAtomValue } from 'jotai';
-import { COLORS } from "./data/Colors";
 import TrendingUpIcon from '@mui/icons-material/TrendingUp';
 import InfoOutlinedIcon from '@mui/icons-material/InfoOutlined';
 import PendingActionsIcon from '@mui/icons-material/PendingActions';
 import AccountBalanceWalletIcon from '@mui/icons-material/AccountBalanceWallet';
+import { backendService } from './services/backendServices';
+import { loggedInUserAtom } from './atoms/UserAtom';
+import { COLORS } from "./data/Colors";
+import { useAtomValue } from 'jotai';
 
 const SpendingInsights = () => {
+  const [spendingData, setSpendingData] = useState([]);
   const loggedInUser = useAtomValue(loggedInUserAtom);
-  const [spendingData, setSpendingData] = useState(null);
   const [key, setKey] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+
   const defaultSpendingData = [
-    {category :"none", percentage:100}
+    { category: "none", percentage: 100 }
   ];
+
+  const displayData = spendingData && spendingData.length > 0 ? spendingData : defaultSpendingData;
 
   useEffect(() => {
 
@@ -44,7 +47,7 @@ const SpendingInsights = () => {
           setKey((prev) => prev + 1);
         }
         else {
-          setSpendingData(null);
+          setSpendingData([]);
         }
       }
       catch (err) {
@@ -53,6 +56,7 @@ const SpendingInsights = () => {
     }
     getSpendingList();
   }, []);
+
   const StatCard = ({ icon: Icon, title, value, info, color }) => (
     <Box
       sx={{
@@ -87,7 +91,7 @@ const SpendingInsights = () => {
             </IconButton>
           </Tooltip>
         </Box>
-        <Typography variant="h6" sx={{ mt: 0.5 }}>
+        <Typography variant="h6">
           {value}
         </Typography>
       </Box>
@@ -96,15 +100,10 @@ const SpendingInsights = () => {
 
   return (
     <Box sx={{ py: 1 }}>
-
       <Grid container spacing={2}>
         {/* Spending Distribution */}
         <Grid item xs={12} md={7}>
-          <Card elevation={1}
-            sx={{
-              margin: -1,
-            }}
-          >
+          <Card elevation={1} sx={{ margin: -1 }}>
             <CardHeader
               title={
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, m: -1 }}>
@@ -126,7 +125,7 @@ const SpendingInsights = () => {
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart key={key}>
                     <Pie
-                      data={spendingData ? spendingData : defaultSpendingData}
+                      data={displayData}
                       cx="50%"
                       cy="50%"
                       innerRadius={70}
@@ -134,40 +133,35 @@ const SpendingInsights = () => {
                       paddingAngle={2}
                       dataKey="percentage"
                     >
-                      {spendingData ? spendingData : defaultSpendingData.map((entry, index) => (
-                        <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
+                      {displayData.map((entry, index) => (
+                        <Cell 
+                          key={`cell-${index}`} 
+                          fill={COLORS[index % COLORS.length]} 
+                        />
                       ))}
                     </Pie>
                   </PieChart>
                 </ResponsiveContainer>
-                <Grid container spacing={1} sx={{ mt: isMobile ? 2 : 0 }}>
-                  {spendingData && spendingData.length > 0 ? (
-                    spendingData.map((entry, index) => (
-                      <Grid item xs={6} key={entry.category}>
-                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
-                          <Box
-                            sx={{
-                              width: 12,
-                              height: 12,
-                              borderRadius: '50%',
-                              bgcolor: COLORS[index % COLORS.length],
-                            }}
-                          />
-                          <Typography variant="body2">
-                            {entry.category}: {entry.percentage}%
-                          </Typography>
-                        </Box>
-                      </Grid>
-                    ))
-                  ) : (
-                    <Grid item xs={12}>
-                      <Typography variant="body2" color="text.secondary" align="center">
-                        No Data Available
-                      </Typography>
-                    </Grid>
-                  )}
-                </Grid>
 
+                <Grid container spacing={1} sx={{ mt: isMobile ? 2 : 0 }}>
+                  {displayData.map((entry, index) => (
+                    <Grid item xs={6} key={entry.category}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Box
+                          sx={{
+                            width: 12,
+                            height: 12,
+                            borderRadius: '50%',
+                            bgcolor: COLORS[index % COLORS.length],
+                          }}
+                        />
+                        <Typography variant="body2">
+                          {entry.category}: {entry.percentage}%
+                        </Typography>
+                      </Box>
+                    </Grid>
+                  ))}
+                </Grid>
               </Box>
             </CardContent>
           </Card>
