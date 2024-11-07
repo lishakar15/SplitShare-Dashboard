@@ -452,6 +452,20 @@ export const backendService = {
       throw err;
     }
   },
+
+  async getMostActiveGroup(userId){
+    try{
+        const response = await axiosInstance.get(`http://localhost:8085/activity/get-most-active-group/${userId}`)
+        if(response.status === 200)
+        {
+          return response.data;
+        }
+    }
+    catch(err){
+      console.log("Error occured while fetching Most Active Group "+err);
+    }
+  },
+
   async getExpenseByExpenseId(expenseId, loggedInUserId) {
     try {
       const response = await axiosInstance.get(`http://localhost:8085/expense/get-expense/${expenseId}/${loggedInUserId}`);

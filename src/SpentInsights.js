@@ -24,6 +24,7 @@ import { useAtomValue } from 'jotai';
 
 const SpendingInsights = () => {
   const [spendingData, setSpendingData] = useState([]);
+  const [mostActiveGroup, setMostActiveGroup] = useState("none");
   const loggedInUser = useAtomValue(loggedInUserAtom);
   const [key, setKey] = useState(0);
   const theme = useTheme();
@@ -41,9 +42,7 @@ const SpendingInsights = () => {
       try {
         const response = await backendService.getSpendingDistribution(loggedInUser.userId);
         if (response) {
-        if (response.length>0) {
           setSpendingData(response);
-        }
           setKey((prev) => prev + 1);
         }
         else {
@@ -52,9 +51,28 @@ const SpendingInsights = () => {
       }
       catch (err) {
         console.log("Error fetching spending distribution " + err);
+        setSpendingData([]);
       }
     }
     getSpendingList();
+  }, []);
+
+  useEffect(() => {
+
+    const getActiveGroup = async () => {
+      try {
+        const response = await backendService.getMostActiveGroup(loggedInUser.userId);
+        console.log("Respone == "+response);
+        if (response) {
+          setMostActiveGroup(response);
+        }
+      }
+      catch (err) {
+        console.log("Error fetching Most Active Group " + err);
+        setMostActiveGroup("none")
+      }
+    }
+    getActiveGroup();
   }, []);
 
   const StatCard = ({ icon: Icon, title, value, info, color }) => (
@@ -125,6 +143,9 @@ const SpendingInsights = () => {
                 <ResponsiveContainer width="100%" height={250}>
                   <PieChart key={key}>
                     <Pie
+                      animationBegin={0}
+                      animationDuration={1500}
+                      animationEasing="ease-out"
                       data={displayData}
                       cx="50%"
                       cy="50%"
@@ -134,9 +155,9 @@ const SpendingInsights = () => {
                       dataKey="percentage"
                     >
                       {displayData.map((entry, index) => (
-                        <Cell 
-                          key={`cell-${index}`} 
-                          fill={COLORS[index % COLORS.length]} 
+                        <Cell
+                          key={`cell-${index}`}
+                          fill={COLORS[index % COLORS.length]}
                         />
                       ))}
                     </Pie>
@@ -192,7 +213,7 @@ const SpendingInsights = () => {
               <StatCard
                 icon={TrendingUpIcon}
                 title="Most Active Group"
-                value="Awesome Group"
+                value={mostActiveGroup}
                 info="Group with highest activity this month"
                 color={theme.palette.success.main}
               />
