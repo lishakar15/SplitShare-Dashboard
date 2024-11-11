@@ -191,7 +191,7 @@ const ActivityList = ({ groupId, expenseId, settlementId, isFromAccordian = fals
                         Edit
                       </Button>
                     }
-                    <Typography color="text.secondary" sx={{ fontWeight: "bold" }}>
+                    <Typography color="text.secondary" sx={{ fontWeight: "bold", whiteSpace:"nowrap"}}>
                       {activity.createDate ? formatDateToString(activity.createDate) : ""}
                     </Typography>
                   </Box>

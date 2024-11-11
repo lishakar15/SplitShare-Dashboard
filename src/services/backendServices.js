@@ -666,5 +666,19 @@ export const backendService = {
     catch(err){
       console.log("Error occured while fetching spending distribution "+err);
     }
+  },
+
+  async getSettlementForInsights(userId)
+  {
+    try{
+        const response = await axiosInstance.get(`http://localhost:8085/settlement/getSettlementInsights/${userId}`);
+        if(response.status === 200){
+          return response.data;
+        }
+    }
+    catch(err)
+    {
+      console.log("Error occured while fetching Settlements data for Innsights"+err);
+    }
   }
 };

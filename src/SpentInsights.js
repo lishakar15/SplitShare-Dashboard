@@ -21,11 +21,16 @@ import { backendService } from './services/backendServices';
 import { loggedInUserAtom } from './atoms/UserAtom';
 import { COLORS } from "./data/Colors";
 import { useAtomValue } from 'jotai';
+import { refetchTriggerAtom } from './atoms/Atoms';
+import { useAtom } from 'jotai';
 
 const SpendingInsights = () => {
   const [spendingData, setSpendingData] = useState([]);
+  const [totalSettlements, setTotalSettlements] = useState(0);
+  const [pendingSettlments, setPendingSettltments] = useState(0);
   const [mostActiveGroup, setMostActiveGroup] = useState("none");
   const loggedInUser = useAtomValue(loggedInUserAtom);
+  const [refreshTrigger] = useAtom(refetchTriggerAtom);
   const [key, setKey] = useState(0);
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
@@ -55,14 +60,30 @@ const SpendingInsights = () => {
       }
     }
     getSpendingList();
-  }, []);
+  }, [refreshTrigger]);
+
+  useEffect(() => {
+    const getSettlementData = async () => {
+      try {
+        const settlementData = await backendService.getSettlementForInsights(loggedInUser.userId);
+        if (settlementData) {
+          setTotalSettlements(settlementData.totalSettlements);
+          setPendingSettltments(settlementData.pendingSettlements);
+        }
+      }
+      catch (err) {
+        console.log("Error fetching settlement data for insights " + err)
+      }
+    }
+    getSettlementData();
+  }, [refreshTrigger]);
 
   useEffect(() => {
 
     const getActiveGroup = async () => {
       try {
         const response = await backendService.getMostActiveGroup(loggedInUser.userId);
-        console.log("Respone == "+response);
+        console.log("Respone == " + response);
         if (response) {
           setMostActiveGroup(response);
         }
@@ -73,7 +94,7 @@ const SpendingInsights = () => {
       }
     }
     getActiveGroup();
-  }, []);
+  }, [refreshTrigger]);
 
   const StatCard = ({ icon: Icon, title, value, info, color }) => (
     <Box
@@ -195,7 +216,7 @@ const SpendingInsights = () => {
               <StatCard
                 icon={AccountBalanceWalletIcon}
                 title="Total Settlements"
-                value="₹1,200"
+                value={totalSettlements ? totalSettlements.toFixed(2) : 0}
                 info="Total amount settled this month"
                 color={theme.palette.primary.main}
               />
@@ -204,7 +225,7 @@ const SpendingInsights = () => {
               <StatCard
                 icon={PendingActionsIcon}
                 title="Pending Settlements"
-                value="₹350"
+                value={pendingSettlments ? pendingSettlments.toFixed(2) : 0}
                 info="Amount pending to be settled"
                 color={theme.palette.warning.main}
               />
